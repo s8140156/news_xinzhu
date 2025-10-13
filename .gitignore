@@ -1,0 +1,22 @@
+# 系統檔案
+.DS_Store
+Thumbs.db
+
+# PHP / 系統快取
+vendor/
+node_modules/
+*.log
+*.tmp
+.env
+
+# IDE 設定檔
+.vscode/
+.idea/
+
+# 上傳暫存檔
+uploads/
+storage/
+
+# 前端 build 檔案（若有）
+dist/
+build/
