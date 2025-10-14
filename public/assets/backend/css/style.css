@@ -1,0 +1,5 @@
+.bg-gradient-liangyu {
+    background-color: #D97E35;
+    background-image: linear-gradient(180deg, #D97E35 10%, #DA8C36 100%);
+    background-size: cover;
+}
