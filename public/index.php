@@ -12,9 +12,13 @@ $baseUrl .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_
 define('BASE_URL', rtrim($baseUrl, '/'));
 define('APP_PATH', realpath(__DIR__ . '/../app'));
 
+// 載入controller
 require_once APP_PATH . '/controllers/backend/dashboardController.php';
+require_once APP_PATH . '/controllers/backend/newsController.php';
 
-$controller = new DashboardController();
+// 呼叫controller
+// $controller = new DashboardController();
+$controller = new NewsController();
 $controller->index();
 
 

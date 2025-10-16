@@ -35,10 +35,29 @@ class DB {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function find($id) {
-        $sql = "SELECT * FROM `{$this->table}` WHERE id = ?";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($id);
+    // 這樣寫法僅限於主鍵為 id 的情況
+    // public function find($id) {
+    //     $sql = "SELECT * FROM `{$this->table}` WHERE id = ?";
+    //     $stmt = $this->pdo->prepare($sql);
+    //     $stmt->execute([$id]);
+    //     return $stmt->fetch(PDO::FETCH_ASSOC);
+    // }
+
+    public function find($conditions) {
+        $sql = "SELECT * FROM `{$this->table}` WHERE ";
+        $clauses = [];
+        $params = [];
+        if (!is_array($conditions)) {
+            $conditions = ['id' => $conditions];
+        }
+        
+        foreach($conditions as $col => $value) {
+            $clauses[] = "`$col` = ?";
+            $params[] = $value;
+        }
+        $sql .= implode(' AND', $clauses) . " LIMIT 1 ";
+        $stmt =$this->pdo->prepare($sql);
+        $stmt->execute($params);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -48,7 +67,9 @@ class DB {
         $placeholders = array_fill(0, count($data), '?');
         $sql .= " (`" . implode('`,`', $cols) . "`) VALUES (" . implode(',', $placeholders) . ")";
         $stmt = $this->pdo->prepare($sql);
-        return $stmt->execute(array_values($data));
+        // return $stmt->execute(array_values($data));
+        $success = $stmt->execute(array_values($data));
+        return $success ? $this->pdo->lastInsertId() : false;
     }
 
     public function update($id, $data) {
@@ -62,6 +83,7 @@ class DB {
         $data[] = $id;
 
         // debug
+        $debug = false;
         if($debug) {
             echo "SQL: $sql\n";
             print_r($data);
@@ -72,7 +94,7 @@ class DB {
     public function delete($id) {
         $sql = "DELETE FROM `{$this->table}` WHERE id = ?";
         $stmt =$this->pdo->prepare($sql);
-        return $stmt->execute($id);
+        return $stmt->execute([$id]);
     }
 
     // 自訂查詢
