@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
+
 <head>
     <meta charset="UTF-8">
     <title><?= $title ?? '後台管理系統' ?></title>
@@ -18,18 +19,22 @@
 </head>
 
 <body id="page-top">
-
-    <!-- 頂部導覽列 -->
-    <?php include APP_PATH . '/views/backend/partials/topbar.php'; ?>
-
     <div id="wrapper">
         <!-- 側邊選單 -->
         <?php include APP_PATH . '/views/backend/partials/sidebar.php'; ?>
 
         <!-- 主內容 -->
         <div id="content-wrapper" class="d-flex flex-column">
-            <div id="content" class="p-4">
-                <?= $content ?? '' ?>
+            <div id="content">
+                <!-- 頂部導覽列 -->
+                <?php include APP_PATH . '/views/backend/partials/topbar.php'; ?>
+
+                <!-- 主內容 -->
+                <div class="container-fluid p-4">
+                    <?php if(isset($content) && file_exists($content)) {
+                    include $content;
+                } ?>
+                </div>
             </div>
 
             <!-- 頁尾 -->
@@ -41,4 +46,5 @@
     <?php include APP_PATH . '/views/backend/partials/script.php'; ?>
 
 </body>
+
 </html>
