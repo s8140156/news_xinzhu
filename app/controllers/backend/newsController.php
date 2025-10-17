@@ -3,20 +3,25 @@
 require_once APP_PATH . '/core/db.php';
 
 class NewsController {
+
     public function index() {
-        $newsDB = new DB('test_articles');
-        // $news = $newsDB->find(2);
-        // $news = $newsDB->find(['title'=>'這是第一篇文章']);
-        // $news = $newsDB->find(['id'=>1,'content'=>'我是內文A']);
-        // $news = $newsDB->update(7, ['title'=>'這是第七篇文章','content'=>'我是內文G','created_at'=> date('Y-m-d H:i:s')]);
-        $news = $newsDB->delete(6);
+        //建立DB連線
+        $db =new DB('news_categories');
+        $categories = $db->all("1 ORDER BY `is_focus` DESC, `sort` ASC");
 
-
-        echo '<h1>資料串接成功</h1>';
-        echo '<pre>';
-        echo $news ? "刪除成功" : "刪除失敗";
-        echo '</pre>';
+        //指定頁面
+        $content = APP_PATH . '/views/backend/news_categories/index.php';
+        //將資料傳給view
+        include APP_PATH . '/views/backend/layouts/main.php';
     }
+
+
+
+
+
+
+
+
 
 }
 
