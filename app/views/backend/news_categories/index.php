@@ -10,44 +10,37 @@
                     <div class="card-body">
                         <label class="form-label mb-3">（可拖曳變更順序）</label>
                         <button type="button" class="btn btn-primary" id="addRowBtn">+ 新增一筆</button>
-                        <div class="table-responsive">
-                            <table class="table table-bordered">
+                        <form method="POST" action="<?= BASE_URL ?>/index.php" id="categoryForm">
+                            <input type="hidden" name="act" value="addCategory">
+                            <table class="table table-bordered" id="categoryTable">
                                 <thead class="table-active">
                                     <tr>
-                                        <th style="width: 100px;">順序</th>
+                                        <th>流水號</th>
                                         <th>分類名稱</th>
-                                        <th style="width: 150px;">操作</th>
+                                        <th>操作</th>
                                     </tr>
                                 </thead>
                                 <tbody id="categoryTableBody">
                                     <?php foreach($categories as $row): ?>
                                     <tr>
-                                        <td><input type="text" class="form-control bg-light" value="<?=$row['id']?>"
-                                                readonly></td>
-                                        <td><input type="text" class="form-control" value="<?=$row['name']?>"></td>
+                                        <td><input type="text" class="form-control bg-light" name="id[]"
+                                                value="<?= $row['id'] ?>" readonly></td>
+                                        <td><input type="text" class="form-control" name="name[]"
+                                                value="<?= htmlspecialchars($row['name']) ?>"></td>
                                         <td>
-                                            <?php if($row['is_focus']==1): ?>
-                                            <button type="button" class="btn btn-danger" disabled>固定</button>
+                                            <?php if($row['is_focus'] == 1): ?>
+                                            <button type="button" class="btn btn-secondary" disabled>固定</button>
                                             <?php else: ?>
                                             <button type="button" class="btn btn-danger deleteRowBtn">刪除</button>
                                             <?php endif; ?>
                                         </td>
                                     </tr>
-                                    <!-- <tr>
-                                        <td><input type="text" class="form-control bg-light" value="2" readonly></td>
-                                        <td><input type="text" class="form-control" value="國際新聞"></td>
-                                        <td><button type="button" class="btn btn-danger deleteRowBtn">刪除</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" class="form-control bg-light" value="3" readonly></td>
-                                        <td><input type="text" class="form-control" value="財經新聞"></td>
-                                        <td><button type="button" class="btn btn-danger deleteRowBtn">刪除</button></td>
-                                    </tr> -->
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
-                        </div>
-                        <button type="submit" class="btn btn-info mt-2">儲存</button>
+
+                            <button type="submit" class="btn btn-info">儲存</button>
+                        </form>
                     </div>
                 </div>
             </form>
