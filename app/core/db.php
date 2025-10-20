@@ -17,6 +17,11 @@ class DB {
         );
         // 建立 PDO 連線
         try {
+        //     $this->pdo = new PDO($dsn, $config['user'], $config['password'], [
+        //     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        //     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        //     PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES {$config['charset']} COLLATE utf8mb4_unicode_ci"
+        // ]);
             $this->pdo = new PDO($dsn, $config['user'], $config['password']);
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
@@ -83,13 +88,37 @@ class DB {
         $data[] = $id;
 
         // debug
-        $debug = false;
-        if($debug) {
-            echo "SQL: $sql\n";
-            print_r($data);
-        }
+        // $debug = false;
+        // if($debug) {
+        //     echo "SQL: $sql\n";
+        //     print_r($data);
+        // }
         return $stmt->execute(array_values($data));
     }
+        // public function update($data, $where) {
+        // $sql ="UPDATE `{$this->table}` SET ";
+        // $set = [];
+        // foreach($data as $col => $value) {
+        //     $set[] = "`$col` = ?";
+        // }
+        // $sql .= " " . implode(', ', $set);
+        // $sql .= " WHERE ";
+        // $conditions = [];
+        // foreach ($where as $col => $value) {
+        //     $conditions[] = "`$col` = ?";
+        // }
+        // $sql .= implode(' AND ', $conditions);
+        // $stmt = $this->pdo->prepare($sql);
+        // $params = array_merge(array_values($data), array_values($where));
+
+        // debug
+        // $debug = false;
+        // if($debug) {
+        //     echo "SQL: $sql\n";
+        //     print_r($data);
+        // }
+    //     return $stmt->execute(array_values($params));
+    // }
 
     public function delete($id) {
         $sql = "DELETE FROM `{$this->table}` WHERE id = ?";

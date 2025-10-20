@@ -19,7 +19,11 @@ require_once APP_PATH . '/controllers/backend/newsController.php';
 // 呼叫controller
 // $controller = new DashboardController();
 $controller = new NewsController();
-$controller->index();
+if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['act']) && $_POST['act'] === 'addCategory') {
+    $controller->store();
+} else {
+    $controller->index();
+}
 
 
 
