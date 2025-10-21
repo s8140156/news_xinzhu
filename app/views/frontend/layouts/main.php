@@ -8,6 +8,9 @@
 <!-- Bootstrap -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="<?= BASE_URL ?>/assets/css/frontend.css" rel="stylesheet">
+<link rel="stylesheet" href="<?= BASE_URL ?>/assets/frontend/css/style.css">
+<script src="<?= BASE_URL ?>/assets/frontend/js/main.js"></script>
+
 
 </head>
 <body class="bg-light">
