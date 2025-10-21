@@ -2,7 +2,7 @@
 
 require_once APP_PATH . '/core/db.php';
 
-class NewsController {
+class NewsCategoryController {
 
     public function index() {
         //建立DB連線
