@@ -17,7 +17,7 @@ class ArticleController {
         $db = new DB('articles');
         $data = [
             'title' => $_POST['title'],
-            'content' => $_POST['content'],
+            'content' => $_POST['editorContent'],
             'category_id' => $_POST['category_id'],
             'author' => $_POST['author'],
             'status' => $_POST['status'],

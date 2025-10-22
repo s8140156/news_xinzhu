@@ -3,9 +3,6 @@
 <!-- 建議放在 main.php 最底部（</body> 前）                     -->
 <!-- ========================================================= -->
 
-<!-- jQuery -->
-<!-- <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> -->
-
 <!-- Bootstrap Bundle（含 Popper） -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -31,6 +28,9 @@
   rel="stylesheet"
 />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+ <!-- CKEditor -->
+<script src="https://cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
 
 <!-- 📄 頁面級自訂腳本 -->
 <script>

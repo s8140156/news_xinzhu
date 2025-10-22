@@ -16,6 +16,26 @@
 
     <!-- 自訂 CSS -->
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/backend/css/style.css">
+
+    <!-- jQuery(從script拉上來先引入 不然拖曳功能會吃不到) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+    <style>
+    /* 強制隱藏 CKEditor 不安全提示 — 保證即使在 iframe 外層也生效 */
+    body .cke_notifications_area,
+    body .cke_notification,
+    body .cke_notification_message {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+    }
+    </style>
+
 </head>
 
 <body id="page-top">
