@@ -120,8 +120,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 初始化 CKEditor
     const editor = CKEDITOR.replace('editorContent', {
-      height: 400,
-      removePlugins: 'elementpath', // 移除底部狀態列
+      height: 500,
+      extraPlugins: 'image2,widget', // 增加圖說功能
+      removePlugins: 'elementpath,image', // 移除底部狀態列
       resize_enabled: false, // 禁止調整大小
       toolbar: [
         { name: 'document', items: ['Source', '-', 'Preview', '-', 'Templates'] },
@@ -148,8 +149,15 @@ document.addEventListener('DOMContentLoaded', function() {
         'Verdana/Verdana, Geneva, sans-serif;',
       fontSize_sizes:
         '10/10px;12/12px;14/14px;16/16px;18/18px;20/20px;24/24px;30/30px;36/36px;',
-      filebrowserUploadUrl: '<?= BASE_URL ?>/?page=article_upload',
-      filebrowserUploadMethod: 'form'
+      filebrowserUploadUrl: '<?= BASE_URL ?>/?page=article_image_upload',
+      filebrowserImageUploadUrl: '<?= BASE_URL ?>/?page=article_image_upload', // filebrowserImageUploadUrl這個key用在圖片上傳
+      filebrowserUploadMethod: 'form',
+
+      // 圖說設定
+      image2_alignClasses: ['image-align-left', 'image-align-center', 'image-align-right'],
+      image2_captionedClass: 'image-captioned',
+      image_prefillDimensions: false,
+      image2_disableResizer: false
     });
 
     // 可選：確認載入成功
@@ -157,6 +165,7 @@ document.addEventListener('DOMContentLoaded', function() {
       console.log('CKEditor loaded without visible warning.');
     });
   }
+
 });
 
 </script>

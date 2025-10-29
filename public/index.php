@@ -70,6 +70,10 @@ switch($page) {
         $controller = new ArticleController();
         $controller->delete($_GET['id'] ?? null);
         break;
+    case 'article_image_upload':
+        $controller = new ArticleController();
+        $controller->imageUpload();
+        break;
 }
 
 // 呼叫controller
