@@ -43,33 +43,32 @@ class ArticleController {
             echo "<script>alert('請確認必填欄位是否完整？');history.back();</script>";
             return;
         }
-        // ---- 封面圖片上傳 (可選) ----
+        // 封面圖片上傳(可選)
         $coverPath = null;
 
         if (isset($_FILES['cover_image']) && $_FILES['cover_image']['error'] === UPLOAD_ERR_OK) {
             $file = $_FILES['cover_image'];
             $fileName = time() . '_' . basename($file['name']);
 
-            // ✅ 使用絕對路徑，確保不會走錯層
+            // 使用絕對路徑，避免走錯層
             $coverDir = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/news_xinzhu/public/uploads/articles/cover/';
 
-            // ✅ 若目錄不存在，建立之
+            // 若目錄不存在，建立目錄
             if (!is_dir($coverDir)) {
                 mkdir($coverDir, 0777, true);
-                error_log('🟢 [封面上傳測試] 自動建立 cover 資料夾：' . $coverDir);
+                // error_log('[封面上傳測試] 自動建立 cover 資料夾：' . $coverDir);
             }
 
-            // ✅ 確認實際路徑
-            error_log('🟢 [封面上傳測試] PHP 實際嘗試寫入路徑：' . $coverDir);
-            error_log('🟢 [封面上傳測試] 該目錄是否存在？ → ' . (is_dir($coverDir) ? '✅ 是' : '❌ 否'));
+            // 確認實際路徑
+            // error_log('[封面上傳測試] PHP 實際嘗試寫入路徑：' . $coverDir);
+            // error_log('[封面上傳測試] 該目錄是否存在？ → ' . (is_dir($coverDir) ? '是' : '否'));
 
             $targetPath = $coverDir . $fileName;
-
             if (move_uploaded_file($file['tmp_name'], $targetPath)) {
                 $coverPath = BASE_URL . '/uploads/articles/cover/' . $fileName;
-                error_log('🟢 [封面上傳成功] 實際搬移到：' . $targetPath);
+                // error_log('[封面上傳成功] 實際搬移到：' . $targetPath);
             } else {
-                error_log('❌ [封面上傳失敗] 無法搬移到：' . $targetPath);
+                // error_log('[封面上傳失敗] 無法搬移到：' . $targetPath);
             }
         }
 
@@ -82,7 +81,7 @@ class ArticleController {
 
         $imagesArr = [];
 
-        // 先抓有figure包的
+        // 確認有figure包的(img+caption)
         $figures = $doc->getElementsByTagName('figure');
 
         foreach($figures as $figure) {
@@ -103,7 +102,7 @@ class ArticleController {
                 }
             }
         }
-        // ② 再補抓沒有被 figure 包的 <img>
+        // 確認figure下的<img>
         $allImgs = $doc->getElementsByTagName('img');
         foreach ($allImgs as $img) {
             $url = $img->getAttribute('src') ?: '';
@@ -152,30 +151,7 @@ class ArticleController {
         exit;        
     }
 
-    // 舊版-初始測試用
-    // public function store() {
-    //     $db = new DB('articles');
-    //     $data = [
-    //         'title' => $_POST['title'],
-    //         'content' => $_POST['editorContent'],
-    //         'category_id' => $_POST['category_id'],
-    //         'author' => $_POST['author'],
-    //         'status' => $_POST['status'],
-    //         'publish_time' => $_POST['publish_time'],
-    //         'views' => 0,
-    //         'created_at' => date('Y-m-d H:i:s'),
-    //         'updated_at' => date('Y-m-d H:i:s')
-    //     ];
-
-    //     if(!empty($_POST['images_json'])) {
-    //         $data['images'] = $_POST['images_json'];
-    //     }
-
-    //     $db->insert($data);
-    //     header("Location: index.php?page=article_list");
-    //     exit;
-    // }
-
+    // 處理CKEditor內文圖片上傳
     public function imageUpload() {
         // 清除緩衝區，避免干擾回傳
         if (function_exists('ob_get_level')) while (ob_get_level()) ob_end_clean();
@@ -224,13 +200,13 @@ class ArticleController {
         if(move_uploaded_file($file['tmp_name'], $targetPath)) {
             $fileUrl = BASE_URL . "/uploads/articles/content/" . $fileName;
 
-            // ✅ 若有 CKEditorFuncNum，回傳舊協定（對話框上傳）
+            // 若有 CKEditorFuncNum，回傳舊協定（對話框上傳）
             if (isset($_GET['CKEditorFuncNum'])) {
                 $funcNum = (int)$_GET['CKEditorFuncNum'];
                 header('Content-Type: text/html; charset=utf-8');
                 echo "<script>window.parent.CKEDITOR.tools.callFunction($funcNum, '".addslashes($fileUrl)."', '');</script>";
             } else {
-                // ✅ 給 JSON 模式（貼上/拖曳上傳）
+                // 給 JSON 模式（貼上/拖曳上傳）
                 header('Content-Type: application/json; charset=utf-8');
                 echo json_encode([
                     'uploaded'  => 1,
