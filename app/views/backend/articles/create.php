@@ -90,6 +90,7 @@
 
                             <!-- 三顆按鈕 -->
                             <div class="d-flex flex-wrap align-items-center ml-4" style="gap: 0.5rem;">
+                                <input type="hidden" name="action" value="draft|schedule|publish">
                                 <button type="submit" name="action" value="schedule" class="btn btn-dark">
                                     排程發布
                                 </button>
@@ -112,59 +113,59 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // 等 DOM 準備好後初始化 CKEditor
-  if (document.getElementById('editorContent')) {
+    // 等 DOM 準備好後初始化 CKEditor
+    if (document.getElementById('editorContent')) {
 
-    // 防止吃掉母版HTML
-    CKEDITOR.disableAutoInline = true;
+        // 防止吃掉母版HTML
+        CKEDITOR.disableAutoInline = true;
 
-    // 初始化 CKEditor
-    const editor = CKEDITOR.replace('editorContent', {
-      height: 500,
-      extraPlugins: 'image2,widget', // 增加圖說功能
-      removePlugins: 'elementpath,image', // 移除底部狀態列
-      resize_enabled: false, // 禁止調整大小
-      toolbar: [
-        { name: 'document', items: ['Source', '-', 'Preview', '-', 'Templates'] },
-        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'Undo', 'Redo'] },
-        { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll'] },
-        '/',
-        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', '-', 'Subscript', 'Superscript', '-', 'RemoveFormat'] },
-        { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
-        '/',
-        { name: 'styles', items: ['Font', 'FontSize'] },
-        { name: 'colors', items: ['TextColor', 'BGColor'] },
-        { name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar', 'Link', 'Unlink', 'Smiley'] },
-        { name: 'tools', items: ['Maximize'] }
-      ],
-      font_names:
-        'Arial/Arial, Helvetica, sans-serif;' +
-        'Comic Sans MS/Comic Sans MS, cursive;' +
-        'Courier New/Courier New, monospace;' +
-        'Georgia/Georgia, serif;' +
-        'Lucida Sans Unicode/Lucida Sans Unicode, Lucida Grande, sans-serif;' +
-        'Tahoma/Tahoma, Geneva, sans-serif;' +
-        'Times New Roman/Times New Roman, Times, serif;' +
-        'Trebuchet MS/Trebuchet MS, Helvetica, sans-serif;' +
-        'Verdana/Verdana, Geneva, sans-serif;',
-      fontSize_sizes:
-        '10/10px;12/12px;14/14px;16/16px;18/18px;20/20px;24/24px;30/30px;36/36px;',
-      filebrowserUploadUrl: '<?= BASE_URL ?>/?page=article_image_upload',
-      filebrowserImageUploadUrl: '<?= BASE_URL ?>/?page=article_image_upload', // filebrowserImageUploadUrl這個key用在圖片上傳
-      filebrowserUploadMethod: 'form',
+        // 初始化 CKEditor
+        const editor = CKEDITOR.replace('editorContent', {
+            height: 500,
+            extraPlugins: 'image2,widget', // 增加圖說功能
+            removePlugins: 'elementpath,image', // 移除底部狀態列
+            resize_enabled: false, // 禁止調整大小
+            toolbar: [
+                { name: 'document', items: ['Source', '-', 'Preview', '-', 'Templates'] },
+                { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'Undo', 'Redo'] },
+                { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll'] },
+                        '/',
+                { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', '-', 'Subscript', 'Superscript', '-', 'RemoveFormat'] },
+                { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                        '/',
+                { name: 'styles', items: ['Font', 'FontSize'] },
+                { name: 'colors', items: ['TextColor', 'BGColor'] },
+                { name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar', 'Link', 'Unlink', 'Smiley'] },
+                { name: 'tools', items: ['Maximize'] }
+            ],
+            font_names:
+                'Arial/Arial, Helvetica, sans-serif;' +
+                'Comic Sans MS/Comic Sans MS, cursive;' +
+                'Courier New/Courier New, monospace;' +
+                'Georgia/Georgia, serif;' +
+                'Lucida Sans Unicode/Lucida Sans Unicode, Lucida Grande, sans-serif;' +
+                'Tahoma/Tahoma, Geneva, sans-serif;' +
+                'Times New Roman/Times New Roman, Times, serif;' +
+                'Trebuchet MS/Trebuchet MS, Helvetica, sans-serif;' +
+                'Verdana/Verdana, Geneva, sans-serif;',
+            fontSize_sizes:
+                '10/10px;12/12px;14/14px;16/16px;18/18px;20/20px;24/24px;30/30px;36/36px;',
+            filebrowserUploadUrl: '<?= BASE_URL ?>/?page=article_image_upload',
+            filebrowserImageUploadUrl: '<?= BASE_URL ?>/?page=article_image_upload', // filebrowserImageUploadUrl這個key用在圖片上傳
+            filebrowserUploadMethod: 'form',
 
-      // 圖說設定
-      image2_alignClasses: ['image-align-left', 'image-align-center', 'image-align-right'],
-      image2_captionedClass: 'image-captioned',
-      image_prefillDimensions: false,
-      image2_disableResizer: false
-    });
+            // 圖說設定
+            image2_alignClasses: ['image-align-left', 'image-align-center', 'image-align-right'],
+            image2_captionedClass: 'image-captioned',
+            image_prefillDimensions: false,
+            image2_disableResizer: false
+        });
 
-    // 可選：確認載入成功
-    editor.on('instanceReady', function() {
-      console.log('CKEditor loaded without visible warning.');
-    });
-  }
+        // 可選：確認載入成功
+        editor.on('instanceReady', function() {
+            console.log('CKEditor loaded without visible warning.');
+        });
+    }
 
 });
 

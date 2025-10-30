@@ -142,6 +142,7 @@ class ArticleController {
             'images' => $imagesJson,
             'cover_image' => $coverPath,
             'status' => $status,
+            'publish_time' => $publish_time,
             'views' => 0,
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s')
