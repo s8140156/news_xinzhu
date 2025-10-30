@@ -5,11 +5,29 @@ require_once APP_PATH . '/core/db.php';
 class ArticleController {
 
     public function create() {
+        $mode = 'create';
+        
         //建立DB連線
         $db =new DB('news_categories');
         $categories = $db->all("1 ORDER BY sort ASC");
 
-        $content = APP_PATH . '/views/backend/articles/create.php';
+        // 預設空文章結構(因為新增/編輯共用表單)
+        $article = [
+            'id' => '',
+            'category_id' => '',
+            'title' => '',
+            'content' => '',
+            'author' => '',
+            'cover_image' => '',
+            'status' => '',
+            'publish_time' => ''
+        ];
+        
+        // 預設空排程時間(因為新增/編輯共用表單)
+        $publishDate = '';
+        $publishTime = '';
+
+        $content = APP_PATH . '/views/backend/articles/form.php';
         include APP_PATH . '/views/backend/layouts/main.php';
     }
 
@@ -222,6 +240,32 @@ class ArticleController {
                 'error' => ['message' => '圖片上傳失敗，請確認權限或路徑設定']
             ]);
         }
+    }
+
+    public function edit($id) {
+        $mode = 'edit';
+
+        $db = new DB('articles');
+        $article = $db->find($id);
+
+        // 拆分排程時間
+        $publishDate = '';
+        $publishTime = '';
+        if(!empty($article['publish_time'])) {
+            $dt = new DateTime($article['publish_time']);
+            $publishDate = $dt->format('Y-m-d');
+            $publishTime = $dt->format('H:i');
+        }else {
+
+        }
+
+        $categoryDB = new DB('news_categories');
+        $categories = $categoryDB->all();
+
+        
+        $content = APP_PATH . '/views/backend/articles/form.php';
+        include APP_PATH . '/views/backend/layouts/main.php';
+
     }
 
 
