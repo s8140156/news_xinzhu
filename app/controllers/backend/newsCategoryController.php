@@ -62,7 +62,8 @@ class NewsCategoryController {
                     ]);
                 }
             }
-            header("Location: " . BASE_URL . "/index.php");
+            // header("Location: " . BASE_URL . "/index.php");
+            echo "測試成功 分類已新增！";
             exit;
         }
     }
