@@ -99,47 +99,101 @@ class ArticleController {
 
         $imagesArr = [];
 
-        // 確認有figure包的(img+caption)
-        $figures = $doc->getElementsByTagName('figure');
+        // === Step 1: 抓取所有圖片（不論是否 figure 包住）===
+        $allImgs = $doc->getElementsByTagName('img');
+        $firstImageSrc = null;
+        foreach ($allImgs as $img) {
+            $url = $img->getAttribute('src') ?: '';
+            if ($url !== '' && !$firstImageSrc) {
+                $firstImageSrc = $url; // 第一張圖片
+            }
+        }
 
-        foreach($figures as $figure) {
+        // === Step 2: 抓取有圖說的圖片（用於 images JSON）===
+        $figures = $doc->getElementsByTagName('figure');
+        foreach ($figures as $figure) {
             $imgTag = $figure->getElementsByTagName('img')->item(0);
             $captionTag = $figure->getElementsByTagName('figcaption')->item(0);
 
-            if($imgTag instanceof DOMElement) {
+            if ($imgTag instanceof DOMElement) {
                 $url = $imgTag->getAttribute('src') ?: '';
                 $caption = ($captionTag instanceof DOMElement) ? trim($captionTag->textContent) : '';
-                if($url !=='') {
+                if ($url !== '') {
                     $imagesArr[] = [
                         'url' => $url,
                         'caption' => $caption
                     ];
-                    if(!$coverPath) {
-                        $coverPath = $url;
-                    }
                 }
             }
         }
-        // 確認figure下的<img>
-        $allImgs = $doc->getElementsByTagName('img');
+
+        // === Step 3: 若沒有 figure，也抓剩下未重複的圖片（補齊 JSON）===
         foreach ($allImgs as $img) {
             $url = $img->getAttribute('src') ?: '';
             if ($url !== '') {
-                $isAlreadyCaptured = false;
+                $exists = false;
                 foreach ($imagesArr as $imgData) {
                     if ($imgData['url'] === $url) {
-                        $isAlreadyCaptured = true;
+                        $exists = true;
                         break;
                     }
                 }
-                if (!$isAlreadyCaptured) {
+                if (!$exists) {
                     $imagesArr[] = ['url' => $url, 'caption' => ''];
-                    if (!$coverPath) {
-                        $coverPath = $url;
-                    }
                 }
             }
         }
+
+        // === Step 4: 確定封面圖片 ===
+        // 若有上傳封面圖，維持上傳的；否則取內文第一張圖
+        if (!$coverPath && $firstImageSrc) {
+            $coverPath = $firstImageSrc;
+        }
+
+        // ---------原先解析CKEditor圖片上傳邏輯start----------------
+        // 確認有figure包的(img+caption)
+        // $figures = $doc->getElementsByTagName('figure');
+
+        // foreach($figures as $figure) {
+        //     $imgTag = $figure->getElementsByTagName('img')->item(0);
+        //     $captionTag = $figure->getElementsByTagName('figcaption')->item(0);
+
+        //     if($imgTag instanceof DOMElement) {
+        //         $url = $imgTag->getAttribute('src') ?: '';
+        //         $caption = ($captionTag instanceof DOMElement) ? trim($captionTag->textContent) : '';
+        //         if($url !=='') {
+        //             $imagesArr[] = [
+        //                 'url' => $url,
+        //                 'caption' => $caption
+        //             ];
+        //             if(!$coverPath) {
+        //                 $coverPath = $url;
+        //             }
+        //         }
+        //     }
+        // }
+        // 確認figure下的<img>
+        // $allImgs = $doc->getElementsByTagName('img');
+        // foreach ($allImgs as $img) {
+        //     $url = $img->getAttribute('src') ?: '';
+        //     if ($url !== '') {
+        //         $isAlreadyCaptured = false;
+        //         foreach ($imagesArr as $imgData) {
+        //             if ($imgData['url'] === $url) {
+        //                 $isAlreadyCaptured = true;
+        //                 break;
+        //             }
+        //         }
+        //         if (!$isAlreadyCaptured) {
+        //             $imagesArr[] = ['url' => $url, 'caption' => ''];
+        //             if (!$coverPath) {
+        //                 $coverPath = $url;
+        //             }
+        //         }
+        //     }
+        // }
+        // ---------原先解析CKEditor圖片上傳邏輯end----------------
+
         $imagesJson = json_encode($imagesArr, JSON_UNESCAPED_UNICODE);
         
         $db = new DB('articles');
@@ -255,8 +309,6 @@ class ArticleController {
             $dt = new DateTime($article['publish_time']);
             $publishDate = $dt->format('Y-m-d');
             $publishTime = $dt->format('H:i');
-        }else {
-
         }
 
         $categoryDB = new DB('news_categories');
@@ -265,7 +317,77 @@ class ArticleController {
         
         $content = APP_PATH . '/views/backend/articles/form.php';
         include APP_PATH . '/views/backend/layouts/main.php';
+    }
 
+    public function update($id) {
+        if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'] ?? null;
+            if(!$id) {
+                echo "缺少文章ID，無法更新";
+                return;
+            }
+        }
+
+        // 取資料庫資料
+        $db = new DB('articles');
+        $oldArticle = $db->find($id);
+
+        // 接收新資料
+        $title = $_POST['title'] ?? '';
+        $category_id = $_POST['category_id'] ?? null;
+        $author = $_POST['author'] ?? '';
+        $content = $_POST['editorContent'] ?? '';
+
+        $action = $_POST['action'] ?? null;
+        // 狀態與發布時間
+        if($action) {
+            switch($action) {
+                case 'publish':
+                    $status = 'published';
+                    $publish_time = date('Y-m-d H:i:s');
+                    break;
+                case 'schedule':
+                    $status = 'scheduled';
+                    $schedule_date = $_POST['schedule_date'] ?? '';
+                    $schedule_time = $_POST['schedule_time'] ?? '';
+                    $publish_time = ($schedule_date && $schedule_time) ? "$schedule_date $schedule_time:00" : null;
+                    break;
+                case 'draft':
+                    $status = 'draft';
+                    $publish_time = null;
+                    break;
+            }
+        } else {
+            $status = $oldArticle['status'];
+            $publish_time = $oldArticle['publish_time'];
+        }
+
+
+        // 封面圖片上傳處理
+        $cover_image = $oldArticle['cover_image']; // 預設用舊圖
+        if(!empty($_FILES['cover_image']['name'])) {
+            $uploadDir = APP_PATH . '/../public/uploads/articles/cover/';
+            $fileName = time() . '_' . basename($_FILES['cover_image']['name']);
+            $targetPath = $uploadDir . $fileName;
+
+            if(move_uploaded_file($_FILES['cover_image']['tmp_name'], $targetPath)) {
+                $cover_image = BASE_URL . "/public/uploads/articles/cover/" . $fileName;
+            }
+        }
+
+        // 更新資料表
+        $db->update($id, [
+            'title' => $title,
+            'author' => $author,
+            'category_id' => $category_id,
+            'cover_image' => $cover_image,
+            'content' => $content,
+            'status' => $status,
+            'publish_time' => $publish_time,
+            'updated_at' => date('Y-m-d H:i:s'),
+        ]);
+
+        echo "<script>alert('文章更新成功！'); window.location='?page=article_index';</script>";
     }
 
 

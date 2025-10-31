@@ -98,9 +98,14 @@
                                     style="width: 140px;">
                             </div>
 
-                            <!-- 三顆按鈕 -->
+                            <!-- 排程按鈕 -->
                             <div class="d-flex flex-wrap align-items-center ml-4" style="gap: 0.5rem;">
                                 <input type="hidden" name="action" value="draft|schedule|publish">
+                                <?php if ($mode === 'edit' && $article['status'] === 'published'): ?>
+                                <button type="submit" name="action" value="" class="btn btn-info text-white" <?= $mode=== 'edit' ? '' : 'style="display:none;"' ?>>
+                                    更新文章
+                                </button>
+                                <?php else: ?>
                                 <button type="submit" name="action" value="schedule" class="btn btn-dark">
                                     排程發布
                                 </button>
@@ -108,8 +113,9 @@
                                     立即發布
                                 </button>
                                 <button type="submit" name="action" value="draft" class="btn btn-warning text-white">
-                                    <?= $mode === 'edit' ? '更新文章' : '暫不發布(草稿)' ?>
+                                    儲存(草稿)
                                 </button>
+                                <?php endif ?>
                             </div>
 
                         </div>
