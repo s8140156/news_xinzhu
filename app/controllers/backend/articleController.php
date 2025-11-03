@@ -4,6 +4,17 @@ require_once APP_PATH . '/core/db.php';
 
 class ArticleController {
 
+    public function index() {
+
+        //建立DB連線
+        $db =new DB('articles');
+        $articles = $db->all("1 ORDER BY publish_time ASC");
+
+        $content = APP_PATH . '/views/backend/articles/index.php';
+        include APP_PATH . '/views/backend/layouts/main.php';
+
+    }
+
     public function create() {
         $mode = 'create';
         
@@ -371,7 +382,7 @@ class ArticleController {
             $targetPath = $uploadDir . $fileName;
 
             if(move_uploaded_file($_FILES['cover_image']['tmp_name'], $targetPath)) {
-                $cover_image = BASE_URL . "/public/uploads/articles/cover/" . $fileName;
+                $cover_image = BASE_URL . "/uploads/articles/cover/" . $fileName;
             }
         }
 
@@ -388,6 +399,52 @@ class ArticleController {
         ]);
 
         echo "<script>alert('文章更新成功！'); window.location='?page=article_index';</script>";
+    }
+
+    public function delete($id) {
+        if(!$id || !is_numeric($id)) {
+            echo "<script>alert('缺少文章ID 或 ID格式錯誤');history.back();</script>";
+            return;
+        }
+
+        $db = new DB('articles');
+        $article = $db->find($id);
+
+        if(!$article) {
+            echo "<script>alert('找不到指定文章，無法刪除');history.back();</script>";
+            return;
+        }
+        // 可選：刪除封面圖片檔案（若存在）
+        if (!empty($article['cover_image'])) {
+            // 將 URL 轉為實際路徑
+            $coverPath = str_replace(BASE_URL, rtrim($_SERVER['DOCUMENT_ROOT'], '/'), $article['cover_image']);
+
+            if (file_exists($coverPath)) {
+                unlink($coverPath);
+                // error_log("🗑 已刪除封面圖片：" . $coverPath);
+            }
+        }
+
+        // （可選）若要同步清理 CKEditor 上傳圖片
+        // 可額外解析 content 或 images 欄位內的圖片路徑後逐一刪除
+        if (!empty($article['images'])) {
+            $images = json_decode($article['images'], true);
+            foreach ($images as $img) {
+                $imgPath = str_replace(BASE_URL, rtrim($_SERVER['DOCUMENT_ROOT'], '/'), $img['url']);
+                if (file_exists($imgPath)) unlink($imgPath);
+            }
+        }
+
+        // 刪除資料庫記錄
+        $deleted = $db->delete($id);
+
+        if ($deleted) {
+            echo "<script>alert('文章已刪除成功！');window.location='?page=article_index';</script>";
+        } else {
+            echo "<script>alert('刪除失敗，請稍後再試');history.back();</script>";
+        }
+
+
     }
 
 

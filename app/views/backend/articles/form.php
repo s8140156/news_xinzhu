@@ -48,13 +48,19 @@
                         <!-- 第四行：封面圖片（可選） -->
                         <div class="form-group">
                             <label for="image" class="form-label">封面圖片（可選）</label>
-                            <input type="file" class="form-control" id="image" name="cover_image" value="<?= $article['cover_image'] ?>"accept="image/*">
                             <small class="form-text text-muted">
                                 若文章內已有圖片，將自動抓取第一張作為封面；否則使用此上傳圖片。
                             </small>
+                            <input type="file" class="form-control" id="image" name="cover_image" value=""accept="image/*">
+                            <?php if (!empty($article['cover_image'])): ?>
+                                <div style="margin-bottom: 10px;display:flex;">
+                                    <img src="<?= $article['cover_image'] ?>" alt="目前封面圖片" style="width:150px; height:auto; border:1px solid #ddd; padding:4px;">
+                                    <p class="text-muted" style="font-size: 0.9em;">封面檔案：<?= basename($article['cover_image']) ?></p>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
-                          <!-- 只有編輯模式才顯示連結點擊區塊 -->
+                        <!-- 只有編輯模式才顯示連結點擊區塊 -->
                         <?php if ($mode === 'edit'): ?>
                         <div class="form-group mt-3">
                             <label>連結點擊次數</label>
@@ -62,64 +68,39 @@
                         </div>
                         <?php endif; ?>
 
-                        <!-- 第五行：排程發布 -->
-                        <!-- <div class="form-row align-items-end">
-                            <div class="form-group col-md-6">
-                                <label for="publish_date">排程發布日期</label>
-                                <input type="date" class="form-control" id="publish_date" name="publish_date">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="publish_time">排程發布時間</label>
-                                <input type="time" class="form-control" id="publish_time" name="publish_time">
-                            </div>
-                        </div> -->
-
-                        <!-- 操作按鈕區 -->
-                        <!-- <div class="text-right mt-4 d-flex flex-wrap justify-content-end gap-2">
-                            <button type="submit" name="action" value="draft" class="btn btn-secondary">暫不發布</button>
-                            <button type="submit" name="action" value="schedule"
-                                class="btn btn-warning text-dark">排程發布</button>
-                            <button type="submit" name="action" value="publish" class="btn btn-success">立即發布</button>
-                        </div> -->
-
-                        <div class="form-group d-flex flex-wrap align-items-center mt-3" style="gap: 0.75rem;">
-
-                            <!-- 排程日期 -->
-                            <div class="d-flex align-items-center">
-                                <label for="schedule_date" class="mr-2 mb-0">排程日期</label>
-                                <input type="date" id="schedule_date" name="schedule_date" value="<?= $publishDate ?>" <?= $article['status'] === 'published' ? 'disabled' : '' ?> class="form-control"
-                                    style="width: 140px;">
-                            </div>
-
-                            <!-- 排程時間 -->
-                            <div class="d-flex align-items-center ml-3">
-                                <label for="schedule_time" class="mr-2 mb-0">時間</label>
-                                <input type="time" id="schedule_time" name="schedule_time" value="<?= $publishTime ?>" <?= $article['status'] === 'published' ? 'disabled' : '' ?> class="form-control"
-                                    style="width: 140px;">
-                            </div>
-
-                            <!-- 排程按鈕 -->
-                            <div class="d-flex flex-wrap align-items-center ml-4" style="gap: 0.5rem;">
-                                <input type="hidden" name="action" value="draft|schedule|publish">
-                                <?php if ($mode === 'edit' && $article['status'] === 'published'): ?>
-                                <button type="submit" name="action" value="" class="btn btn-info text-white" <?= $mode=== 'edit' ? '' : 'style="display:none;"' ?>>
-                                    更新文章
-                                </button>
-                                <?php else: ?>
-                                <button type="submit" name="action" value="schedule" class="btn btn-dark">
-                                    排程發布
-                                </button>
-                                <button type="submit" name="action" value="publish" class="btn btn-success">
-                                    立即發布
-                                </button>
-                                <button type="submit" name="action" value="draft" class="btn btn-warning text-white">
-                                    儲存(草稿)
-                                </button>
-                                <?php endif ?>
-                            </div>
-
+                        <!-- 排程日期 -->
+                        <div class="d-flex align-items-center">
+                            <label for="schedule_date" class="mr-2 mb-0">排程日期</label>
+                            <input type="date" id="schedule_date" name="schedule_date" value="<?= $publishDate ?>" <?= $article['status'] === 'published' ? 'disabled' : '' ?> class="form-control"
+                                style="width: 140px;">
                         </div>
 
+                        <!-- 排程時間 -->
+                        <div class="d-flex align-items-center ml-3">
+                            <label for="schedule_time" class="mr-2 mb-0">時間</label>
+                            <input type="time" id="schedule_time" name="schedule_time" value="<?= $publishTime ?>" <?= $article['status'] === 'published' ? 'disabled' : '' ?> class="form-control"
+                                style="width: 140px;">
+                        </div>
+
+                        <!-- 排程按鈕 -->
+                        <div class="d-flex flex-wrap align-items-center ml-4" style="gap: 0.5rem;">
+                            <input type="hidden" name="action" value="draft|schedule|publish">
+                            <?php if ($mode === 'edit' && $article['status'] === 'published'): ?>
+                            <button type="submit" name="action" value="" class="btn btn-info text-white" <?= $mode=== 'edit' ? '' : 'style="display:none;"' ?>>
+                                更新文章
+                            </button>
+                            <?php else: ?>
+                            <button type="submit" name="action" value="schedule" class="btn btn-dark">
+                                排程發布
+                            </button>
+                            <button type="submit" name="action" value="publish" class="btn btn-success">
+                                立即發布
+                            </button>
+                            <button type="submit" name="action" value="draft" class="btn btn-warning text-white">
+                                儲存(草稿)
+                            </button>
+                            <?php endif ?>
+                        </div>
                     </form>
                 </div> <!-- card-body end -->
             </div>
@@ -137,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // 初始化 CKEditor
         const editor = CKEDITOR.replace('editorContent', {
-            height: 500,
+            height: 400,
             extraPlugins: 'image2,widget', // 增加圖說功能
             removePlugins: 'elementpath,image', // 移除底部狀態列
             resize_enabled: false, // 禁止調整大小
