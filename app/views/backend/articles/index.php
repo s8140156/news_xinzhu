@@ -95,6 +95,16 @@
                         </div>
 
                         <!-- 時間與統計 -->
+                        <?php
+                        $links = [];
+                        if(!empty($article['links']) && is_string($article['links'])) {
+                            $decoded = json_decode($article['links'], true);
+                            if(json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                                $links = $decoded;
+                            }
+                        }
+                        // print_r($links);
+                        ?>
                         <div class="text-secondary small d-flex flex-wrap mb-2">
                             <?php if ($article['status'] === 'published'): ?>
                             <span class="me-3">上線時間：<?= date('Y/m/d H:i', strtotime($article['publish_time'])) ?>
@@ -106,19 +116,10 @@
                             <span class="me-3"> 最後修改：<?= date('Y/m/d H:i', strtotime($article['updated_at'])) ?>
                                 |&nbsp&nbsp</span>
                             <span class="me-3">點擊數：<?= $article['views'] ?> 次 |&nbsp&nbsp</span>
-                            <span>連結追蹤：3 個</span>
+                            <span>連結追蹤：<?= count($links) ?></span>
                         </div>
 
                         <!-- 連結清單 -->
-                        <?php
-                        $links = [];
-                        if(!empty($article['links']) && is_string($article['links'])) {
-                            $decoded = json_decode($article['links'], true);
-                            if(json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                                $links = $decoded;
-                            }
-                        }
-                        ?>
                         <?php if(!empty($links)): ?>
                         <div class="text-secondary small lh-sm">
                             <?php foreach($links as $idx=>$link): ?>
