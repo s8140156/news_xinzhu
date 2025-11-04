@@ -8,9 +8,33 @@ class ArticleController {
 
         //建立DB連線
         $db =new DB('articles');
-        $articles = $db->all("1 ORDER BY updated_at DESC");
 
-        // 撈新聞分類
+        // 文章排序條件
+        $sort = $_GET['sort_by'] ?? 'latest';
+        $where = '1'; // sql where 1 預設條件
+
+        switch($sort) {
+            case 'publish_desc':
+                $order = "publish_time DESC";      
+                $where .= " AND status = 'published'";
+                break;
+            case 'schedule_asc':
+                $order = "publish_time ASC";
+                $where .= " AND status = 'scheduled'";
+                break;
+            case 'draft_desc':
+                $order = "updated_at DESC";
+                $where .= " AND status = 'draft'";
+                break;
+            default:
+                $order = "updated_at DESC";
+                break;
+        }
+        // echo "<pre>目前排序條件：$order</pre>";
+
+        $articles = $db->all("$where ORDER BY $order");
+
+        // 撈新聞分類對照
         $catDb = new DB('news_categories');
         $categories = [];
         foreach($catDb->all() as $cat)  {

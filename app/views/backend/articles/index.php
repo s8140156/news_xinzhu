@@ -56,16 +56,16 @@
 
             <!-- 🔽 排序下拉選單 -->
             <div class="d-flex justify-content-start align-items-center mb-3">
-                <form method="GET" action="">
+                <form method="GET" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>">
+                    <input type="hidden" name="page" value="article_index">
                     <div class="d-flex align-items-center">
                         <label for="sort_by" class="me-2 mb-0 text-muted">排序：</label>
-                        <select class="form-control w-auto" name="sort_by">
-                            <option value="latest">最新更新</option>
-                            <option value="publish_desc">已發布（時間新→舊）</option>
-                            <option value="schedule_asc">排程（時間近→遠）</option>
-                            <option value="draft_desc">草稿（最近修改）</option>
+                        <select class="form-control w-auto" name="sort_by" onchange="this.form.submit()">
+                            <option value="latest" <?= $sort ==='latest' ? 'selected' : '' ?>>最新更新</option>
+                            <option value="publish_desc" <?= $sort ==='publish_desc' ? 'selected' : '' ?>>已發布（時間新→舊）</option>
+                            <option value="schedule_asc" <?= $sort ==='schedule_asc' ? 'selected' : '' ?>>排程（時間近→遠）</option>
+                            <option value="draft_desc" <?= $sort ==='draft_desc' ? 'selected' : '' ?>>草稿（最近修改）</option>
                         </select>
-
                     </div>
                 </form>
             </div>
