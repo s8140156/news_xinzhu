@@ -8,7 +8,14 @@ class ArticleController {
 
         //建立DB連線
         $db =new DB('articles');
-        $articles = $db->all("1 ORDER BY publish_time ASC");
+        $articles = $db->all("1 ORDER BY updated_at DESC");
+
+        // 撈新聞分類
+        $catDb = new DB('news_categories');
+        $categories = [];
+        foreach($catDb->all() as $cat)  {
+            $categories[$cat['id']] = $cat['name'];
+        }
 
         $content = APP_PATH . '/views/backend/articles/index.php';
         include APP_PATH . '/views/backend/layouts/main.php';
@@ -206,6 +213,21 @@ class ArticleController {
         // ---------原先解析CKEditor圖片上傳邏輯end----------------
 
         $imagesJson = json_encode($imagesArr, JSON_UNESCAPED_UNICODE);
+
+        // 解析CKEditor<a>標籤
+        $linksArr = [];
+
+        foreach($doc->getElementsByTagName('a') as $a) {
+            $href = $a->getAttribute('href');
+            $text = trim($a->textContent);
+            if($href) {
+                $linksArr[] = [
+                    'url' => $href,
+                    'text' => $text
+                ];
+            }
+        }
+        $linksJson = json_encode($linksArr, JSON_UNESCAPED_UNICODE); 
         
         $db = new DB('articles');
         // var_dump([
@@ -223,6 +245,7 @@ class ArticleController {
             'category_id' => $category_id,
             'content' => $content,
             'images' => $imagesJson,
+            'links' => $linksJson,
             'cover_image' => $coverPath,
             'status' => $status,
             'publish_time' => $publish_time,

@@ -71,38 +71,66 @@
             </div>
 
             <!-- 📰 文章卡片區 -->
+            <?php foreach($articles as $article): ?>
             <div class="article-card border rounded p-3 mb-3">
                 <div class="d-flex justify-content-between align-items-start flex-wrap">
                     <div class="flex-grow-1">
                         <!-- 狀態 + 標題 -->
                         <div class="d-flex align-items-center flex-wrap mb-2">
                             <div class="me-2 d-flex flex-wrap align-items-center">
+                                <?php if ($article['status'] === 'published'): ?>
+                                <span class="badge bg-success text-white me-1">已發布</span>
+                                <?php elseif ($article['status'] === 'scheduled'): ?>
                                 <span class="badge bg-warning text-dark me-1">排程中</span>
-                                <span class="badge bg-danger text-white me-1 mx-2">焦點新聞</span>
+                                <?php else: ?>
+                                <span class="badge bg-secondary text-white me-1">草稿</span>
+                                <?php endif; ?>
+                                <span class="badge bg-danger text-white me-1 mx-2">
+                                    <?= htmlspecialchars($categories[$article['category_id']] ?? '未分類') ?>
+                                </span>
                             </div>
-                            <h5 class="fw-bold mb-0 text-truncate" style="max-width: 100%;">這是一篇排程上線的新聞標題</h5>
+                            <h5 class="fw-bold mb-0 text-truncate" style="max-width: 100%;">
+                                <?= htmlspecialchars($article['title']) ?>
+                            </h5>
                         </div>
 
                         <!-- 時間與統計 -->
                         <div class="text-secondary small d-flex flex-wrap mb-2">
-                            <span class="me-3">上線時間：2025/11/05 09:00 |&nbsp&nbsp</span>
-                            <span class="me-3"> 最後修改：2025/11/02 14:30 |&nbsp&nbsp</span>
-                            <span class="me-3">點擊數：0 次 |&nbsp&nbsp</span>
+                            <?php if ($article['status'] === 'published'): ?>
+                            <span class="me-3">上線時間：<?= date('Y/m/d H:i', strtotime($article['publish_time'])) ?>
+                                |&nbsp&nbsp</span>
+                            <?php elseif ($article['status'] === 'scheduled'): ?>
+                            <span class="me-3">預計上線：<?= date('Y/m/d H:i', strtotime($article['publish_time'])) ?>
+                                |&nbsp&nbsp</span>
+                            <?php endif; ?>
+                            <span class="me-3"> 最後修改：<?= date('Y/m/d H:i', strtotime($article['updated_at'])) ?>
+                                |&nbsp&nbsp</span>
+                            <span class="me-3">點擊數：<?= $article['views'] ?> 次 |&nbsp&nbsp</span>
                             <span>連結追蹤：3 個</span>
                         </div>
 
                         <!-- 連結清單 -->
+                        <?php
+                        $links = [];
+                        if(!empty($article['links']) && is_string($article['links'])) {
+                            $decoded = json_decode($article['links'], true);
+                            if(json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                                $links = $decoded;
+                            }
+                        }
+                        ?>
+                        <?php if(!empty($links)): ?>
                         <div class="text-secondary small lh-sm">
+                            <?php foreach($links as $idx=>$link): ?>
                             <div class="mb-1">
-                                連結 1：<span class="link-display">娘家益生菌</span>　點擊數：0
+                                連結 <?= $idx+1 ?>：<span
+                                    class="link-display"><?= htmlspecialchars($link['text'] ? : '') ?></span>　點擊數：<?= rand(0,50) ?>
                             </div>
-                            <div class="mb-1">
-                                連結 2：<span class="link-display">益生菌</span>　點擊數：0
-                            </div>
-                            <div>
-                                連結 3：<span class="link-display">聖誕聚餐推薦</span>　點擊數：0
-                            </div>
+                            <?php endforeach; ?>
                         </div>
+                        <?php else: ?>
+                        <div class="text-secondary small lh-sm">(此文章沒有附加連結)</div>
+                        <?php endif; ?>
                     </div>
 
                     <!-- 功能按鈕區 -->
@@ -120,6 +148,7 @@
                     </div>
                 </div>
             </div>
+            <?php endforeach; ?>
 
 
             <!-- 延遲加載 -->
