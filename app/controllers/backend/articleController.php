@@ -313,8 +313,9 @@ class ArticleController {
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s')
         ]);
+        echo "<script>alert('文章新增成功！'); window.location='?page=article_index';</script>";
         // header('Location: ' . BASE_URL . '/?page=article_index');
-        echo "測試成功 文章已新增！";
+        // echo "測試成功 文章已新增！";
         exit;        
     }
 
@@ -469,6 +470,28 @@ class ArticleController {
             }
         }
 
+        // 從CKEditor內容解析圖片與圖說
+        $doc = new DOMDocument();
+        libxml_use_internal_errors(true); // 避免HTML5標籤報錯
+        // 使用flags避免DOM自動補html, body
+        $doc->loadHTML('<?xml encoding="utf-8" ?>' . $content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        libxml_clear_errors();
+
+        // 解析CKEditor<a>標籤
+        $linksArr = [];
+
+        foreach($doc->getElementsByTagName('a') as $a) {
+            $href = $a->getAttribute('href');
+            $text = trim($a->textContent);
+            if($href) {
+                $linksArr[] = [
+                    'url' => $href,
+                    'text' => $text
+                ];
+            }
+        }
+        $linksJson = json_encode($linksArr, JSON_UNESCAPED_UNICODE); 
+
         // 更新資料表
         $db->update($id, [
             'title' => $title,
@@ -476,6 +499,7 @@ class ArticleController {
             'category_id' => $category_id,
             'cover_image' => $cover_image,
             'content' => $content,
+            'links' => $linksJson,
             'status' => $status,
             'publish_time' => $publish_time,
             'updated_at' => date('Y-m-d H:i:s'),

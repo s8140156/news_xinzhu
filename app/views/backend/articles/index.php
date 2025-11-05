@@ -177,7 +177,7 @@
                             <?php endforeach; ?>
                         </div>
                         <?php else: ?>
-                        <div class="text-secondary small lh-sm">(此文章沒有附加連結)</div>
+                        <div class="text-secondary small lh-sm"><strong>(此文章沒有附加連結)</strong></div>
                         <?php endif; ?>
                     </div>
 
@@ -242,7 +242,7 @@
     border-radius: 4px;
     padding: 2px 6px;
     display: inline-block;
-    min-width: 120px;
+    min-width: 150px;
     color: #333;
 }
 

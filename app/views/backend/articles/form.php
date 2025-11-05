@@ -51,7 +51,7 @@
                             <small class="form-text text-muted">
                                 若文章內已有圖片，將自動抓取第一張作為封面；否則使用此上傳圖片。
                             </small>
-                            <input type="file" class="form-control" id="image" name="cover_image" value=""accept="image/*">
+                            <input type="file" class="form-control mb-2" id="image" name="cover_image" value=""accept="image/*">
                             <?php if (!empty($article['cover_image'])): ?>
                                 <div style="margin-bottom: 10px;display:flex;">
                                     <img src="<?= $article['cover_image'] ?>" alt="目前封面圖片" style="width:150px; height:auto; border:1px solid #ddd; padding:4px;">
@@ -62,9 +62,36 @@
 
                         <!-- 只有編輯模式才顯示連結點擊區塊 -->
                         <?php if ($mode === 'edit'): ?>
-                        <div class="form-group mt-3">
-                            <label>連結點擊次數</label>
-                            <p><?= $article['link_clicks'] ?? 0 ?> 次</p>
+                        <div class="mt-4 mb-3">
+                            <label class="form-label fw-semibold text-secondary mb-2">連結點擊次數：</label>
+
+                            <?php
+                            $links = [];
+                            if (!empty($article['links']) && is_string($article['links'])) {
+                                $decoded = json_decode($article['links'], true);
+                                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                                    $links = $decoded;
+                                }
+                            }
+                            ?>
+
+                            <?php if (!empty($links)): ?>
+                                <div class="border rounded px-3 py-2 small">
+                                    <?php foreach ($links as $idx => $link): ?>
+                                        <div class="d-flex align-items-center mb-1">
+                                            <div class="">
+                                                <span class="text-muted">連結 <?= $idx + 1 ?>：</span>
+                                                <span class="fw-medium link-display"><?= htmlspecialchars($link['text'] ?: '') ?></span>
+                                            </div>
+                                            <div class="text-muted ms-3">
+                                                點擊數：<?= rand(0, 50) ?>
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php else: ?>
+                                <p class="text-muted small fst-italic">(此文章沒有附加連結)</p>
+                            <?php endif; ?>
                         </div>
                         <?php endif; ?>
 
@@ -180,6 +207,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .schedule-actions .form-control {
   max-width: 160px;
+}
+
+/* 連結灰底框 */
+.link-display {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 2px 6px;
+    display: inline-block;
+    min-width: 150px;
+    color: #333;
+    margin-left: 4px;  /* ✅ 與「連結 X：」之間微距 */
+    margin-right: 10px;
+    vertical-align: middle;  /* ✅ 與點擊數垂直居中對齊 */
 }
 
 
