@@ -68,39 +68,41 @@
                         </div>
                         <?php endif; ?>
 
-                        <!-- 排程日期 -->
-                        <div class="d-flex align-items-center">
-                            <label for="schedule_date" class="mr-2 mb-0">排程日期</label>
-                            <input type="date" id="schedule_date" name="schedule_date" value="<?= $publishDate ?>" <?= $article['status'] === 'published' ? 'disabled' : '' ?> class="form-control"
-                                style="width: 140px;">
-                        </div>
+                        <div class="schedule-actions">
+                            <!-- 排程日期 -->
+                            <div class="d-flex align-items-center">
+                                <label for="schedule_date" class="mr-2 mb-0">排程日期</label>
+                                <input type="date" id="schedule_date" name="schedule_date" value="<?= $publishDate ?>" <?= $article['status'] === 'published' ? 'disabled' : '' ?> class="form-control"
+                                    style="width: 140px;">
+                            </div>
+                            <!-- 排程時間 -->
+                            <div class="d-flex align-items-center ml-3">
+                                <label for="schedule_time" class="mr-2 mb-0">時間</label>
+                                <input type="time" id="schedule_time" name="schedule_time" value="<?= $publishTime ?>" <?= $article['status'] === 'published' ? 'disabled' : '' ?> class="form-control"
+                                    style="width: 140px;">
+                            </div>
+    
+                            <!-- 排程按鈕 -->
+                            <div class="d-flex flex-wrap align-items-center ml-4" style="gap: 0.5rem;">
+                                <input type="hidden" name="action" value="draft|schedule|publish">
+                                <?php if ($mode === 'edit' && $article['status'] === 'published'): ?>
+                                <button type="submit" name="action" value="" class="btn btn-info text-white" <?= $mode=== 'edit' ? '' : 'style="display:none;"' ?>>
+                                    更新文章
+                                </button>
+                                <?php else: ?>
+                                <button type="submit" name="action" value="schedule" class="btn btn-dark">
+                                    排程發布
+                                </button>
+                                <button type="submit" name="action" value="publish" class="btn btn-success">
+                                    立即發布
+                                </button>
+                                <button type="submit" name="action" value="draft" class="btn btn-warning text-white">
+                                    儲存(草稿)
+                                </button>
+                                <?php endif ?>
+                            </div>
 
-                        <!-- 排程時間 -->
-                        <div class="d-flex align-items-center ml-3">
-                            <label for="schedule_time" class="mr-2 mb-0">時間</label>
-                            <input type="time" id="schedule_time" name="schedule_time" value="<?= $publishTime ?>" <?= $article['status'] === 'published' ? 'disabled' : '' ?> class="form-control"
-                                style="width: 140px;">
-                        </div>
-
-                        <!-- 排程按鈕 -->
-                        <div class="d-flex flex-wrap align-items-center ml-4" style="gap: 0.5rem;">
-                            <input type="hidden" name="action" value="draft|schedule|publish">
-                            <?php if ($mode === 'edit' && $article['status'] === 'published'): ?>
-                            <button type="submit" name="action" value="" class="btn btn-info text-white" <?= $mode=== 'edit' ? '' : 'style="display:none;"' ?>>
-                                更新文章
-                            </button>
-                            <?php else: ?>
-                            <button type="submit" name="action" value="schedule" class="btn btn-dark">
-                                排程發布
-                            </button>
-                            <button type="submit" name="action" value="publish" class="btn btn-success">
-                                立即發布
-                            </button>
-                            <button type="submit" name="action" value="draft" class="btn btn-warning text-white">
-                                儲存(草稿)
-                            </button>
-                            <?php endif ?>
-                        </div>
+                        </div> <!-- schedule-actions end -->
                     </form>
                 </div> <!-- card-body end -->
             </div>
@@ -169,19 +171,16 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
-/* @media (max-width: 768px) {
-    .form-group.d-flex {
-        flex-direction: column;
-        align-items: stretch;
-    }
+.schedule-actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex-wrap: wrap; /* 手機時可自動換行 */
+}
 
-    .form-group.d-flex .d-flex.flex-wrap {
-        justify-content: space-between;
-    }
+.schedule-actions .form-control {
+  max-width: 160px;
+}
 
-    .form-group.d-flex .btn {
-        width: 100%;
-    }
-} */
 
 </style>
