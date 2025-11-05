@@ -6,40 +6,76 @@ class ArticleController {
 
     public function index() {
 
-        //建立DB連線
+        //建立DB連線及檢查排程發佈及更新
         $db =new DB('articles');
+        $db->exec("
+        UPDATE articles
+        SET status = 'published'
+        WHERE status = 'scheduled'
+        AND publish_time <= NOW()");
 
-        // 文章排序條件
-        $sort = $_GET['sort_by'] ?? 'latest';
+        // 讀取搜尋與排序條件
+        $category = $_GET['category'] ?? '';
+        $start_date = $_GET['start_date'] ?? '';
+        $end_date = $_GET['end_date'] ?? '';
+        $keyword = $_GET['keyword'] ?? '';
+        $sort = $_GET['sort_by'] ?? 'updated_desc';
+        $status = $_GET['status'] ?? '';
+
+        // sql條件
         $where = '1'; // sql where 1 預設條件
+        $params = [];
 
+        // 搜尋邏輯
+        // 狀態
+        if(!empty($status)) {
+            $where .= " AND status = :status";
+            $params[':status'] = $status;
+        }
+        // 類別
+        if(!empty($category)) {
+            $where .= " AND category_id = :category_id";
+            $params[':category_id'] = $category;
+        }
+        // 日期區間
+        if(!empty($start_date)) {
+            $where .= " AND DATE(updated_at) >= :start_date";
+            $params[':start_date'] = $start_date;
+        }
+        if(!empty($end_date)) {
+            $where .= " AND DATE(updated_at) <= :end_date";
+            $params[':end_date'] = $end_date;
+        }
+        // 標題關鍵字
+        if(!empty($keyword)) {
+            $where .= " AND title LIKE :keyword";
+            $params[':keyword'] = "%{$keyword}%";
+        }
+        // 排序邏輯
         switch($sort) {
             case 'publish_desc':
                 $order = "publish_time DESC";      
-                $where .= " AND status = 'published'";
                 break;
             case 'schedule_asc':
                 $order = "publish_time ASC";
-                $where .= " AND status = 'scheduled'";
-                break;
-            case 'draft_desc':
-                $order = "updated_at DESC";
-                $where .= " AND status = 'draft'";
                 break;
             default:
                 $order = "updated_at DESC";
                 break;
         }
+        // 智能群組排序
+        if (empty($status)) {
+            // 沒有指定狀態篩選 → 依狀態群組顯示
+            $order = "FIELD(status, 'published', 'scheduled', 'draft') ASC, " . $order;
+        }
         // echo "<pre>目前排序條件：$order</pre>";
 
-        $articles = $db->all("$where ORDER BY $order");
+        $articles = $db->all("$where ORDER BY $order", $params);
+        // print_r($articles);
 
         // 撈新聞分類對照
-        $catDb = new DB('news_categories');
-        $categories = [];
-        foreach($catDb->all() as $cat)  {
-            $categories[$cat['id']] = $cat['name'];
-        }
+        $categories = $this->getCategoryMap();
+
 
         $content = APP_PATH . '/views/backend/articles/index.php';
         include APP_PATH . '/views/backend/layouts/main.php';
@@ -490,8 +526,15 @@ class ArticleController {
         } else {
             echo "<script>alert('刪除失敗，請稍後再試');history.back();</script>";
         }
+    }
 
-
+    private function getCategoryMap() {
+        $catDb = new DB('news_categories');
+        $categories = [];
+        foreach($catDb->all() as $cat)  {
+            $categories[$cat['id']] = $cat['name'];
+        }
+        return $categories;
     }
 
 

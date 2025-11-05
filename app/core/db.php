@@ -33,6 +33,9 @@ class DB {
         $this->table = $table;
     }
 
+    public function exec($sql) {
+        return $this->pdo->exec($sql);
+    }
 
     public function all($where='', $params=[]) {
         $sql = "SELECT * FROM `{$this->table}`";

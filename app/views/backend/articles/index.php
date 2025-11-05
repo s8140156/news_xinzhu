@@ -16,55 +16,102 @@
         <div class="card-body">
 
             <!-- 🔍 搜尋區塊 -->
-            <form method="GET" action="" class="mb-3">
-                <div class="row align-items-end">
-                    <!-- 類別 -->
-                    <div class="col-md-3 mb-2">
-                        <label for="category" class="form-label">類別：</label>
-                        <select id="category" name="category" class="form-control">
-                            <option value="">全部分類</option>
-                            <option value="1">焦點新聞</option>
-                            <option value="2">綜合新聞</option>
-                            <option value="3">體育新聞</option>
-                        </select>
-                    </div>
+            <div class="search-box mb-3">
+                <form method="GET" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>">
+                    <input type="hidden" name="page" value="article_index">
 
-                    <!-- 期間 -->
-                    <div class="col-md-5 mb-2">
-                        <label class="form-label">期間：</label>
-                        <div class="d-flex align-items-center">
-                            <input type="date" name="start_date" class="form-control me-2">
-                            <span>~</span>
-                            <input type="date" name="end_date" class="form-control ms-2">
+                    <!-- 第一行：分類 + 期間 -->
+                    <div class="row g-3 align-items-center mb-2">
+                        <!-- 類別 -->
+                        <div class="col-md-3">
+                            <div class="d-flex align-items-center">
+                                <label for="category" class="form-label mb-0 me-2">類別：</label>
+                                <select id="category" name="category" class="form-control">
+                                    <option value="">全部分類</option>
+                                    <?php foreach($categories as $id=>$name): ?>
+                                    <option value="<?= $id ?>" <?= $category == $id ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($name) ?>
+                                    </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- 期間 -->
+                        <div class="col-md-5">
+                            <div class="d-flex align-items-center">
+                                <label class="form-label mb-0 me-2">期間：</label>
+                                <input type="date" name="start_date" class="form-control me-2"
+                                    value="<?= htmlspecialchars($start_date ?? '') ?>">
+                                <span class="text-muted me-2">~</span>
+                                <input type="date" name="end_date" class="form-control"
+                                    value="<?= htmlspecialchars($end_date ?? '') ?>">
+                            </div>
                         </div>
                     </div>
 
-                    <!-- 標題搜尋 -->
-                    <div class="col-md-3 mb-2">
-                        <label for="keyword" class="form-label">標題搜尋：</label>
-                        <input type="text" id="keyword" name="keyword" class="form-control" placeholder="輸入關鍵字...">
-                    </div>
+                    <!-- 第二行：標題搜尋 + 狀態 + 按鈕 -->
+                    <div class="row g-3 align-items-center">
+                        <!-- 標題搜尋 -->
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-center">
+                                <label for="keyword" class="form-label mb-0 me-2">標題搜尋：</label>
+                                <input type="text" id="keyword" name="keyword" class="form-control"
+                                    placeholder="輸入關鍵字..." value="<?= htmlspecialchars($keyword ?? '') ?>">
+                            </div>
+                        </div>
 
-                    <!-- 搜尋按鈕 -->
-                    <div class="col-md-1 text-end mb-2">
-                        <button type="submit" class="btn btn-danger w-100">
-                            <i class="fas fa-search"></i> 搜尋
-                        </button>
+                        <!-- 狀態 -->
+                        <div class="col-md-3">
+                            <div class="d-flex align-items-center">
+                                <label for="status" class="form-label mb-0 me-2">狀態：</label>
+                                <select id="status" name="status" class="form-control">
+                                    <option value="">全部狀態</option>
+                                    <option value="published" <?= $status==='published'?'selected':'' ?>>已發布</option>
+                                    <option value="scheduled" <?= $status==='scheduled'?'selected':'' ?>>排程中</option>
+                                    <option value="draft" <?= $status==='draft'?'selected':'' ?>>草稿</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- 按鈕 -->
+                        <div class="col-md-5">
+                            <div class="d-flex align-items-center gap-3">
+                                <button type="submit" class="btn btn-danger px-4">
+                                    <i class="fas fa-search"></i> 搜尋
+                                </button>
+                                <a href="?page=article_index" class="btn btn-secondary px-4">
+                                    <i class="fas fa-undo"></i> 重設
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
+
 
             <!-- 🔽 排序下拉選單 -->
             <div class="d-flex justify-content-start align-items-center mb-3">
                 <form method="GET" action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>">
                     <input type="hidden" name="page" value="article_index">
+                    <!-- 加入hidden name讓搜尋延續可以排序 -->
+                    <input type="hidden" name="category" value="<?= htmlspecialchars($category ?? '') ?>">
+                    <input type="hidden" name="start_date" value="<?= htmlspecialchars($start_date ?? '') ?>">
+                    <input type="hidden" name="end_date" value="<?= htmlspecialchars($end_date ?? '') ?>">
+                    <input type="hidden" name="keyword" value="<?= htmlspecialchars($keyword ?? '') ?>">
+                    <input type="hidden" name="status" value="<?= htmlspecialchars($status ?? '') ?>">
                     <div class="d-flex align-items-center">
                         <label for="sort_by" class="me-2 mb-0 text-muted">排序：</label>
                         <select class="form-control w-auto" name="sort_by" onchange="this.form.submit()">
-                            <option value="latest" <?= $sort ==='latest' ? 'selected' : '' ?>>最新更新</option>
-                            <option value="publish_desc" <?= $sort ==='publish_desc' ? 'selected' : '' ?>>已發布（時間新→舊）</option>
-                            <option value="schedule_asc" <?= $sort ==='schedule_asc' ? 'selected' : '' ?>>排程（時間近→遠）</option>
-                            <option value="draft_desc" <?= $sort ==='draft_desc' ? 'selected' : '' ?>>草稿（最近修改）</option>
+                            <option value="updated_desc" <?= $sort ==='updated_desc' ? 'selected' : '' ?>>
+                                最新更新（最後修改時間新→舊）
+                            </option>
+                            <option value="publish_desc" <?= $sort ==='publish_desc' ? 'selected' : '' ?>>
+                                最新發布（上線時間新→舊）
+                            </option>
+                            <option value="schedule_asc" <?= $sort ==='schedule_asc' ? 'selected' : '' ?>>
+                                排程順序（上線時間近→遠）
+                            </option>
                         </select>
                     </div>
                 </form>
@@ -136,13 +183,16 @@
 
                     <!-- 功能按鈕區 -->
                     <div class="d-flex align-items-start mt-2 mt-md-0 ms-md-3">
-                        <a href="#" class="btn btn-light btn-sm me-2" title="預覽">
+                        <a href="index.php?page=frontend_news_show&id=<?= $article['id'] ?>"
+                            class="btn btn-light btn-sm me-2" title="預覽">
                             <i class="fas fa-eye"></i>
                         </a>
-                        <a href="#" class="btn btn-light btn-sm me-2" title="編輯">
+                        <a href="index.php?page=article_edit&id=<?= $article['id'] ?>" class="btn btn-light btn-sm me-2"
+                            title="編輯">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <a href="#" class="btn btn-light btn-sm text-danger" title="刪除"
+                        <a href="index.php?page=article_delete&id=<?= $article['id'] ?>"
+                            class="btn btn-light btn-sm text-danger" title="刪除"
                             onclick="return confirm('確定要刪除此文章嗎？此動作無法復原！')">
                             <i class="fas fa-trash-alt"></i>
                         </a>
@@ -207,5 +257,34 @@
     background-repeat: no-repeat;
     background-position: right 0.75rem center;
     background-size: 12px 12px;
+}
+
+.search-box {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    background: #fdfdfd;
+    /* 可視情況加淡背景 */
+    /* #fafbfc-極淡灰白 #fcfcfd-比白稍有陰影感 #fdfdfd-幾乎純白 rgba(0, 0, 0, 0.02)-透明輝層 */
+}
+
+.search-box .form-label {
+  white-space: nowrap;
+}
+
+.search-box .btn {
+  height: 38px; /* 與 input 對齊 */
+  display: flex;
+  align-items: center;
+}
+
+.search-box .d-flex.align-items-center.gap-3 {
+  gap: 1rem !important;
+}
+
+@media (max-width: 767.98px) {
+  .search-box .row > [class*="col-"] {
+    margin-bottom: 0.5rem;
+  }
 }
 </style>
