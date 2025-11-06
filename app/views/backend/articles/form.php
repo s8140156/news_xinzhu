@@ -18,7 +18,7 @@
                         <!-- 第一行：分類 + 作者 -->
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="category" class="form-label">分類</label>
+                                <label for="category" class="form-label"><span class="text-danger">*</span> 分類</label>
                                 <select class="form-control" id="category" name="category_id" required>
                                     <option value="">請選擇分類</option>
                                     <?php foreach ($categories as $cat): ?>
@@ -27,21 +27,21 @@
                                 </select>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="author" class="form-label">作者</label>
+                                <label for="author" class="form-label"><span class="text-danger">*</span> 作者</label>
                                 <input type="text" class="form-control" id="author" name="author" value="<?= $article['author'] ?>" required>
                             </div>
                         </div>
 
                         <!-- 第二行：標題 -->
                         <div class="form-group">
-                            <label for="title" class="form-label">文章標題</label>
+                            <label for="title" class="form-label"><span class="text-danger">*</span> 文章標題</label>
                             <input type="text" class="form-control" id="title" name="title" value="<?= $article['title'] ?>" placeholder="請輸入文章標題"
                                 required>
                         </div>
 
                         <!-- 第三行：內容 -->
                         <div class="form-group">
-                            <label for="editorContent" class="form-label">文章內容</label>
+                            <label for="editorContent" class="form-label"><span class="text-danger">*</span> 文章內容</label>
                             <textarea class="form-control" id="editorContent" name="editorContent" rows="10"><?= $article['content'] ?></textarea>
                         </div>
 
