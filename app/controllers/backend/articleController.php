@@ -8,11 +8,12 @@ class ArticleController {
 
         //建立DB連線及檢查排程發佈及更新
         $db =new DB('articles');
-        $db->exec("
-            UPDATE articles
-            SET status = 'published'
-            WHERE status = 'scheduled'
-            AND publish_time <= NOW()");
+
+
+
+        // 自動排程：發布排程到期文章(測試用)
+        // $this->checkAndPublishScheduledArticles();
+
 
         // 讀取搜尋與排序條件
         $category = $_GET['category'] ?? '';
@@ -583,6 +584,31 @@ class ArticleController {
             $categories[$cat['id']] = $cat['name'];
         }
         return $categories;
+    }
+
+    private function checkAndPublishScheduledArticles() {
+        $db = new DB('articles');
+        $db->exec("
+            UPDATE articles
+            SET status = 'published'
+            WHERE status = 'scheduled'
+            AND publish_time <= NOW()");
+    }
+
+    private function autoCleanOldArticles() {
+        $db = new DB('articles');
+        // 刪掉「已發布」且 publish_time 超過半年
+        $sql1 = "DELETE FROM articles
+                WHERE status = 'published'
+                AND publish_time < DATE_SUB(NOW(), INTERVAL 6 MONTH)";
+        $db->exec($sql1);
+
+        // 刪掉「草稿」且 updated_at 超過半年
+        $sql2 = "DELETE FROM articles
+                WHERE status = 'draft'
+                AND updated_at < DATE_SUB(NOW(), INTERVAL 6 MONTH)";
+        $db->exec($sql2);
+
     }
 }
 
