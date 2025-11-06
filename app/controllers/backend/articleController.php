@@ -135,7 +135,7 @@ class ArticleController {
         $category_id = $_POST['category_id'] ?? '';
         $content = $_POST['editorContent'] ?? '';
 
-        if(empty($category_id) || empty($author) || empty($title)) {
+        if(empty($category_id) || empty($author) || empty($title) || empty($content)) {
             echo "<script>alert('請確認必填欄位是否完整？');history.back();</script>";
             return;
         }

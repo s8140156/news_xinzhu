@@ -18,9 +18,9 @@ class NewsCategoryController {
 
     // 處理新增/更新/刪除
     public function store() {
-            echo "<pre>";
-            print_r($_POST);
-            echo "</pre>";
+            // echo "<pre>";
+            // print_r($_POST);
+            // echo "</pre>";
             // exit;
         if($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['act'] === 'addCategory') {
             $ids = $_POST['id'] ?? [];
@@ -63,7 +63,8 @@ class NewsCategoryController {
                 }
             }
             // header("Location: " . BASE_URL . "/index.php");
-            echo "測試成功 分類已新增！";
+            echo "<script>alert('更新成功！'); window.location='?page=category_index';</script>";
+            // echo "測試成功 分類已新增！";
             exit;
         }
     }
