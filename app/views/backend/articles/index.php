@@ -66,7 +66,7 @@
                             <div class="d-flex align-items-center">
                                 <label for="status" class="form-label mb-0 me-2">狀態：</label>
                                 <select id="status" name="status" class="form-control">
-                                    <option value="">全部狀態</option>
+                                    <option value="all">全部狀態</option>
                                     <option value="published" <?= $status==='published'?'selected':'' ?>>已發布</option>
                                     <option value="scheduled" <?= $status==='scheduled'?'selected':'' ?>>排程中</option>
                                     <option value="draft" <?= $status==='draft'?'selected':'' ?>>草稿</option>
@@ -102,7 +102,7 @@
                     <input type="hidden" name="status" value="<?= htmlspecialchars($status ?? '') ?>">
                     <div class="d-flex align-items-center">
                         <label for="sort_by" class="me-2 mb-0 text-muted">排序：</label>
-                        <select class="form-control w-auto" name="sort_by" onchange="this.form.submit()">
+                        <select class="form-control w-auto" name="sort_by" id="sort_by" onchange="this.form.submit()">
                             <option value="updated_desc" <?= $sort ==='updated_desc' ? 'selected' : '' ?>>
                                 最新更新（最後修改時間新→舊）
                             </option>
@@ -115,6 +115,9 @@
                         </select>
                     </div>
                 </form>
+                <small id="sortHint" class="text-muted ms-5" style="display:none;">
+                    &nbsp&nbsp※ 排程順序僅適用於「排程中」的文章
+                </small>
             </div>
 
             <!-- 📰 文章卡片區 -->
@@ -210,6 +213,26 @@
         </div>
     </div>
 </div>
+
+<script>
+    const statusSelect = document.querySelector('#status');
+    const sortSelect = document.querySelector('#sort_by');
+    const hint = document.querySelector('#sortHint');
+
+    statusSelect.addEventListener('change', function() {
+        const status = this.value;
+        if (status === 'scheduled') {
+            sortSelect.value = 'schedule_asc';
+            hint.style.display = 'inline';
+        } else if (status === 'published') {
+            sortSelect.value = 'publish_desc';
+            hint.style.display = 'none';
+        } else {
+            sortSelect.value = 'updated_desc';
+            hint.style.display = 'none';
+        }
+    });
+</script>
 
 <style>
 .article-card {
