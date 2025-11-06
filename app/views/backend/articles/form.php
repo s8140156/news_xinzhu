@@ -21,8 +21,8 @@
                                 <label for="category" class="form-label"><span class="text-danger">*</span> 分類</label>
                                 <select class="form-control" id="category" name="category_id" required>
                                     <option value="">請選擇分類</option>
-                                    <?php foreach ($categories as $cat): ?>
-                                    <option value="<?= $cat['id'] ?>" <?= isset($article['category_id']) && $article['category_id'] == $cat['id'] ? 'selected' : '' ?>><?= htmlspecialchars($cat['name']) ?></option>
+                                    <?php foreach ($categories as $id=>$name): ?>
+                                    <option value="<?= $id ?>" <?= isset($article['category_id']) && $article['category_id'] == $id ? 'selected' : '' ?>><?= htmlspecialchars($name) ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
