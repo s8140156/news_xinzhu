@@ -5,15 +5,11 @@ require_once APP_PATH . '/core/db.php';
 class ArticleController {
 
     public function index() {
-
         //建立DB連線及檢查排程發佈及更新
         $db =new DB('articles');
 
-
-
         // 自動排程：發布排程到期文章(測試用)
-        // $this->checkAndPublishScheduledArticles();
-
+        $this->checkAndPublishScheduledArticles();
 
         // 讀取搜尋與排序條件
         $category = $_GET['category'] ?? '';
@@ -28,17 +24,10 @@ class ArticleController {
         $params = [];
 
         // 搜尋邏輯
-        // 狀態
-
-        //允許白名單
+        //狀態：允許白名單
         $allow = ['updated_desc', 'publish_desc', 'schedule_asc'];
         if(!in_array($sort, $allow, true)) $sort = null;
 
-        // if($status === 'scheduled') {
-        //     if($sort === null) $sort = 'schedule_asc';
-        // }else {
-        //     if($sort === null || $sort === 'schedule_asc') $sort = 'updated_desc';
-        // }
         switch($status) {
             case 'scheduled':
                 if ($sort === null) $sort = 'schedule_asc';
@@ -100,19 +89,15 @@ class ArticleController {
         // 撈新聞分類對照
         $categories = $this->getCategoryMap('sort ASC');
 
-
         $content = APP_PATH . '/views/backend/articles/index.php';
         include APP_PATH . '/views/backend/layouts/main.php';
-
     }
 
     public function create() {
         $mode = 'create';
 
         //建立DB連線
-        // $db =new DB('news_categories');
         $categories = $this->getCategoryMap('sort ASC');
-        // $categories = $db->all("1 ORDER BY sort ASC");
 
         // 預設空文章結構(因為新增/編輯共用表單)
         $article = [
@@ -164,34 +149,60 @@ class ArticleController {
             echo "<script>alert('請確認必填欄位是否完整？');history.back();</script>";
             return;
         }
+
+        // 先插入文章主體資料(圖片待取得id後更新)
+        $db = new DB('articles');
+        $db->insert([
+            'title' => $title,
+            'author' => $author,
+            'category_id' => $category_id,
+            'content' => $content,
+            'status' => $status,
+            'publish_time' => $publish_time,
+            'views' => 0,
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
+
+        // 取得剛新增的文章id
+        $articleId = $db->getLastInsertId();
+
         // 封面圖片上傳(可選)
         $coverPath = null;
-
-        if (isset($_FILES['cover_image']) && $_FILES['cover_image']['error'] === UPLOAD_ERR_OK) {
+        if (!empty($_FILES['cover_image']['tmp_name']) && $_FILES['cover_image']['error'] === UPLOAD_ERR_OK) {
             $file = $_FILES['cover_image'];
-            $fileName = time() . '_' . basename($file['name']);
-
-            // 使用絕對路徑，避免走錯層
-            $coverDir = rtrim($_SERVER['DOCUMENT_ROOT'], '/') . '/news_xinzhu/public/uploads/articles/cover/';
-
-            // 若目錄不存在，建立目錄
-            if (!is_dir($coverDir)) {
-                mkdir($coverDir, 0777, true);
-                // error_log('[封面上傳測試] 自動建立 cover 資料夾：' . $coverDir);
-            }
-
-            // 確認實際路徑
-            // error_log('[封面上傳測試] PHP 實際嘗試寫入路徑：' . $coverDir);
-            // error_log('[封面上傳測試] 該目錄是否存在？ → ' . (is_dir($coverDir) ? '是' : '否'));
-
+            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            $fileName = time() . '_' . uniqid() . '.' . $ext;
+            $coverDir = APP_PATH . '/../public/uploads/articles/cover/';
+            if (!is_dir($coverDir)) mkdir($coverDir, 0777, true);
             $targetPath = $coverDir . $fileName;
             if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-                $coverPath = BASE_URL . '/uploads/articles/cover/' . $fileName;
-                // error_log('[封面上傳成功] 實際搬移到：' . $targetPath);
-            } else {
-                // error_log('[封面上傳失敗] 無法搬移到：' . $targetPath);
+                $coverPath = BASE_URL . "/uploads/articles/cover/{$fileName}";
             }
         }
+
+        // 搬移圖片資料夾temp->content{id}
+        $tempDir = APP_PATH . '/../public/uploads/temp/';
+        $targetDir = APP_PATH . "/../public/uploads/articles/content/{$articleId}/";
+
+        if(is_dir($tempDir)) {
+            if(!is_dir($targetDir)) mkdir ($targetDir, 0777, true);
+
+            // 先搬移檔案
+            $files = glob($tempDir . '*');
+            foreach($files as $filePath) {
+                $destPath = $targetDir . basename($filePath);
+                rename($filePath, $destPath);
+            }
+            // 清空temp資料夾
+            $files = glob($tempDir . '*');
+            foreach($files as $filePath) {
+                if(is_file($filePath)) unlink($filePath);
+            }
+        }
+
+        // 更新內文中的圖片路徑
+        $content = str_replace('/uploads/temp/', "/uploads/articles/content/{$articleId}/", $content);
 
         // 從CKEditor內容解析圖片與圖說
         $doc = new DOMDocument();
@@ -200,9 +211,8 @@ class ArticleController {
         $doc->loadHTML('<?xml encoding="utf-8" ?>' . $content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         libxml_clear_errors();
 
-        $imagesArr = [];
-
         // === Step 1: 抓取所有圖片（不論是否 figure 包住）===
+        $imagesArr = [];
         $allImgs = $doc->getElementsByTagName('img');
         $firstImageSrc = null;
         foreach ($allImgs as $img) {
@@ -252,60 +262,14 @@ class ArticleController {
         if (!$coverPath && $firstImageSrc) {
             $coverPath = $firstImageSrc;
         }
-
-        // ---------原先解析CKEditor圖片上傳邏輯start----------------
-        // 確認有figure包的(img+caption)
-        // $figures = $doc->getElementsByTagName('figure');
-
-        // foreach($figures as $figure) {
-        // $imgTag = $figure->getElementsByTagName('img')->item(0);
-        // $captionTag = $figure->getElementsByTagName('figcaption')->item(0);
-
-        // if($imgTag instanceof DOMElement) {
-        // $url = $imgTag->getAttribute('src') ?: '';
-        // $caption = ($captionTag instanceof DOMElement) ? trim($captionTag->textContent) : '';
-        // if($url !=='') {
-        // $imagesArr[] = [
-        // 'url' => $url,
-        // 'caption' => $caption
-        // ];
-        // if(!$coverPath) {
-        // $coverPath = $url;
-        // }
-        // }
-        // }
-        // }
-        // 確認figure下的<img>
-        // $allImgs = $doc->getElementsByTagName('img');
-        // foreach ($allImgs as $img) {
-        // $url = $img->getAttribute('src') ?: '';
-        // if ($url !== '') {
-        // $isAlreadyCaptured = false;
-        // foreach ($imagesArr as $imgData) {
-        // if ($imgData['url'] === $url) {
-        // $isAlreadyCaptured = true;
-        // break;
-        // }
-        // }
-        // if (!$isAlreadyCaptured) {
-        // $imagesArr[] = ['url' => $url, 'caption' => ''];
-        // if (!$coverPath) {
-        // $coverPath = $url;
-        // }
-        // }
-        // }
-        // }
-        // ---------原先解析CKEditor圖片上傳邏輯end----------------
-
         $imagesJson = json_encode($imagesArr, JSON_UNESCAPED_UNICODE);
 
         // 解析CKEditor<a>標籤
         $linksArr = [];
-
-    foreach($doc->getElementsByTagName('a') as $a) {
+        foreach($doc->getElementsByTagName('a') as $a) {
             $href = $a->getAttribute('href');
             $text = trim($a->textContent);
-    if($href) {
+            if($href) {
                 $linksArr[] = [
                     'url' => $href,
                     'text' => $text
@@ -314,33 +278,14 @@ class ArticleController {
         }
         $linksJson = json_encode($linksArr, JSON_UNESCAPED_UNICODE);
 
-        $db = new DB('articles');
-        // var_dump([
-        // 'title' => $title,
-        // 'author' => $author,
-        // 'category_id' => $category_id,
-        // 'content' => mb_substr($content, 0, 100),
-        // 'images' => $coverPath,
-        // 'status' => $status,
-        // ]); exit;
-
-        $db->insert([
-            'title' => $title,
-            'author' => $author,
-            'category_id' => $category_id,
-            'content' => $content,
+        // 最後更新文章圖片與封面及內文路徑
+        $db->update($articleId, [
             'images' => $imagesJson,
             'links' => $linksJson,
             'cover_image' => $coverPath,
-            'status' => $status,
-            'publish_time' => $publish_time,
-            'views' => 0,
-            'created_at' => date('Y-m-d H:i:s'),
-            'updated_at' => date('Y-m-d H:i:s')
+            'content' => $content
         ]);
         echo "<script>alert('文章新增成功！');window.location = '?page=article_index';</script>";
-        // header('Location: ' . BASE_URL . '/?page=article_index');
-        // echo "測試成功 文章已新增！";
         exit;
     }
 
@@ -350,76 +295,151 @@ class ArticleController {
         if (function_exists('ob_get_level')) while (ob_get_level()) ob_end_clean();
 
         if(!isset($_FILES['upload']) || $_FILES['upload']['error'] !== UPLOAD_ERR_OK) {
-                header('Content-Type: application/json; charset=utf-8');
-                echo json_encode([
-                    'uploaded' => 0,
-                    'error' => ['message' => '未接收到上傳檔案或發生錯誤']
-                ]);
-                return;
-            }
-
-        $file = $_FILES['upload'];
-        $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-
-        if(!in_array($ext, $allowed)) {
             header('Content-Type: application/json; charset=utf-8');
             echo json_encode([
                 'uploaded' => 0,
-                'error' => ['message' => '不支援的檔案格式，僅允許jpg/png/gif/webp']
-                ]);
+                'error' => ['message' => '未接收到上傳檔案或發生錯誤']
+            ]);
+            return;
+        }
+        // 檢查副檔名、MIME類型
+        $file = $_FILES['upload'];
+        $allowedExt = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $allowedMime = ['image/jpg','image/jpeg','image/png','image/gif','image/webp'];
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $mime = mime_content_type($file['tmp_name']);
+
+        // === [2] 檔案格式驗證 ===
+        if(!in_array($ext, $allowedExt) || !in_array($mime, $allowedMime)) {
+            $msg = '不支援的檔案格式，僅允許 jpg/png/gif/webp';
+
+            // CKEditor4 iframe 模式
+            if (isset($_GET['CKEditorFuncNum'])) {
+                $funcNum = (int)$_GET['CKEditorFuncNum'];
+                header('Content-Type: text/html; charset=utf-8');
+                echo "<script>alert('{$msg}');</script>";
+                echo "<script>window.parent.CKEDITOR.tools.callFunction($funcNum, '', '');</script>";
+            } else {
+                header('Content-Type: application/json; charset=utf-8');
+                echo json_encode(['uploaded' => 0, 'error' => ['message' => $msg]]);
+            }
             return;
         }
 
-        $allowedTypes = ['image/jpg','image/jpeg','image/png','image/gif','image/webp'];
-        $mime = mime_content_type($file['tmp_name']);
-        if(!in_array($mime, $allowedTypes)) {
-                header('Content-Type: application/json; charset=utf-8');
-                echo json_encode([
-                    'uploaded' => 0,
-                    'error' => ['message' => '不支援的圖片格式']
-                ]);
-                return;
-        }
 
-        $uploadDir = APP_PATH . '/../public/uploads/articles/content';
-        if(!file_exists($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
+        // 在編輯時判斷是哪篇文章(新增時為temp)
+        $articleId = !empty($_GET['id']) ? $_GET['id'] : 'temp';
+        // 決定目錄路徑
+        if($articleId !== 'temp') {
+            $uploadDir = APP_PATH . "/../public/uploads/articles/content/{$articleId}/";
+        }else {
+            $uploadDir = APP_PATH . "/../public/uploads/temp/";            
         }
+        if(!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+        // error_log(">>> [DEBUG] imageUpload() called, upload to $uploadDir");
 
+        // 產生檔名與存擋
         $fileName = time() . '_' . uniqid() . '.' . $ext;
         $targetPath = $uploadDir . '/' . $fileName;
 
-        if(move_uploaded_file($file['tmp_name'], $targetPath)) {
-            $fileUrl = BASE_URL . "/uploads/articles/content/" . $fileName;
+        // 新增圖片壓縮(最大寬度600px)
+        $imgInfo = @getimagesize($file['tmp_name']);
+        if ($imgInfo) {
+            $width = $imgInfo[0];
+            $height = $imgInfo[1];
+            $maxWidth = 600;
+
+            if ($width > $maxWidth) {
+                $ratio = $height / $width;
+                $newWidth = $maxWidth;
+                $newHeight = (int)($newWidth * $ratio);
+
+                switch ($ext) {
+                    case 'jpg':
+                    case 'jpeg':
+                        $src = imagecreatefromjpeg($file['tmp_name']);
+                        break;
+                    case 'png':
+                        $src = imagecreatefrompng($file['tmp_name']);
+                        break;
+                    case 'gif':
+                        $src = imagecreatefromgif($file['tmp_name']);
+                        break;
+                    case 'webp':
+                        $src = imagecreatefromwebp($file['tmp_name']);
+                        break;
+                    default:
+                        $src = null;
+                        break;
+                }
+
+                if ($src) {
+                    $dst = imagecreatetruecolor($newWidth, $newHeight);
+                    imagecopyresampled($dst, $src, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+                    switch ($ext) {
+                        case 'jpg':
+                        case 'jpeg':
+                            imagejpeg($dst, $targetPath, 85);
+                            break;
+                        case 'png':
+                            imagepng($dst, $targetPath);
+                            break;
+                        case 'gif':
+                            imagegif($dst, $targetPath);
+                            break;
+                        case 'webp':
+                            imagewebp($dst, $targetPath, 85);
+                            break;
+                    }
+
+                    imagedestroy($src);
+                    imagedestroy($dst);
+                    $resized = true;
+                }
+            }
+        }
+
+        // 若沒壓縮過，才用一般搬移
+        if (empty($resized)) {
+            $moved = move_uploaded_file($file['tmp_name'], $targetPath);
+        }else {
+            $moved = true;
+        }
+        // 新增圖片壓縮(最大寬度600px) end
+
+        if($moved) {
+            $fileUrl = ($articleId !== 'temp') 
+                ? BASE_URL . "/uploads/articles/content/{$articleId}/" . $fileName
+                : $fileUrl = BASE_URL . "/uploads/temp/" . $fileName;
 
             // 若有 CKEditorFuncNum，回傳舊協定（對話框上傳）
             if (isset($_GET['CKEditorFuncNum'])) {
                 $funcNum = (int)$_GET['CKEditorFuncNum'];
                 header('Content-Type: text/html; charset=utf-8');
                 echo "<script>window.parent.CKEDITOR.tools.callFunction($funcNum, '" . addslashes($fileUrl) . "', '');</script>";
-            } else {
-                // 給 JSON 模式（貼上/拖曳上傳）
-                header('Content-Type: application/json; charset=utf-8');
-                echo json_encode([
-                    'uploaded' => 1,
-                    'fileName' => $fileName,
-                    'url' => $fileUrl,
-                ]);
-            }
+            } 
         } else {
-            header('Content-Type: application/json; charset=utf-8');
-            echo json_encode([
-                'uploaded' => 0,
-                'error' => ['message' => '圖片上傳失敗，請確認權限或路徑設定']
-            ]);
+            $msg = '圖片上傳失敗，請確認權限或路徑設定';
+            if (isset($_GET['CKEditorFuncNum'])) {
+                $funcNum = (int)$_GET['CKEditorFuncNum'];
+                header('Content-Type: text/html; charset=utf-8');
+                echo "<script>alert('{$msg}');</script>";
+                echo "<script>window.parent.CKEDITOR.tools.callFunction($funcNum, '', '');</script>";
+            }
         }
     }
+
+    /**
+     * 編輯文章
+     * @param int $id 文章 ID
+     */
 
     public function edit($id) {
         $mode = 'edit';
 
         $db = new DB('articles');
+        $id = $_GET['id'] ?? null;
         $article = $db->find($id);
 
         // 拆分排程時間
@@ -431,8 +451,6 @@ class ArticleController {
             $publishTime = $dt->format('H:i');
         }
 
-        // $categoryDB = new DB('news_categories');
-        // $categories = $categoryDB->all();
         $categories = $this->getCategoryMap('sort ASC');
 
         $content = APP_PATH . '/views/backend/articles/form.php';
@@ -482,7 +500,6 @@ class ArticleController {
             $publish_time = $oldArticle['publish_time'];
         }
 
-
         // 封面圖片上傳處理
         $cover_image = $oldArticle['cover_image']; // 預設用舊圖
         if(!empty($_FILES['cover_image']['name'])) {
@@ -495,6 +512,26 @@ class ArticleController {
             }
         }
 
+        // 圖片資料夾處理
+        $targetDir = APP_PATH . "/../public/uploads/articles/content/{$id}/";
+        $deletedList = json_decode($_POST['deleted_images'] ?? '[]', true);
+
+        // 實體刪除清單
+        foreach($deletedList as $url) {
+            $file = basename($url);
+            $path = $targetDir . $file;
+            if(is_file($path)) unlink($path);
+        }
+
+        // 同步清理：刪除未出現在內容中的圖片
+        $existingFiles = glob($targetDir . '*.{jpg,jpeg,png,gif,webp}', GLOB_BRACE);
+        foreach ($existingFiles as $file) {
+            $filename = basename($file);
+            if (strpos($content, $filename) === false) {
+                unlink($file); // 若該檔案已不在編輯器內文中 → 刪除
+            }
+        }
+
         // 從CKEditor內容解析圖片與圖說
         $doc = new DOMDocument();
         libxml_use_internal_errors(true); // 避免HTML5標籤報錯
@@ -504,7 +541,6 @@ class ArticleController {
 
         // 解析CKEditor<a>標籤
         $linksArr = [];
-
         foreach($doc->getElementsByTagName('a') as $a) {
             $href = $a->getAttribute('href');
             $text = trim($a->textContent);
@@ -530,10 +566,17 @@ class ArticleController {
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
 
+        // 最後安全檢查（可選)
+        // 若總張數仍超過5，可紀錄log以追蹤（不影響前端）
+        $allFiles = glob($targetDir . '*.{jpg,jpeg,png,gif,webp}', GLOB_BRACE);
+        if (count($allFiles) > 5) {
+            error_log("[警告] 文章ID {$id} 圖片數量超過 5 張 (" . count($allFiles) . " 張)");
+        }
         echo "<script>alert('文章更新成功！');window.location = '?page=article_index';</script>";
     }
 
     public function delete($id) {
+        $id = $_GET['id'] ?? null;
         if(!$id || !is_numeric($id)) {
             echo "<script>alert('缺少文章ID 或 ID格式錯誤');history.back();</script>";
             return;
@@ -610,6 +653,26 @@ class ArticleController {
         $db->exec($sql2);
 
     }
+
+    private function cleanUnusedImages($id, $content) {
+        $dir = APP_PATH . "/../public/uploads/articles/content/{$id}/";
+        $imgsInContent = [];
+        preg_match_all('/<img[^>]+src="([^">]+)"/i', $content, $matches);
+        if (!empty($matches[1])) $imgsInContent = $matches[1];
+
+        foreach (glob($dir . '*.{jpg,jpeg,png,gif,webp}', GLOB_BRACE) as $imgPath) {
+            $url = BASE_URL . "/uploads/articles/content/{$id}/" . basename($imgPath);
+            if (!in_array($url, $imgsInContent)) unlink($imgPath);
+        }
+    }
+
+
+
+
+
+
 }
+
+
 
 ?>

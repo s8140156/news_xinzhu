@@ -137,6 +137,10 @@ class DB {
         $stmt->execute($params);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getLastInsertId() {
+        return $this->pdo->lastInsertId();
+    }
 }
 
 ?>

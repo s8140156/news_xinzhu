@@ -176,9 +176,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Verdana/Verdana, Geneva, sans-serif;',
             fontSize_sizes:
                 '10/10px;12/12px;14/14px;16/16px;18/18px;20/20px;24/24px;30/30px;36/36px;',
-            filebrowserUploadUrl: '<?= BASE_URL ?>/?page=article_image_upload',
-            filebrowserImageUploadUrl: '<?= BASE_URL ?>/?page=article_image_upload', // filebrowserImageUploadUrl這個key用在圖片上傳
+            // filebrowserUploadUrl: '<?= BASE_URL ?>/?page=article_image_upload',
+            // filebrowserImageUploadUrl: '<?= BASE_URL ?>/?page=article_image_upload', // filebrowserImageUploadUrl這個key(key:'upload')用在圖片上傳
             filebrowserUploadMethod: 'form',
+            filebrowserUploadUrl: '<?= BASE_URL ?>/?page=article_image_upload&id=<?= $article['id'] ?? "temp" ?>',
+            filebrowserImageUploadUrl: '<?= BASE_URL ?>/?page=article_image_upload&id=<?= $article['id'] ?? "temp" ?>',
+
 
             // 圖說設定
             image2_alignClasses: ['image-align-left', 'image-align-center', 'image-align-right'],
@@ -187,12 +190,61 @@ document.addEventListener('DOMContentLoaded', function() {
             image2_disableResizer: false
         });
 
-        // 可選：確認載入成功
+        // 圖片刪除偵測及上限檢查
         editor.on('instanceReady', function() {
-            console.log('CKEditor loaded without visible warning.');
+            console.log('CKEditor loaded without visible warning.'); // 可選：確認載入成功
+
+            let deletedImages = [];
+            let lastImageList = [];
+
+            // 取得目前img src清單
+            function getImageSrcList () {
+                const html = editor.getData();
+                const div = document.createElement('div');
+                div.innerHTML = html;
+                return Array.from(div.querySelectorAll('img')).map(img => img.getAttribute('src'));
+            }
+            lastImageList = getImageSrcList();
+
+            // 偵測使用者內容變化
+            editor.on('change', function() {
+                const currentImageList = getImageSrcList();
+
+                // 找出被刪除的圖片
+                lastImageList.forEach(src => {
+                    if (!currentImageList.includes(src) && !deletedImages.includes(src)) {
+                        deletedImages.push(src);
+                        console.log('Image deleted:', src); // 可選：確認刪除的圖片
+                    }
+                });
+
+                // 更新最後圖片清單
+                lastImageList = currentImageList;
+            });
+            // 監聽送出按鈕
+            const form = document.querySelector('#articleForm');
+            form.addEventListener('submit', function(event) {
+                const currentList = getImageSrcList();
+
+                // 判斷是否超過5張
+                if (currentList.length > 5) {
+                    event.preventDefault(); // 阻止表單提交
+                    alert('文章內容中的圖片數量不可超過 5 張，請刪減後再提交。');
+                    return false;
+                }
+                // 寫入刪除清單到hidden input
+                let hiddenInput = form.querySelector('input[name="deleted_images"]');
+                if (!hiddenInput) {
+                    hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'deleted_images';
+                    form.appendChild(hiddenInput);
+                }
+                hiddenInput.value = JSON.stringify(deletedImages);
+                console.log('Deleted images to submit:', deletedImages); // 可選：確認送出的刪除清單
+            });
         });
     }
-
 });
 
 </script>
