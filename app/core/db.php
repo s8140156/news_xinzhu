@@ -65,7 +65,7 @@ class DB {
             $clauses[] = "`$col` = ?";
             $params[] = $value;
         }
-        $sql .= implode(' AND', $clauses) . " LIMIT 1 ";
+        $sql .= implode(' AND ', $clauses) . " LIMIT 1";
         $stmt =$this->pdo->prepare($sql);
         $stmt->execute($params);
         return $stmt->fetch(PDO::FETCH_ASSOC);
