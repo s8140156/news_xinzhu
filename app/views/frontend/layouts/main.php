@@ -74,8 +74,8 @@
             <div class="card border-0 shadow-sm">
               <img src="<?= getCoverImage($focusArticle) ?>" class="card-img-top" alt="<?= htmlspecialchars($focusArticle['title']) ?>">
               <div class="card-body">
-                <h6 class="card-title text-dark"><?= htmlspecialchars($focusArticle['title']) ?></h6>
-                <p class="text-muted small mb-2"><?= date('Y-m-d', strtotime($focusArticle['publish_time'])) ?></p>
+                <!-- <h6 class="card-title text-dark"><?= htmlspecialchars($focusArticle['title']) ?></h6>
+                <p class="text-muted small mb-2"><?= date('Y-m-d', strtotime($focusArticle['publish_time'])) ?></p> -->
                 <a href="<?= BASE_URL ?>/?page=news_show&id=<?= $focusArticle['id'] ?>" class="btn btn-sm btn-primary">閱讀更多</a>
               </div>
             </div>

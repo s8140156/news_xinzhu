@@ -26,29 +26,28 @@ function getAllCategories($orderBy = 'sort ASC') {
 
 // 取得文章封面圖片邏輯(可前後台共用)
 function getCoverImage($article) {
-    // 有封面欄位
+
     if (!empty($article['cover_image'])) {
         $cover = $article['cover_image'];
 
-        // 若為完整網址
-        if (preg_match('/^https?:\/\//', $cover)) {
-            // 嘗試確認檔案是否存在於本地（避免被刪除卻仍顯示）
-            $path = APP_PATH . '/../public/' . ltrim(parse_url($cover, PHP_URL_PATH), '/');
-            if (file_exists($path)) {
-                return $cover;
-            }
-        } else {
-            // 相對路徑情況
-            $path = APP_PATH . '/../public/' . ltrim($cover, '/');
-            if (file_exists($path)) {
-                return BASE_URL . '/' . ltrim($cover, '/');
-            }
+        // 將 URL 換成相對路徑
+        $relative = str_replace(BASE_URL, '', $cover);
+        $relative = ltrim($relative, '/');
+
+        // 加入 "news_xinzhu/public"（你的專案結構）
+        $realPath = $_SERVER['DOCUMENT_ROOT'] . '/news_xinzhu/public/' . $relative;
+
+        // Debug：印出確認
+        // echo "Check real path: $realPath<br>";
+
+        if (file_exists($realPath)) {
+            return $cover;
         }
     }
 
-    // 沒封面或檔案不存在 → fallback 預設封面
     return BASE_URL . '/assets/frontend/images/default_cover.jpg';
 }
+
 
 
 
