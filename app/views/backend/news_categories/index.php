@@ -60,6 +60,7 @@
         const newRow = document.createElement('tr');
 
         newRow.innerHTML = `
+        <td class="handle"><i class="fas fa-bars"></i></td>
         <td><input type="text" class="form-control bg-light" name="id[]" value="(新)" readonly></td>
         <td><input type="text" class="form-control" name="name[]" value=""></td>
         <td><button type="button" class="btn btn-danger deleteRowBtn">刪除</button></td>
