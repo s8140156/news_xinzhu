@@ -34,3 +34,69 @@
     opacity: 1;
 }
 /* views>frontend>news>index 卡片效果end  */
+
+/* 🔸 基本色系 */
+:root {
+  --primary-color: #2b6ef2;
+  --text-dark: #212529;
+}
+
+/* 🔸 Navbar */
+.navbar-brand {
+  font-size: 1.25rem;
+  letter-spacing: 1px;
+}
+.nav-link {
+  color: var(--text-dark);
+  transition: color 0.3s;
+}
+.nav-link:hover {
+  color: var(--primary-color);
+}
+
+/* 🔸 廣告區與焦點區 */
+.ad-section, .focus-section, .partner-section {
+  background: #fff;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* 🔸 焦點新聞圖片 */
+.focus-section img {
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px 8px 0 0;
+}
+
+/* 🔸 Footer */
+footer {
+  font-size: 0.85rem;
+}
+
+/* 🔸 RWD 微調 */
+@media (max-width: 991px) {
+  main .row {
+    flex-direction: column-reverse;
+  }
+  aside {
+    margin-top: 2rem;
+  }
+}
+
+/* 頁尾標籤區 */
+.footer-links-area {
+  background: #fff;
+}
+
+.footer-links-area ul li a {
+  font-size: 0.95rem;
+  padding: 6px 10px;
+  border-radius: 4px;
+  transition: background 0.3s, color 0.3s;
+}
+
+.footer-links-area ul li a:hover {
+  background: #2b6ef2;
+  color: #fff;
+}
