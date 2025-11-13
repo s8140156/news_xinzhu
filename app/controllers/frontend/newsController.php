@@ -17,7 +17,7 @@ class NewsController {
         // 若有焦點分類 取該分類下最新一篇文章
         if(!empty($focusCategory)) {
             $focusCategory = $focusCategory[0];
-            $dbArticle = new DB('articels');
+            $dbArticle = new DB('articles');
             $latestFocus = $dbArticle->all( "category_id = ? AND status = 'published' ORDER BY publish_time DESC LIMIT 1",
                 [$focusCategory['id']]);
             $focusArticle = $latestFocus ? $latestFocus[0] :  null;
