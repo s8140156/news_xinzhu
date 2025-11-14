@@ -12,17 +12,17 @@
         </div>
     <?php else: ?>
 
-        <!-- 文章列表 -->
-        <div class="row g-4">
+        <!-- 文章列表(卡片) -->
+        <!-- <div class="row g-4">
             <?php foreach ($articles as $article): ?>
                 <div class="col-12 col-md-6 col-lg-4">
                     <a href="<?= BASE_URL ?>/?page=news_show&id=<?= $article['id'] ?>"
                         class="text-decoration-none text-dark">
 
-                        <div class="card border-0 shadow-sm h-100">
+                        <div class="card border-0 shadow-sm h-100"> -->
 
                             <!-- 封面 -->
-                            <img src="<?= getCoverImage($article) ?>"
+                            <!-- <img src="<?= getCoverImage($article) ?>"
                                 class="card-img-top"
                                 alt="<?= htmlspecialchars($article['title']) ?>"
                                 style="height:180px;object-fit:cover;border-radius:6px;">
@@ -35,10 +35,10 @@
 
                                 <p class="text-muted small mb-2">
                                     <?= date('Y-m-d', strtotime($article['publish_time'])) ?>
-                                </p>
+                                </p> -->
 
                                 <!-- 摘要（如無可省略） -->
-                                <?php if (!empty($article['summary'])): ?>
+                                <!-- <?php if (!empty($article['summary'])): ?>
                                     <p class="text-muted small">
                                         <?= htmlspecialchars($article['summary']) ?>
                                     </p>
@@ -52,8 +52,51 @@
                     </a>
                 </div>
             <?php endforeach; ?>
-        </div>
+        </div> -->
+        <!-- 文章列表(卡片)end -->
+
+        <!-- 純文字文章列表 option -->
+        <ul class="list-group list-group-flush shadow-sm">
+            <?php foreach ($articles as $article): ?>
+                <li class="list-group-item py-3 px-0">
+                    <a href="<?= BASE_URL ?>/?page=news_show&id=<?= $article['id'] ?>"
+                       class="d-flex justify-content-between align-items-center text-decoration-none text-dark">
+
+                        <!-- 左：標題（會自動縮略成單行） -->
+                        <span class="flex-grow-1 text-truncate me-3">
+                            <?= htmlspecialchars($article['title']) ?>
+                        </span>
+
+                        <!-- 右：日期（固定寬度，永遠靠右） -->
+                        <span class="text-muted small" style="min-width: 110px; text-align: right;">
+                            <?= date('Y/m/d H:i', strtotime($article['publish_time'])) ?>
+                        </span>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+        <!-- 純文字文章列表end -->
 
     <?php endif; ?>
 
 </div>
+
+<style>
+    
+.list-group-item {
+    background-color: transparent !important;
+    border: none !important;
+}
+
+.list-group-item + .list-group-item {
+    border-top: 1px solid #ddd !important;
+}
+
+.list-group, .list-group-item {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+
+</style>
