@@ -1,38 +1,21 @@
 <?php
 
 require_once APP_PATH . '/core/db.php';
-require_once APP_PATH . '/core/helpers.php';
+// require_once APP_PATH . '/core/helpers.php';
+require_once APP_PATH . '/controllers/frontend/FrontendController.php';
 
-class NewsController {
+class NewsController extends FrontendController {
+
     public function index() {
-        // 取得新聞分類清單
-        $categories = getNewsCategoryMap('sort ASC'); // nav使用
-        $categoryList = getAllCategories('sort ASC'); // 卡片使用(完整資料)
-
-        // 取得焦點新聞分類
-        $dbCategory = new DB ('news_categories');
-        $focusCategory = $dbCategory->all("is_focus = 1 LIMIT 1");
-        $focusArticle = null;
-
-        // 若有焦點分類 取該分類下最新一篇文章
-        if(!empty($focusCategory)) {
-            $focusCategory = $focusCategory[0];
-            $dbArticle = new DB('articles');
-            $latestFocus = $dbArticle->all( "category_id = ? AND status = 'published' ORDER BY publish_time DESC LIMIT 1",
-                [$focusCategory['id']]);
-            $focusArticle = $latestFocus ? $latestFocus[0] :  null;
-        }
-        // 每個分類取最新一篇新聞
-        $dbArticle = new DB('articles');
+        // 取得分類完整資料(首頁卡片)
+        $categoryList = getAllCategories('sort ASC');
+        // 每個分類最新文章及封面
         foreach($categoryList as &$cat) {
-            $latest = $dbArticle->all(
-                "category_id = ? AND status = 'published' ORDER BY publish_time DESC LIMIT 1",
-                [$cat['id']]
-            );
+            $latest = getLatestArticleByCategory($cat['id']);
+
             if($latest) {
-                $article = $latest[0];
-                $cat['latest_article'] = $article;
-                $cat['cover_image'] = getCoverImage($article);
+                $cat['latest_article'] = $latest;
+                $cat['cover_image'] = getCoverImage($latest);
             }else {
                 $cat['latest_article'] = null;
                 $cat['cover_image'] = BASE_URL . '/assets/frontend/images/default_cover.jpg';
@@ -40,10 +23,36 @@ class NewsController {
         }
         unset($cat);
 
-        // 指定頁面
-        $title = '首頁-馨築新聞網';
-        $content = APP_PATH . '/views/frontend/news/index.php';
-        include APP_PATH . '/views/frontend/layouts/main.php';
+        // 渲染首頁
+        $this->render('frontend/news/index.php', [
+            'categoryList' => $categoryList
+        ]);
+    }
+
+    public function list() {
+        $categoryId = $_GET['category'] ?? null;
+        // 取得當前新聞分類
+        $currentCategory = getNewsCategoryMap()[$categoryId] ?? null;
+        // 文章列表
+        $articles = getArticlesByCategory($categoryId);
+        // var_dump($articles);
+        // exit;
+
+        $this->render('frontend/news/list.php', [
+            'articles' => $articles,
+            'currentCategory' => $currentCategory
+        ]);
+    }
+
+    public function show() {
+        $id = $_GET['id'] ?? null;
+
+        $db = new DB('articles');
+        $article = $db->find($id);
+
+        $this->render('frontend/news/show.php', [
+            'article' => $article
+        ]);
     }
 
 

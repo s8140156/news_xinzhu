@@ -26,7 +26,7 @@ function getAllCategories($orderBy = 'sort ASC') {
 
 // 取得文章封面圖片邏輯(可前後台共用)
 function getCoverImage($article) {
-
+    // cover_image先
     if (!empty($article['cover_image'])) {
         $cover = $article['cover_image'];
 
@@ -48,6 +48,43 @@ function getCoverImage($article) {
     return BASE_URL . '/assets/frontend/images/default_cover.jpg';
 }
 
+// 前台取得焦點新聞最新文章
+function getFocusArticle() {
+    $dbCat = new DB('news_categories');
+    $cat = $dbCat->all("is_focus = 1 LIMIT 1");
+
+    if (!$cat) return null;
+
+    $categoryId = $cat[0]['id'];
+
+    $dbArt = new DB('articles');
+    $rows = $dbArt->all(
+        "category_id = ? AND status='published' ORDER BY publish_time DESC LIMIT 1",
+        [$categoryId]
+    );
+    return $rows ? $rows[0] : null;
+}
+
+// 取得某分類最新文章(首頁卡片)
+function getLatestArticleByCategory($categoryId) {
+    $db = new DB('articles');
+    $rows = $db->all(
+        "category_id = ? AND status='published' ORDER BY publish_time DESC LIMIT 1",
+        [$categoryId]
+    );
+    return $rows ? $rows[0] : null;
+}
+
+function getArticlesByCategory($categoryId) {
+    $db = new DB('articles');
+    $rows = $db->all(
+        "category_id = ? AND status='published' ORDER BY publish_time DESC",
+        [$categoryId]
+    );
+    return $rows ?: [];
+
+    
+}
 
 
 
