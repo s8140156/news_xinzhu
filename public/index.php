@@ -34,8 +34,12 @@ switch($page) {
         $controller = new NewsController();
         $controller->index();
         break;
+    case 'news_list': // 顯示分類文章列表
+        $controller = new NewsController();
+        $controller->list();
+        break;
 
-    case 'frontend_news_show': // 顯示單篇文章
+    case 'news_show': // 顯示單篇文章
         $controller = new NewsController();
         $controller->show($_GET['id'] ?? null);
         break;

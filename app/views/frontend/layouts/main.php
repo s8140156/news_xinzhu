@@ -76,7 +76,7 @@
               <div class="card-body">
                 <!-- <h6 class="card-title text-dark"><?= htmlspecialchars($focusArticle['title']) ?></h6>
                 <p class="text-muted small mb-2"><?= date('Y-m-d', strtotime($focusArticle['publish_time'])) ?></p> -->
-                <a href="<?= BASE_URL ?>/?page=news_show&id=<?= $focusArticle['id'] ?>" class="btn btn-sm btn-primary">閱讀更多</a>
+                <a href="<?= BASE_URL ?>/?page=news_list&category=<?= $focusArticle['category_id'] ?>" class="btn btn-sm btn-primary">閱讀更多</a>
               </div>
             </div>
           </div>
@@ -96,17 +96,6 @@
   <!-- 🟥 頁尾標籤區（這段是你要求新增的） -->
   <div class="container py-3 border-top">
     <div class="text-center small">
-      <?php
-      // ⚠️ 此處是假資料，未來改成資料庫取出
-      $footerTags = [
-        ['title' => '刊登廣告', 'url' => '#'],
-        ['title' => '聯絡我們', 'url' => '#'],
-        ['title' => '自定義 3', 'url' => '#'],
-        ['title' => '自定義 4', 'url' => '#'],
-        ['title' => '自定義 5', 'url' => '#'],
-      ];
-      ?>
-
       <?php foreach ($footerTags as $i => $tag): ?>
         <a href="<?= $tag['url'] ?>" class="text-secondary text-decoration-none me-2">
           <?= $tag['title'] ?>
