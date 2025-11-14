@@ -50,8 +50,12 @@ class NewsController extends FrontendController {
         $db = new DB('articles');
         $article = $db->find($id);
 
+        $categoryMap = getNewsCategoryMap();
+        $categoryName = $categoryMap[$article['category_id']] ?? '未分類';
+
         $this->render('frontend/news/show.php', [
-            'article' => $article
+            'article' => $article,
+            'categoryName' => $categoryName
         ]);
     }
 

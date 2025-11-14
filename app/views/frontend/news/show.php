@@ -1,0 +1,131 @@
+<div class="container my-4 article-container">
+
+    
+    <!-- 標題 -->
+    <h1 class="fw-bold mb-4">
+        <?= htmlspecialchars($article['title']) ?>
+    </h1>
+    
+    <!-- 分類 + 日期 -->
+    <div class="mb-3">
+        <span class="badge bg-secondary px-3 py-2">
+            <?= htmlspecialchars($categoryName) ?>
+        </span>
+
+        <span class="text-muted ms-3">
+            <?= date('Y-m-d H:i', strtotime($article['publish_time'])) ?>
+        </span>
+    </div>
+
+    <!-- 主視覺圖（若有） -->
+    <?php if (!empty($article['cover_image'])): ?>
+        <div class="article-image-wrapper article-cover mb-3">
+            <img src="<?= htmlspecialchars($article['cover_image']) ?>"
+                class="img-fluid rounded shadow-sm article-image">
+        </div>
+        <?php if (!empty($article['images_caption'][0])): ?>
+            <p class="text-muted small">
+                ▲ <?= htmlspecialchars($article['images_caption'][0]) ?>
+            </p>
+        <?php endif; ?>
+    <?php endif; ?>
+
+    <!-- 內文（允許 HTML） -->
+    <div class="article-content my-4">
+        <?= $article['content'] ?>
+    </div>
+
+    <!-- 圖片區（若內文中沒有內嵌，可供 PM 使用） -->
+    <!-- <?php if (!empty($article['images'])): ?>
+        <?php foreach ($article['images'] as $idx => $img): ?>
+            <?php if ($idx === 0) continue; // 第一張圖已當封面 
+            ?>
+
+            <div class="article-image-wrapper mb-3">
+                <img src="<?= htmlspecialchars($img['url']) ?>"
+                    class="img-fluid rounded shadow-sm article-image">
+            </div>
+
+            <?php if (!empty($img['caption'])): ?>
+                <p class="text-muted small">
+                    ▲ <?= htmlspecialchars($img['caption']) ?>
+                </p>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    <?php endif; ?> -->
+
+    <!-- 分享按鈕 -->
+    <div class="my-5">
+        <h6 class="fw-bold">分享文章</h6>
+
+        <a href="https://www.facebook.com/sharer/sharer.php?u=<?= urlencode($currentUrl) ?>"
+            target="_blank"
+            class="btn btn-primary btn-sm me-2">
+            FB 分享
+        </a>
+
+        <a href="https://social-plugins.line.me/lineit/share?url=<?= urlencode($currentUrl) ?>"
+            target="_blank"
+            class="btn btn-success btn-sm">
+            Line 分享
+        </a>
+    </div>
+
+</div>
+
+<style>
+.article-cover {
+    width: 100%;
+    height: 500px; /* 或用 aspect-ratio */
+    overflow: hidden;
+}
+
+.article-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;    /* 把容器填滿、會裁切 */
+    object-position: center; /* 確保是以「中心點」裁切 */
+}
+
+/* CKEditor 內文的統一排版樣式 */
+.article-content img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 1.2rem auto;
+    border-radius: 6px;
+}
+
+.article-content p {
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+.article-content a {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.article-content figure {
+    margin: 1.5rem auto;
+    text-align: center;
+}
+
+.article-content figcaption {
+    font-size: 0.9rem;
+    color: #888;
+    margin-top: 0.5rem;
+}
+
+.article-content figcaption::before {
+    content: "▲ ";
+    color: #666;
+}
+
+/* 如果 CKEditor 產出的圖片是 inline-block，也強制成 block */
+.article-content img {
+    display: block !important;
+}
+
+
+</style>
