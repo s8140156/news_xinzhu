@@ -39,12 +39,6 @@
                                 required>
                         </div>
 
-                        <!-- 第三行：內容 -->
-                        <div class="form-group">
-                            <label for="editorContent" class="form-label"><span class="text-danger">*</span> 文章內容</label>
-                            <textarea class="form-control" id="editorContent" name="editorContent" rows="10"><?= $article['content'] ?></textarea>
-                        </div>
-
                         <!-- 第四行：封面圖片（可選） -->
                         <div class="form-group">
                             <label for="image" class="form-label">封面圖片（可選）</label>
@@ -59,6 +53,13 @@
                                 </div>
                             <?php endif; ?>
                         </div>
+
+                        <!-- 第三行：內容 -->
+                        <div class="form-group">
+                            <label for="editorContent" class="form-label"><span class="text-danger">*</span> 文章內容</label>
+                            <textarea class="form-control" id="editorContent" name="editorContent" rows="10"><?= $article['content'] ?></textarea>
+                        </div>
+
 
                         <!-- 只有編輯模式才顯示連結點擊區塊 -->
                         <?php if ($mode === 'edit'): ?>
