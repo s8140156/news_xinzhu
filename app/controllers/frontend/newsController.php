@@ -50,6 +50,11 @@ class NewsController extends FrontendController {
         $db = new DB('articles');
         $article = $db->find($id);
 
+        // 一進文章內頁 紀錄該篇文章點擊數
+        $db->update($id, [
+            'views' => ($article['views'] ?? 0) + 1
+        ]);
+
         $categoryMap = getNewsCategoryMap();
         $categoryName = $categoryMap[$article['category_id']] ?? '未分類';
 
