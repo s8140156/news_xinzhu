@@ -8,6 +8,8 @@
 
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/backend/vendor/fontawesome-free/css/all.min.css">
   <link href="<?= BASE_URL ?>/assets/css/frontend.css" rel="stylesheet">
   <link rel="stylesheet" href="<?= BASE_URL ?>/assets/frontend/css/style.css">
   <script src="<?= BASE_URL ?>/assets/frontend/js/main.js"></script>
@@ -54,8 +56,8 @@
 
       <!-- 右側固定側欄 -->
       <aside class="col-lg-3 col-md-4 col-12">
-        <!-- 廣告區 -->
-        <div class="ad-section mb-5">
+        <!-- 廣告區 後台還未建置 預留欄位 -->
+        <!-- <div class="ad-section mb-5">
           <h5 class="fw-bold text-secondary border-bottom pb-2">廣告區</h5>
           <div class="marquee bg-light p-3 rounded small text-muted">
             <marquee behavior="scroll" direction="up" scrollamount="2" height="140">
@@ -65,7 +67,7 @@
               <p>這裡是廣告標題跑馬燈</p>
             </marquee>
           </div>
-        </div>
+        </div> -->
 
         <!-- 焦點新聞 -->
         <?php if (!empty($focusArticle)): ?>
@@ -82,19 +84,19 @@
           </div>
         <?php endif; ?>
 
-        <!-- 合作媒體 -->
-        <div class="partner-section">
+        <!-- 合作媒體 後台還未建置 預留欄位 -->
+        <!-- <div class="partner-section">
           <h5 class="fw-bold text-secondary border-bottom pb-2">合作媒體</h5>
           <div class="bg-light text-center p-3 rounded">
             <p class="text-muted small mb-2">此區預留合作媒體 LOGO 展示</p>
             <div class="placeholder bg-secondary rounded mx-auto" style="width:80%;height:60px;opacity:0.1;"></div>
           </div>
-        </div>
+        </div> -->
       </aside>
     </div>
   </main>
-  <!-- 🟥 頁尾標籤區（這段是你要求新增的） -->
-  <div class="container py-3 border-top">
+  <!-- 🟥 頁尾標籤區 -->
+  <div class="container py-3">
     <div class="text-center small">
       <?php foreach ($footerTags as $i => $tag): ?>
         <a href="<?= $tag['url'] ?>" class="text-secondary text-decoration-none me-2">

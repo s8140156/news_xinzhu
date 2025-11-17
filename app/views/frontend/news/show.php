@@ -13,12 +13,13 @@
         </span>
 
         <span class="text-muted ms-3">
+            <i class="far fa-clock me-1"></i>
             <?= date('Y-m-d H:i', strtotime($article['publish_time'])) ?>
         </span>
     </div>
 
     <!-- 主視覺圖（若有） -->
-    <?php if (!empty($article['cover_image'])): ?>
+    <!-- <?php if (!empty($article['cover_image'])): ?>
         <div class="article-image-wrapper article-cover mb-3">
             <img src="<?= htmlspecialchars($article['cover_image']) ?>"
                 class="img-fluid rounded shadow-sm article-image">
@@ -28,7 +29,7 @@
                 ▲ <?= htmlspecialchars($article['images_caption'][0]) ?>
             </p>
         <?php endif; ?>
-    <?php endif; ?>
+    <?php endif; ?> -->
 
     <!-- 內文（允許 HTML） -->
     <div class="article-content my-4">
