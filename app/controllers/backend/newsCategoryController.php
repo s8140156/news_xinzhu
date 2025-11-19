@@ -29,10 +29,20 @@ class NewsCategoryController {
             $delete_ids = $_POST['delete_ids'] ?? [];
             $db = new DB('news_categories');
 
-            // 先處理刪除
             foreach($delete_ids as $delId) {
                 if(is_numeric($delId)) {
+                    // 先處理刪除分類
                     $db->delete($delId);
+
+                    // 更新文章的category_id 把該分類設為NULL or 0
+                    $articleDB = new DB('articles');
+                    $articles = $articleDB->all("category_id = $delId");
+                    foreach($articles as $article) {
+                        $articleDB->update($article['id'], [
+                            'category_id' => 0,
+                            'updated_at' => date('Y-m-d H:i:s')
+                        ]);
+                    }
                 }
             }
 

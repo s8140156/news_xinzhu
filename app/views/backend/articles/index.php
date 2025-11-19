@@ -29,10 +29,11 @@
                                 <select id="category" name="category" class="form-control">
                                     <option value="">全部分類</option>
                                     <?php foreach($categories as $id=>$name): ?>
-                                    <option value="<?= $id ?>" <?= $category == $id ? 'selected' : '' ?>>
-                                        <?= htmlspecialchars($name) ?>
-                                    </option>
-                                    <?php endforeach; ?>
+                                        <option value="<?= $id ?>" <?= $category == $id ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($name) ?>
+                                        </option>
+                                        <?php endforeach; ?>
+                                        <option value="0">未分類</option>
                                 </select>
                             </div>
                         </div>

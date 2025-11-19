@@ -45,11 +45,19 @@ class ArticleController {
             $where .= " AND status = :status";
             $params[':status'] = $status;
         }
+
         // 類別
-        if(!empty($category)) {
-            $where .= " AND category_id = :category_id";
-            $params[':category_id'] = $category;
+        if($category !== "" && $category !== null) {
+                // 篩選未分類0
+            if ($category === "0") {
+                $where .= " AND (category_id = 0 OR category_id IS NULL)";
+            }else {
+                // 一般分類
+                $where .= " AND category_id = :category_id";
+                $params[':category_id'] = $category;
+            }
         }
+
         // 日期區間
         if(!empty($start_date)) {
             $where .= " AND DATE(updated_at) >= :start_date";
