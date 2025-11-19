@@ -43,6 +43,11 @@ switch($page) {
         $controller = new NewsController();
         $controller->show($_GET['id'] ?? null);
         break;
+    case 'api_link_click': // 統計連結點擊API
+        $controller = new NewsController();
+        $controller->recordLinkClick();
+        break;
+
 
 
     // 後台：文章管理

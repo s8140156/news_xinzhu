@@ -55,13 +55,83 @@ class NewsController extends FrontendController {
             'views' => ($article['views'] ?? 0) + 1
         ]);
 
+        // 取出狀態
+        $statusLabel = '';
+        switch ($article['status']) {
+            case 'draft':
+                $statusLabel = '草稿';
+                break;
+            case 'scheduled':
+                $statusLabel = '排程中';
+                break;
+            case 'published':
+                $statusLabel = '已發布';
+                break;
+        }
+        // link連擊數處理
+        // 取出content
+        $content = $article['content'];
+        // 取links資料
+        $links = json_decode($article['links'], true) ?? [];
+        // DOM解析
+        $dom = new DOMDocument();
+        libxml_use_internal_errors(true); 
+        $dom->loadHTML('<?xml encoding="utf-8" ?>' . $content);
+        libxml_clear_errors();
+
+        $anchors = $dom->getElementsByTagName('a');
+        foreach($anchors as $i => $a) {
+            if(isset($links[$i])) {
+                $articleId = $article['id'];
+                $a->setAttribute("onclick", "recordLinkClick($articleId, $i)");
+                $a->setAttribute("target", "_blank");
+            }
+        }
+        // 回存成新HTML
+        $body = $dom->getElementsByTagName('body')->item(0);
+        $article['content_html'] = $dom->saveHTML($body);
+
+
         $categoryMap = getNewsCategoryMap();
         $categoryName = $categoryMap[$article['category_id']] ?? '未分類';
 
         $this->render('frontend/news/show.php', [
             'article' => $article,
-            'categoryName' => $categoryName
+            'categoryName' => $categoryName,
+            'statusLabel' => $statusLabel
         ]);
+    }
+
+    public function recordLinkClick() {
+        $id = $_POST['id'] ?? null;
+        $index = $_POST['index'] ?? null;
+
+        if ($id === null || $id === '' || $index === null || $index === '') {
+            echo "error";
+            return;
+        }
+        $db = new DB('articles');
+        $article = $db->find($id);
+
+        // 確認 link_clicks 是否為 json
+        $raw = $article['link_clicks'] ?? '';
+        if ($raw === null || $raw === '') {
+            $clicks = [];
+        } else {
+            $clicks = json_decode($raw, true);
+            if (!is_array($clicks)) {
+                $clicks = [];
+            }
+        }
+
+        // 計算點擊
+        $clicks[$index] = ($clicks[$index] ?? 0) + 1;
+
+        $db->update($id, [
+            'link_clicks' => json_encode($clicks, JSON_UNESCAPED_UNICODE)
+        ]);
+
+        echo "ok";
     }
 
 

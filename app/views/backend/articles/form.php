@@ -67,12 +67,22 @@
                             <label class="form-label fw-semibold text-secondary mb-2">連結點擊次數：</label>
 
                             <?php
+                            // 連結text
                             $links = [];
                             if (!empty($article['links']) && is_string($article['links'])) {
                                 $decoded = json_decode($article['links'], true);
                                 if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
                                     $links = $decoded;
                                 }
+                            }
+                            // 連結點擊數
+                            $linkClicks = [];
+                            if (!empty($article['link_clicks'])) {
+                                $decoded = json_decode($article['link_clicks'], true);
+                                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                                    $linkClicks = $decoded;
+                                }
+
                             }
                             ?>
 
@@ -85,7 +95,7 @@
                                                 <span class="fw-medium link-display"><?= htmlspecialchars($link['text'] ?: '') ?></span>
                                             </div>
                                             <div class="text-muted ms-3">
-                                                點擊數：<?= rand(0, 50) ?>
+                                                點擊數：<?= $linkClicks[$idx] ?? 0 ?>
                                             </div>
                                         </div>
                                     <?php endforeach; ?>

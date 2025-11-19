@@ -153,6 +153,15 @@
                                 $links = $decoded;
                             }
                         }
+                        // 連結點擊數
+                        $linkClicks = [];
+                        if (!empty($article['link_clicks'])) {
+                            $decoded = json_decode($article['link_clicks'], true);
+                            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                                $linkClicks = $decoded;
+                            }
+
+                        }
                         // print_r($links);
                         ?>
                         <div class="text-secondary small d-flex flex-wrap mb-2">
@@ -175,7 +184,7 @@
                             <?php foreach($links as $idx=>$link): ?>
                             <div class="mb-1">
                                 連結 <?= $idx+1 ?>：<span
-                                    class="link-display"><?= htmlspecialchars($link['text'] ? : '') ?></span>　點擊數：<?= rand(0,50) ?>
+                                    class="link-display"><?= htmlspecialchars($link['text'] ? : '') ?></span>　點擊數：<?= $linkClicks[$idx] ?? 0 ?>
                             </div>
                             <?php endforeach; ?>
                         </div>
@@ -186,8 +195,8 @@
 
                     <!-- 功能按鈕區 -->
                     <div class="d-flex align-items-start mt-2 mt-md-0 ms-md-3">
-                        <a href="index.php?page=frontend_news_show&id=<?= $article['id'] ?>"
-                            class="btn btn-light btn-sm me-2" title="預覽">
+                        <a href="index.php?page=news_show&id=<?= $article['id'] ?>"
+                            class="btn btn-light btn-sm me-2" title="預覽" target="_blank">
                             <i class="fas fa-eye"></i>
                         </a>
                         <a href="index.php?page=article_edit&id=<?= $article['id'] ?>" class="btn btn-light btn-sm me-2"
