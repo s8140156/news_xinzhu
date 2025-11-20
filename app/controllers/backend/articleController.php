@@ -152,6 +152,7 @@ class ArticleController {
         $author = $_POST['author'] ?? '';
         $category_id = $_POST['category_id'] ?? '';
         $content = $_POST['editorContent'] ?? '';
+        $content = str_replace(BASE_URL . '/', '', $content); // 移除完整網址 content只存相對路徑
 
         if(empty($category_id) || empty($author) || empty($title) || empty($content)) {
             echo "<script>alert('請確認必填欄位是否完整？');history.back();</script>";
@@ -185,7 +186,7 @@ class ArticleController {
             if (!is_dir($coverDir)) mkdir($coverDir, 0777, true);
             $targetPath = $coverDir . $fileName;
             if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-                $coverPath = BASE_URL . "/uploads/articles/cover/{$fileName}";
+                $coverPath = "uploads/articles/cover/{$fileName}";
             }
         }
 
@@ -210,7 +211,9 @@ class ArticleController {
         }
 
         // 更新內文中的圖片路徑
-        $content = str_replace('/uploads/temp/', "/uploads/articles/content/{$articleId}/", $content);
+        $content = str_replace('/uploads/temp/', "uploads/articles/content/{$articleId}/", $content);
+        $content = str_replace('uploads/temp/', "uploads/articles/content/{$articleId}/", $content);
+        
 
         // 從CKEditor內容解析圖片與圖說
         $doc = new DOMDocument();
@@ -267,6 +270,11 @@ class ArticleController {
 
         // === Step 4: 確定封面圖片 ===
         // 若有上傳封面圖，維持上傳的；否則取內文第一張圖
+
+        if ($firstImageSrc) {
+            $firstImageSrc = str_replace('/uploads/temp/', "uploads/articles/content/{$articleId}/", $firstImageSrc);
+            $firstImageSrc = str_replace('uploads/temp/', "uploads/articles/content/{$articleId}/", $firstImageSrc);
+        }
         if (!$coverPath && $firstImageSrc) {
             $coverPath = $firstImageSrc;
         }
@@ -483,6 +491,7 @@ class ArticleController {
         $category_id = $_POST['category_id'] ?? null;
         $author = $_POST['author'] ?? '';
         $content = $_POST['editorContent'] ?? '';
+        $content = str_replace(BASE_URL . '/', '', $content); // 移除完整網址 content只存相對路徑
 
         $action = $_POST['action'] ?? null;
         // 狀態與發布時間
@@ -510,13 +519,17 @@ class ArticleController {
 
         // 封面圖片上傳處理
         $cover_image = $oldArticle['cover_image']; // 預設用舊圖
-        if(!empty($_FILES['cover_image']['name'])) {
+        if(!empty($_FILES['cover_image']['tmp_name']) && $_FILES['cover_image']['error'] === UPLOAD_ERR_OK) {
+            $file = $_FILES['cover_image'];
+            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            $fileName = time() . '_' . uniqid() . '.' . $ext;
             $uploadDir = APP_PATH . '/../public/uploads/articles/cover/';
-            $fileName = time() . '_' . basename($_FILES['cover_image']['name']);
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+
             $targetPath = $uploadDir . $fileName;
 
             if(move_uploaded_file($_FILES['cover_image']['tmp_name'], $targetPath)) {
-                $cover_image = BASE_URL . "/uploads/articles/cover/" . $fileName;
+                $cover_image = "/uploads/articles/cover/" . $fileName;
             }
         }
 

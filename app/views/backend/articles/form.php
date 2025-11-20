@@ -48,7 +48,7 @@
                             <input type="file" class="form-control mb-2" id="image" name="cover_image" value=""accept="image/*">
                             <?php if (!empty($article['cover_image'])): ?>
                                 <div style="margin-bottom: 10px;display:flex;">
-                                    <img src="<?= $article['cover_image'] ?>" alt="目前封面圖片" style="width:150px; height:auto; border:1px solid #ddd; padding:4px;">
+                                    <img src="<?= BASE_URL . '/' . $article['cover_image'] ?>" alt="目前封面圖片" style="width:150px; height:auto; border:1px solid #ddd; padding:4px;">
                                     <p class="text-muted" style="font-size: 0.9em;">封面檔案：<?= basename($article['cover_image']) ?></p>
                                 </div>
                             <?php endif; ?>

@@ -18,7 +18,7 @@
 
                         <!-- 圖片區 -->
                         <div class="position-relative">
-                            <img src="<?= $cat['cover_image'] ?>"
+                            <img src="<?= BASE_URL . '/' . $cat['cover_image'] ?>"
                                 class="card-img-top"
                                 alt="<?= htmlspecialchars($cat['name']) ?>"
                                 style="height: 180px; object-fit: cover; border-radius: 6px;">
