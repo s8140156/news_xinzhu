@@ -175,7 +175,7 @@
                             <?php endif; ?>
                             <span class="me-3"> 最後修改：<?= date('Y/m/d H:i', strtotime($article['updated_at'])) ?>
                                 |&nbsp&nbsp</span>
-                            <span class="me-3">點擊數：<?= $article['views'] ?> 次 |&nbsp&nbsp</span>
+                            <span class="me-3">瀏覽次數：<?= $article['views'] ?> 次 |&nbsp&nbsp</span>
                             <span>連結追蹤：<?= count($links) ?></span>
                         </div>
 
@@ -185,7 +185,7 @@
                             <?php foreach($links as $idx=>$link): ?>
                             <div class="mb-1">
                                 連結 <?= $idx+1 ?>：<span
-                                    class="link-display"><?= htmlspecialchars($link['text'] ? : '') ?></span>　點擊數：<?= $linkClicks[$idx] ?? 0 ?>
+                                    class="link-display"><?= htmlspecialchars($link['text'] ? : '') ?></span>　點擊次數：<?= $linkClicks[$idx] ?? 0 ?>
                             </div>
                             <?php endforeach; ?>
                         </div>
