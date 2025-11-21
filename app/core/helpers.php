@@ -41,7 +41,7 @@ function getCoverImage($article) {
         // echo "Check real path: $realPath<br>";
 
         if (file_exists($realPath)) {
-            return $cover;
+            return BASE_URL . '/' . $relative;
         }
     }
 
