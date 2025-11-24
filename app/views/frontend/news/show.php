@@ -43,6 +43,11 @@
             <!-- <?= date('Y-m-d H:i', strtotime($article['publish_time'])) ?> -->
             <?= $article['publish_time'] ? date('Y/m/d H:i', strtotime($article['publish_time'])) : '-' ?>
         </span>
+
+        <span class="text-muted ms-1">
+            &nbsp&nbsp<i class="fas fa-solid fa-marker"></i>
+            <?= htmlspecialchars($article['author']) ?>
+        </span>
     </div>
 
     <!-- 主視覺圖（若有） 目前依據PM需求 不使用封面 -->
