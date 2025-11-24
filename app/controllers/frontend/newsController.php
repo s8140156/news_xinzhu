@@ -134,6 +134,31 @@ class NewsController extends FrontendController {
         echo "ok";
     }
 
+    public function search() {
+        $keyword = trim($_GET['keyword'] ?? '');
+
+        if($keyword === '') {
+            $results = [];
+            include_once APP_PATH . "/views/frontend/search.php";
+            return;
+        }
+
+        $db = new DB('articles');
+        $results = $db->query("
+            SELECT id, title, author, cover_image, publish_time, content
+            FROM articles
+            WHERE status = 'published'
+            AND (title LIKE ? OR content LIKE ? OR author LIKE ?)
+            ORDER BY publish_time DESC
+        ", ["%$keyword%", "%$keyword%", "%$keyword%"]);
+
+        // 渲染search
+        $this->render('frontend/news/search.php', [
+            'results' => $results,
+            'keyword' => $keyword
+        ]);
+    }
+
 
 
 

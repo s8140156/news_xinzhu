@@ -41,9 +41,10 @@
           <?php endforeach; ?>
         </ul>
 
-        <form class="d-flex" role="search">
-          <input class="form-control form-control-sm me-2" type="search" placeholder="搜尋新聞...">
-          <button class="btn btn-outline-primary btn-sm">搜尋</button>
+        <form class="d-flex" role="search" action="" method="get">
+          <input type="hidden" name="page" value="search">
+          <input class="form-control form-control-sm me-2" name="keyword" type="search" placeholder="搜尋新聞..." required>
+          <button class="btn btn-outline-primary btn-sm" type="submit">搜尋</button>
         </form>
       </div>
     </div>

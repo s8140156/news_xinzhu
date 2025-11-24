@@ -50,6 +50,10 @@ switch($page) {
         $controller = new NewsController();
         $controller->recordLinkClick();
         break;
+    case 'search': // 新聞關鍵字搜尋
+        $controller = new NewsController();
+        $controller->search();
+        break;
 
 
 
