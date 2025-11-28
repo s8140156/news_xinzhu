@@ -1,6 +1,11 @@
 <?php
 
 require_once APP_PATH . '/core/db.php';
+// 讀取設定檔（包含 UPLOAD_PATH / UPLOAD_URL）
+$config = require APP_PATH . '/config.php';
+
+$UPLOAD_PATH = $config['UPLOAD_PATH'];
+$UPLOAD_URL  = $config['UPLOAD_URL'];
 
 class ArticleController {
 
@@ -9,7 +14,7 @@ class ArticleController {
         $db =new DB('articles');
 
         // 自動排程：發布排程到期文章(測試用)
-        $this->checkAndPublishScheduledArticles();
+        // $this->checkAndPublishScheduledArticles();
 
         // 讀取搜尋與排序條件
         $category = $_GET['category'] ?? '';
@@ -307,6 +312,14 @@ class ArticleController {
 
     // 處理CKEditor內文圖片上傳
     public function imageUpload() {
+
+        global $UPLOAD_PATH, $UPLOAD_URL;   // <-- 讓這兩個變數變成全域使用
+        // error_log("=== DEBUG START ===");
+        // error_log("UPLOAD_PATH: " . $UPLOAD_PATH);
+        // error_log("UPLOAD_URL: " . $UPLOAD_URL);
+        // error_log("APP_PATH: " . APP_PATH);
+        // error_log("Current __DIR__: " . __DIR__);
+
         // 清除緩衝區，避免干擾回傳
         if (function_exists('ob_get_level')) while (ob_get_level()) ob_end_clean();
 
@@ -345,14 +358,26 @@ class ArticleController {
 
         // 在編輯時判斷是哪篇文章(新增時為temp)
         $articleId = !empty($_GET['id']) ? $_GET['id'] : 'temp';
+        // error_log("[UPLOAD DEBUG] APP_PATH-2=" . APP_PATH);
         // 決定目錄路徑
         if($articleId !== 'temp') {
-            $uploadDir = APP_PATH . "/../public/uploads/articles/content/{$articleId}/";
+            $uploadDir = $UPLOAD_PATH . "/articles/content/{$articleId}/";
         }else {
-            $uploadDir = APP_PATH . "/../public/uploads/temp/";            
+            $uploadDir = $UPLOAD_PATH . "/temp/";            
         }
-        if(!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+        // error_log("articleId = " . $articleId);
+        // error_log("uploadDir (final) = " . $uploadDir);
+
+        // if(!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
         // error_log(">>> [DEBUG] imageUpload() called, upload to $uploadDir");
+
+        if (!is_dir($uploadDir)) {
+            // error_log("mkdir try => " . $uploadDir);
+            mkdir($uploadDir, 0777, true);
+            // error_log("mkdir result => " . (is_dir($uploadDir) ? "SUCCESS" : "FAIL"));
+        } else {
+            error_log("Dir already exists: " . $uploadDir);
+}
 
         // 產生檔名與存擋
         $fileName = time() . '_' . uniqid() . '.' . $ext;
@@ -426,8 +451,8 @@ class ArticleController {
 
         if($moved) {
             $fileUrl = ($articleId !== 'temp') 
-                ? BASE_URL . "/uploads/articles/content/{$articleId}/" . $fileName
-                : $fileUrl = BASE_URL . "/uploads/temp/" . $fileName;
+                ? $UPLOAD_URL . "/articles/content/{$articleId}/" . $fileName
+                : $fileUrl = $UPLOAD_URL . "/temp/" . $fileName;
 
             // 若有 CKEditorFuncNum，回傳舊協定（對話框上傳）
             if (isset($_GET['CKEditorFuncNum'])) {
@@ -436,6 +461,12 @@ class ArticleController {
                 echo "<script>window.parent.CKEDITOR.tools.callFunction($funcNum, '" . addslashes($fileUrl) . "', '');</script>";
             } 
         } else {
+            // error_log("move_uploaded_file FAILED");
+            // error_log("tmp_name: " . $file['tmp_name']);
+            // error_log("targetPath: " . $targetPath);
+            // error_log("is_writable(uploadDir)? " . (is_writable($uploadDir) ? "YES" : "NO"));
+            // error_log("is_writable(targetPath dir)? " . (is_writable(dirname($targetPath)) ? "YES" : "NO"));
+            
             $msg = '圖片上傳失敗，請確認權限或路徑設定';
             if (isset($_GET['CKEditorFuncNum'])) {
                 $funcNum = (int)$_GET['CKEditorFuncNum'];
