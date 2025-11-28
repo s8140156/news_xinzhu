@@ -2,7 +2,7 @@
 
 require_once APP_PATH . '/core/db.php';
 // require_once APP_PATH . '/core/helpers.php';
-require_once APP_PATH . '/controllers/frontend/FrontendController.php';
+require_once APP_PATH . '/controllers/frontend/frontendController.php';
 
 class NewsController extends FrontendController {
 
