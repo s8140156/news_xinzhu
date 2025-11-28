@@ -27,14 +27,17 @@ if (php_sapi_name() !== 'cli' && $token !== $validToken) {
 
 // === 載入設定與 DB 類別 ===
 require_once __DIR__ . '/../app/core/db.php';
-require_once __DIR__ . '/../config/db.php';
+// require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../app/config.production.php';
+
 
 // === 自動更新狀態 ===
 try {
     $db = new DB('articles');
     $affected = $db->exec("
         UPDATE articles
-        SET status = 'published'
+        SET status = 'published',
+            updated_at = NOW()
         WHERE status = 'scheduled'
         AND publish_time <= NOW()
     ");
