@@ -90,9 +90,11 @@
 
     <!-- 分享按鈕 -->
     <div class="my-5">
+        <?php $shareUrl = BASE_URL . '/?page=news_show&id=' . $article['id'];
+              $encodeUrl = rawurlencode($shareUrl); ?>
         <h6 class="fw-bold">分享文章</h6>
 
-        <a href="https://www.facebook.com/sharer/sharer.php?u=<?= urlencode(BASE_URL . '?page=show&id=' . $article['id']) ?>"
+        <a href="https://www.facebook.com/sharer/sharer.php?u=<?= $encodeUrl ?>"
             target="_blank"
             class="btn btn-primary btn-sm me-2">
             FB 分享
@@ -103,7 +105,7 @@
             FB 分享
         </a> -->
 
-        <a href="https://social-plugins.line.me/lineit/share?url=<?= urlencode(BASE_URL . '?page=show&id=' . $article['id']) ?>"
+        <a href="https://social-plugins.line.me/lineit/share?url=<?= $encodeUrl ?>"
             target="_blank"
             class="btn btn-success btn-sm">
             Line 分享
