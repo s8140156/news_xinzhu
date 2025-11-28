@@ -43,7 +43,7 @@
                         <div class="form-group">
                             <label for="image" class="form-label">封面圖片（可選）</label>
                             <small class="form-text text-muted">
-                                若文章內已有圖片，將自動抓取第一張作為封面；否則使用此上傳圖片。
+                                請先上傳封面圖片；若未提供，系統將自動使用內文中的第一張圖片。
                             </small>
                             <input type="file" class="form-control mb-2" id="image" name="cover_image" value=""accept="image/*">
                             <?php if (!empty($article['cover_image'])): ?>
