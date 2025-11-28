@@ -6,6 +6,7 @@
  * 例如：分類、封面圖、格式化日期、字串截斷等
  */
 
+require_once APP_PATH . '/config.php';
 require_once __DIR__ . '/db.php';
 
 // 取得新聞分類對照表 id=>name
@@ -26,26 +27,40 @@ function getAllCategories($orderBy = 'sort ASC') {
 
 // 取得文章封面圖片邏輯(可前後台共用)
 function getCoverImage($article) {
+    // Debug
+    // print_r($article); 
+    // exit;
     // cover_image先
-    if (!empty($article['cover_image'])) {
-        $cover = $article['cover_image'];
+    // if (!empty($article['cover_image'])) {
+    //     $cover = $article['cover_image'];
 
-        // 將 URL 換成相對路徑
-        $relative = str_replace(BASE_URL, '', $cover);
-        $relative = ltrim($relative, '/');
+    //     // 將 URL 換成相對路徑
+    //     $relative = str_replace(BASE_URL, '', $cover);
+    //     $relative = ltrim($relative, '/');
 
-        // 加入 "news_xinzhu/public"（你的專案結構）
-        $realPath = $_SERVER['DOCUMENT_ROOT'] . '/news_xinzhu/public/' . $relative;
+    //     // 加入 "news_xinzhu/public"（你的專案結構）
+    //     $realPath = $_SERVER['DOCUMENT_ROOT'] . '/news_xinzhu/public/' . $relative;
 
-        // Debug：印出確認
-        // echo "Check real path: $realPath<br>";
+    //     // Debug：印出確認
+    //     // echo "Check real path: $realPath<br>";
 
-        if (file_exists($realPath)) {
+    //     if (file_exists($realPath)) {
+    //         return BASE_URL . '/' . $relative;
+    //     }
+    // }
+
+    if(!empty($article['cover_image'])) {
+        $relative = ltrim($article['cover_image'], '/');
+
+        $filePath = str_replace('uploads/', '', $relative);
+
+        $realPath = UPLOAD_PATH . '/' . $filePath;
+
+        if(file_exists($realPath)) {
             return BASE_URL . '/' . $relative;
         }
     }
-
-    return BASE_URL . '/assets/frontend/images/default_cover.jpg';
+    return BASE_URL . '/assets/frontend/images/oops_cover.png';
 }
 
 // 前台取得焦點新聞最新文章
