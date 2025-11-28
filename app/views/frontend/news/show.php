@@ -51,18 +51,18 @@
     </div>
 
     <!-- 主視覺圖（若有） 目前依據PM需求 不使用封面 -->
-    <?php if (!empty($article['cover_image'])): ?>
-        <div class="article-image-wrapper article-cover mb-3">
+    <!-- <?php if (!empty($article['cover_image'])): ?> -->
+        <!-- <div class="article-image-wrapper article-cover mb-3"> -->
             <!-- <img src="<?= BASE_URL . '/' . htmlspecialchars($article['cover_image']) ?>" -->
-            <img src="<?= getCoverImage($article) ?>"
+            <!-- <img src="<?= getCoverImage($article) ?>"
                 class="img-fluid rounded shadow-sm article-image">
-        </div>
-        <?php if (!empty($article['images_caption'][0])): ?>
+        </div> -->
+        <!-- <?php if (!empty($article['images_caption'][0])): ?>
             <p class="text-muted small">
                 ▲ <?= htmlspecialchars($article['images_caption'][0]) ?>
-            </p>
-        <?php endif; ?>
-    <?php endif; ?>
+            </p> -->
+        <!-- <?php endif; ?>
+    <?php endif; ?> -->
 
     <!-- 內文（允許 HTML） -->
     <div class="article-content my-4">
