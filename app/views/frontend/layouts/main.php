@@ -12,10 +12,10 @@
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/backend/vendor/fontawesome-free/css/all.min.css">
-  <link href="<?= BASE_URL ?>/assets/css/frontend.css" rel="stylesheet">
-  <link rel="stylesheet" href="<?= BASE_URL ?>/assets/frontend/css/style.css">
-  <script src="<?= BASE_URL ?>/assets/frontend/js/main.js"></script>
+  <link rel="stylesheet" href="<?= STATIC_URL ?>/assets/backend/vendor/fontawesome-free/css/all.min.css">
+  <link href="<?= STATIC_URL ?>/assets/css/frontend.css" rel="stylesheet">
+  <link rel="stylesheet" href="<?= STATIC_URL ?>/assets/frontend/css/style.css">
+  <script src="<?= STATIC_URL ?>/assets/frontend/js/main.js"></script>
 
 
 </head>

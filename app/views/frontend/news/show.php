@@ -1,6 +1,6 @@
     <?php
     // 動態生成 OG meta
-    $ogImage = BASE_URL . '/' . $article['cover_image'];
+    $ogImage = STATIC_URL . '/' . $article['cover_image'];
 
     $ogTags = "
     <meta property='og:title' content=\"".htmlspecialchars($article['title'])."\">

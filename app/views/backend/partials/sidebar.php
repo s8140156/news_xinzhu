@@ -3,7 +3,7 @@
 
     <!-- 🌐 Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center bg-white border sidebar-brand-text"
-        href="<?= BASE_URL ?>/?page=dashboard">
+        href="<?= BASE_URL ?>/?page=article_index">
         <span class="mx-2" style="color:#4B7C8E;font-size:1rem;">
             XinZhu<br>新聞後台
         </span>

@@ -7,24 +7,16 @@ class DB {
     private $table;
 
     public function __construct($table=null) {
-        // 載入設定
-        $config = require __DIR__ . '/../../config/db.php';
-        // $dsn = "mysql:host={$config['host']};dbname={$config['dbname']};charset={$config['charset']}";
-        // 組成 DSN 字串
+        // 設定：組成 DSN 字串
         $dsn = sprintf(
             "mysql:host=%s;dbname=%s;charset=%s",
-            $config['host'],
-            $config['dbname'],
-            $config['charset']
+            DB_HOST, //改成常數 從config.php讀取
+            DB_NAME, //改成常數 從config.php讀取
+            'utf8mb4'
         );
         // 建立 PDO 連線
         try {
-        //     $this->pdo = new PDO($dsn, $config['user'], $config['password'], [
-        //     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        //     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        //     PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES {$config['charset']} COLLATE utf8mb4_unicode_ci"
-        // ]);
-            $this->pdo = new PDO($dsn, $config['user'], $config['password']);
+            $this->pdo = new PDO($dsn, DB_USER, DB_PASS);
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             echo "資料庫連線失敗: " . $e->getMessage();

@@ -9,13 +9,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/backend/vendor/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="<?= STATIC_URL ?>/assets/backend/vendor/fontawesome-free/css/all.min.css">
 
     <!-- SB Admin 2 -->
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/backend/css/sb-admin-2.min.css">
+    <link rel="stylesheet" href="<?= STATIC_URL ?>/assets/backend/css/sb-admin-2.min.css">
 
     <!-- 自訂 CSS -->
-    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/backend/css/style.css">
+    <link rel="stylesheet" href="<?= STATIC_URL ?>/assets/backend/css/style.css">
 
     <!-- jQuery(從script拉上來先引入 不然拖曳功能會吃不到) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

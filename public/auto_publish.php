@@ -17,6 +17,10 @@ error_reporting(E_ALL);
  *     http://localhost/news_xinzhu/public/auto_publish.php?token=yourSecretKey
  */
 
+// === 定義 ROOT_PATH / APP_PATH（必須） ===
+define('ROOT_PATH', realpath(__DIR__ . '/..'));
+define('APP_PATH', ROOT_PATH . '/app');
+
 // === 安全檢查（防止隨意訪問）===
 $token = $_GET['token'] ?? '';
 $validToken = 'yourSecretKey'; // ← 你可以改成任意一組字串
@@ -26,10 +30,12 @@ if (php_sapi_name() !== 'cli' && $token !== $validToken) {
 }
 
 // === 載入設定與 DB 類別 ===
-require_once __DIR__ . '/../app/core/db.php';
-// require_once __DIR__ . '/../config/db.php';
-require_once __DIR__ . '/../app/config.production.php';
-
+require_once APP_PATH . '/core/db.php';
+if (file_exists(APP_PATH . '/config.local.php')) {
+    require_once APP_PATH . '/config.local.php';
+} else {
+    require_once APP_PATH . '/config.production.php';
+}
 
 // === 自動更新狀態 ===
 try {
@@ -44,11 +50,11 @@ try {
 
     // === 寫入 Log ===
     $logMessage = "[" . date('Y-m-d H:i:s') . "] Auto publish executed. Rows updated: {$affected}\n";
-    file_put_contents(__DIR__ . '/../storage/auto_publish.log', $logMessage, FILE_APPEND);
+    file_put_contents(ROOT_PATH . '/storage/auto_publish.log', $logMessage, FILE_APPEND);
 
     echo $logMessage;
 } catch (Exception $e) {
-    file_put_contents(__DIR__ . '/../storage/auto_publish.log', 
+    file_put_contents(ROOT_PATH . '/storage/auto_publish.log', 
         "[" . date('Y-m-d H:i:s') . "] Error: " . $e->getMessage() . "\n", FILE_APPEND);
     http_response_code(500);
     echo "Error: " . $e->getMessage();

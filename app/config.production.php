@@ -1,13 +1,19 @@
 <?php
+/**
+ * 正式機設定（production）
+ */
 
-// 正式機設定
-define('BASE_URL', 'https://your-domain.com'); 
-// 🔹上線後請改成真正 domain，例如：
-// define('BASE_URL', 'https://news.company.com');
+// 1. 正式機 BASE_URL
+define('BASE_URL', 'https://hc-life.news');
+define('STATIC_URL', 'https://hc-life.news');
 
+// 2. 正式機 DB 設定
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'newsXinzhu');
+define('DB_USER', 'root');
+define('DB_PASS', 'JTG@1qaz@WSX');
 
-// 正式機資料庫設定（前輩建給你的）
-define('DB_HOST', 'your-production-db-host');
-define('DB_NAME', 'news_xinzhu');
-define('DB_USER', 'your-db-user');
-define('DB_PASS', 'your-db-password');
+// 3. 上傳路徑（正式機也是存在 public/uploads 下）
+define('UPLOAD_PATH', ROOT_PATH . '/public/uploads');
+
+define('UPLOAD_URL', BASE_URL . '/uploads');

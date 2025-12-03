@@ -1,6 +1,8 @@
 <?php
 
 require_once APP_PATH . '/core/db.php';
+require_once APP_PATH . '/core/helpers.php';
+
 
 class NewsCategoryController {
 

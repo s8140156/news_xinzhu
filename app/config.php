@@ -1,27 +1,20 @@
 <?php
 /**
- * 主設定文件：自動載入對應環境設定
- * 
- * APP_ENV 應由 server 本身決定：
- * - local：本機環境（XAMPP）
- * - production：正式環境（EC2 / Lightsail / 真實 domain）
+ * 主設定檔：決定環境並載入對應設定
  */
 
-if (!defined('APP_PATH')) {
-    define('APP_PATH', realpath(__DIR__ . '/..'));
-}
 
-// 判斷環境：
-// 若 server 有 APP_ENV 環境變數 → 優先使用
-// 若沒有 → 預設為 local（本機）
+// 2. 判斷環境：若 APP_ENV 有設定則使用，否則預設 local
 $env = getenv('APP_ENV') ?: 'local';
 define('APP_ENV', $env);
 
-// 根據環境載入設定檔
+// 3. 組合設定檔路徑
 $configFile = APP_PATH . "/config.{$env}.php";
 
+// 4. 若設定檔不存在 → 報錯
 if (!file_exists($configFile)) {
     die("找不到設定檔：{$configFile}");
 }
 
+// 5. 載入設定檔（此檔案會 define BASE_URL、DB_HOST 等）
 require_once $configFile;

@@ -1,11 +1,8 @@
 <?php
 
 require_once APP_PATH . '/core/db.php';
+require_once APP_PATH . '/core/helpers.php';
 // 讀取設定檔（包含 UPLOAD_PATH / UPLOAD_URL）
-$config = require APP_PATH . '/config.php';
-
-$UPLOAD_PATH = $config['UPLOAD_PATH'];
-$UPLOAD_URL  = $config['UPLOAD_URL'];
 
 class ArticleController {
 
@@ -187,7 +184,8 @@ class ArticleController {
             $file = $_FILES['cover_image'];
             $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
             $fileName = time() . '_' . uniqid() . '.' . $ext;
-            $coverDir = APP_PATH . '/../public/uploads/articles/cover/';
+            // $coverDir = APP_PATH . '/../public/uploads/articles/cover/';
+            $coverDir = UPLOAD_PATH . '/articles/cover/';
             if (!is_dir($coverDir)) mkdir($coverDir, 0777, true);
             $targetPath = $coverDir . $fileName;
             if (move_uploaded_file($file['tmp_name'], $targetPath)) {
@@ -196,8 +194,10 @@ class ArticleController {
         }
 
         // 搬移圖片資料夾temp->content{id}
-        $tempDir = APP_PATH . '/../public/uploads/temp/';
-        $targetDir = APP_PATH . "/../public/uploads/articles/content/{$articleId}/";
+        // $tempDir = APP_PATH . '/../public/uploads/temp/';
+        // $targetDir = APP_PATH . "/../public/uploads/articles/content/{$articleId}/";
+        $tempDir = UPLOAD_PATH . '/temp/';
+        $targetDir = UPLOAD_PATH . "/articles/content/{$articleId}/";
 
         if(is_dir($tempDir)) {
             if(!is_dir($targetDir)) mkdir ($targetDir, 0777, true);
@@ -313,7 +313,7 @@ class ArticleController {
     // 處理CKEditor內文圖片上傳
     public function imageUpload() {
 
-        global $UPLOAD_PATH, $UPLOAD_URL;   // <-- 讓這兩個變數變成全域使用
+        // global $UPLOAD_PATH, $UPLOAD_URL;   // <-- 讓這兩個變數變成全域使用
         // error_log("=== DEBUG START ===");
         // error_log("UPLOAD_PATH: " . $UPLOAD_PATH);
         // error_log("UPLOAD_URL: " . $UPLOAD_URL);
@@ -361,9 +361,9 @@ class ArticleController {
         // error_log("[UPLOAD DEBUG] APP_PATH-2=" . APP_PATH);
         // 決定目錄路徑
         if($articleId !== 'temp') {
-            $uploadDir = $UPLOAD_PATH . "/articles/content/{$articleId}/";
+            $uploadDir = UPLOAD_PATH . "/articles/content/{$articleId}/";
         }else {
-            $uploadDir = $UPLOAD_PATH . "/temp/";            
+            $uploadDir = UPLOAD_PATH . "/temp/";            
         }
         // error_log("articleId = " . $articleId);
         // error_log("uploadDir (final) = " . $uploadDir);
@@ -377,7 +377,7 @@ class ArticleController {
             // error_log("mkdir result => " . (is_dir($uploadDir) ? "SUCCESS" : "FAIL"));
         } else {
             error_log("Dir already exists: " . $uploadDir);
-}
+        }
 
         // 產生檔名與存擋
         $fileName = time() . '_' . uniqid() . '.' . $ext;
@@ -451,8 +451,8 @@ class ArticleController {
 
         if($moved) {
             $fileUrl = ($articleId !== 'temp') 
-                ? $UPLOAD_URL . "/articles/content/{$articleId}/" . $fileName
-                : $fileUrl = $UPLOAD_URL . "/temp/" . $fileName;
+                ? UPLOAD_URL . "/articles/content/{$articleId}/" . $fileName
+                : UPLOAD_URL . "/temp/" . $fileName;
 
             // 若有 CKEditorFuncNum，回傳舊協定（對話框上傳）
             if (isset($_GET['CKEditorFuncNum'])) {
@@ -554,7 +554,8 @@ class ArticleController {
             $file = $_FILES['cover_image'];
             $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
             $fileName = time() . '_' . uniqid() . '.' . $ext;
-            $uploadDir = APP_PATH . '/../public/uploads/articles/cover/';
+            // $uploadDir = APP_PATH . '/../public/uploads/articles/cover/';
+            $uploadDir = UPLOAD_PATH . '/articles/cover/';
             if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
 
             $targetPath = $uploadDir . $fileName;
@@ -565,7 +566,8 @@ class ArticleController {
         }
 
         // 圖片資料夾處理
-        $targetDir = APP_PATH . "/../public/uploads/articles/content/{$id}/";
+        // $targetDir = APP_PATH . "/../public/uploads/articles/content/{$id}/";
+        $targetDir = UPLOAD_PATH . "/articles/content/{$id}/";
         $deletedList = json_decode($_POST['deleted_images'] ?? '[]', true);
 
         // 實體刪除清單
@@ -583,6 +585,9 @@ class ArticleController {
                 unlink($file); // 若該檔案已不在編輯器內文中 → 刪除
             }
         }
+
+        $content = str_replace('/uploads/temp/', "uploads/articles/content/{$id}/", $content);
+        $content = str_replace('uploads/temp/', "uploads/articles/content/{$id}/", $content);
 
         // 從CKEditor內容解析圖片與圖說
         $doc = new DOMDocument();

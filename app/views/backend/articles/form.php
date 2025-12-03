@@ -48,7 +48,7 @@
                             <input type="file" class="form-control mb-2" id="image" name="cover_image" value=""accept="image/*">
                             <?php if (!empty($article['cover_image'])): ?>
                                 <div style="margin-bottom: 10px;display:flex;">
-                                    <img src="<?= BASE_URL . '/' . $article['cover_image'] ?>" alt="目前封面圖片" style="width:150px; height:auto; border:1px solid #ddd; padding:4px;">
+                                    <img src="<?= STATIC_URL . '/' . $article['cover_image'] ?>" alt="目前封面圖片" style="width:150px; height:auto; border:1px solid #ddd; padding:4px;">
                                     <p class="text-muted" style="font-size: 0.9em;">封面檔案：<?= basename($article['cover_image']) ?></p>
                                 </div>
                             <?php endif; ?>
@@ -187,11 +187,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Verdana/Verdana, Geneva, sans-serif;',
             fontSize_sizes:
                 '10/10px;12/12px;14/14px;16/16px;18/18px;20/20px;24/24px;30/30px;36/36px;',
-            // filebrowserUploadUrl: '<?= BASE_URL ?>/?page=article_image_upload',
-            // filebrowserImageUploadUrl: '<?= BASE_URL ?>/?page=article_image_upload', // filebrowserImageUploadUrl這個key(key:'upload')用在圖片上傳
             filebrowserUploadMethod: 'form',
             filebrowserUploadUrl: '<?= BASE_URL ?>/?page=article_image_upload&id=<?= $article['id'] ?? "temp" ?>',
             filebrowserImageUploadUrl: '<?= BASE_URL ?>/?page=article_image_upload&id=<?= $article['id'] ?? "temp" ?>',
+            forceAbsoluteUrl: true,
 
 
             // 圖說設定

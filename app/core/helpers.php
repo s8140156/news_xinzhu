@@ -6,7 +6,7 @@
  * 例如：分類、封面圖、格式化日期、字串截斷等
  */
 
-require_once APP_PATH . '/config.php';
+// require_once APP_PATH . '/config.php'; // 已在 index.php 載入，不需重複載入(先註記)
 require_once __DIR__ . '/db.php';
 
 // 取得新聞分類對照表 id=>name
@@ -57,10 +57,10 @@ function getCoverImage($article) {
         $realPath = UPLOAD_PATH . '/' . $filePath;
 
         if(file_exists($realPath)) {
-            return BASE_URL . '/' . $relative;
+            return STATIC_URL . '/' . $relative;
         }
     }
-    return BASE_URL . '/assets/frontend/images/oops_cover.png';
+    return STATIC_URL . '/assets/frontend/images/oops_cover.png';
 }
 
 // 前台取得焦點新聞最新文章

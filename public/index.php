@@ -3,18 +3,9 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// require_once __DIR__ . '/../app/config.php';
-
-// 基本環境設定
-// 偵測當前專案根網址
-// $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http');
-// $baseUrl .= '://' . $_SERVER['HTTP_HOST'];
-// $baseUrl .= str_replace(basename($_SERVER['SCRIPT_NAME']), '', $_SERVER['SCRIPT_NAME']);
-// print_r($_SERVER);
-
-// define('BASE_URL', rtrim($baseUrl, '/'));
-define('APP_PATH', realpath(__DIR__ . '/../app'));
-require_once APP_PATH . '/config.php';
+define('ROOT_PATH', realpath(__DIR__ . '/..')); //定義專案根目錄
+define('APP_PATH', ROOT_PATH . '/app'); // 定義應用程式目錄
+require_once APP_PATH . '/config.php'; // 載入config,自動判斷環境(local/production)
 
 // 載入controller
 // 前台
