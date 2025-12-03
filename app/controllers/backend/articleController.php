@@ -130,7 +130,21 @@ class ArticleController {
     }
 
     public function store() {
-        // 先確認文章狀態
+        // 欄位接收
+        $title = $_POST['title'] ?? '';
+        $author = $_POST['author'] ?? '';
+        $category_id = $_POST['category_id'] ?? '';
+        $content = $_POST['editorContent'] ?? '';
+        $content = str_replace(BASE_URL . '/', '', $content); // 移除完整網址 content只存相對路徑
+
+        $date = $_POST['schedule_date'] ?? '';
+        $time = $_POST['schedule_time'] ?? '';
+
+        if(empty($category_id) || empty($author) || empty($title) || empty($content)) {
+            echo "<script>alert('請確認必填欄位是否完整？');history.back();</script>";
+            return;
+        }
+        // 確認文章狀態
         $action = $_POST['action'] ?? 'draft';
         switch($action) {
             case 'publish':
@@ -139,26 +153,20 @@ class ArticleController {
                 break;
             case 'schedule':
                 $status = 'scheduled';
-                // 接收排程時間
-                $date = $_POST['schedule_date'] ?? '';
-                $time = $_POST['schedule_time'] ?? '';
-                $publish_time = ($date && $time) ? $date . ' ' . $time . ':00' : null;
+                // 排程防呆
+                if(empty($date)){
+                    echo "<script>alert('請設定完整的排程日期與時間');history.back();</script>";
+                    return;
+                }
+                if(empty($time)){
+                    $time = '00:00';
+                }
+                $publish_time = $date . ' ' . $time . ':00';
                 break;
             default:
                 $status = 'draft';
                 $publish_time = null;
                 break;
-        }
-        // 欄位接收
-        $title = $_POST['title'] ?? '';
-        $author = $_POST['author'] ?? '';
-        $category_id = $_POST['category_id'] ?? '';
-        $content = $_POST['editorContent'] ?? '';
-        $content = str_replace(BASE_URL . '/', '', $content); // 移除完整網址 content只存相對路徑
-
-        if(empty($category_id) || empty($author) || empty($title) || empty($content)) {
-            echo "<script>alert('請確認必填欄位是否完整？');history.back();</script>";
-            return;
         }
 
         // 先插入文章主體資料(圖片待取得id後更新)
@@ -524,6 +532,9 @@ class ArticleController {
         $content = $_POST['editorContent'] ?? '';
         $content = str_replace(BASE_URL . '/', '', $content); // 移除完整網址 content只存相對路徑
 
+        $date = $_POST['schedule_date'] ?? '';
+        $time = $_POST['schedule_time'] ?? '';
+
         $action = $_POST['action'] ?? null;
         // 狀態與發布時間
         if($action) {
@@ -534,9 +545,15 @@ class ArticleController {
                     break;
                 case 'schedule':
                     $status = 'scheduled';
-                    $schedule_date = $_POST['schedule_date'] ?? '';
-                    $schedule_time = $_POST['schedule_time'] ?? '';
-                    $publish_time = ($schedule_date && $schedule_time) ? "$schedule_date $schedule_time:00" : null;
+                    // 排程防呆
+                    if(empty($date)){
+                        echo "<script>alert('請設定完整的排程日期與時間');history.back();</script>";
+                        return;
+                    }
+                    if(empty($time)){
+                        $time = '00:00';
+                    }
+                    $publish_time = $date . ' ' . $time . ':00';
                     break;
                 case 'draft':
                     $status = 'draft';
