@@ -566,6 +566,16 @@ class ArticleController {
             // fixImageOrientation($_FILES['cover_image']['tmp_name']); // 修正方向
             if(move_uploaded_file($_FILES['cover_image']['tmp_name'], $targetPath)) {
                 $cover_image = "/uploads/articles/cover/" . $fileName;
+
+                // -------- 刪除舊封面（若有上傳新封面） --------
+                if (!empty($oldArticle['cover_image']) && $oldArticle['cover_image'] !== $cover_image) {
+                    $oldFileName = basename($oldArticle['cover_image']);
+                    $oldCoverPath = UPLOAD_PATH . '/articles/cover/' . $oldFileName;
+
+                    if (file_exists($oldCoverPath)) {
+                        unlink($oldCoverPath);
+                    }
+                }
             }
         }
 
@@ -650,10 +660,10 @@ class ArticleController {
             echo "<script>alert('找不到指定文章，無法刪除');history.back();</script>";
             return;
         }
-        // 可選：刪除封面圖片檔案（若存在）
+        // 刪除上傳封面圖片檔案（若存在）
         if (!empty($article['cover_image'])) {
-            // 將 URL 轉為實際路徑
-            $coverPath = str_replace(BASE_URL, rtrim($_SERVER['DOCUMENT_ROOT'], '/'), $article['cover_image']);
+            $fileName = basename($article['cover_image']);
+            $coverPath = UPLOAD_PATH . "/articles/cover/" . $fileName;
 
             if (file_exists($coverPath)) {
                 unlink($coverPath);
@@ -661,14 +671,16 @@ class ArticleController {
             }
         }
 
-        // （可選）若要同步清理 CKEditor 上傳圖片
-        // 可額外解析 content 或 images 欄位內的圖片路徑後逐一刪除
-        if (!empty($article['images'])) {
-            $images = json_decode($article['images'], true);
-            foreach ($images as $img) {
-                $imgPath = str_replace(BASE_URL, rtrim($_SERVER['DOCUMENT_ROOT'], '/'), $img['url']);
-                if (file_exists($imgPath)) unlink($imgPath);
+        // 同步清理 CKEditor 上傳圖片
+        $contentDir = UPLOAD_PATH . "/articles/content/{$id}/";
+        if (is_dir($contentDir)) {
+            // 刪除所有內文圖片檔案
+            $files = glob($contentDir . "/*");
+            foreach($files as $file) {
+                if(is_file($file)) unlink($file); 
             }
+            // 刪除資料夾
+            rmdir($contentDir);
         }
 
         // 刪除資料庫記錄
