@@ -196,6 +196,7 @@ class ArticleController {
             $coverDir = UPLOAD_PATH . '/articles/cover/';
             if (!is_dir($coverDir)) mkdir($coverDir, 0777, true);
             $targetPath = $coverDir . $fileName;
+            // fixImageOrientation($file['tmp_name']); // 修正方向
             if (move_uploaded_file($file['tmp_name'], $targetPath)) {
                 $coverPath = "uploads/articles/cover/{$fileName}";
             }
@@ -391,98 +392,83 @@ class ArticleController {
         $fileName = time() . '_' . uniqid() . '.' . $ext;
         $targetPath = $uploadDir . '/' . $fileName;
 
+        // 先讀取圖片資源
+        switch ($ext) {
+            case 'jpg':
+            case 'jpeg':
+                $src = imagecreatefromjpeg($file['tmp_name']);
+                break;
+            case 'png':
+                $src = imagecreatefrompng($file['tmp_name']);
+                break;
+            case 'gif':
+                $src = imagecreatefromgif($file['tmp_name']);
+                break;
+            case 'webp':
+                $src = imagecreatefromwebp($file['tmp_name']);
+                break;
+            default:
+                $src = null;
+                break;
+        }
+        if (!$src) {
+            echo json_encode(['uploaded' => 0, 'error' => ['message' => '讀取圖片失敗']]);
+            return;
+        }
+
+        // 先旋轉（只有 JPG/JPEG 有 EXIF)
+        if ($ext === 'jpg' || $ext === 'jpeg') {
+            $src = fixImageOrientation($src, $file['tmp_name']);
+        }
+
         // 新增圖片壓縮(最大寬度600px)
-        $imgInfo = @getimagesize($file['tmp_name']);
-        if ($imgInfo) {
-            $width = $imgInfo[0];
-            $height = $imgInfo[1];
-            $maxWidth = 600;
+        // --- 取得尺寸 ---
+        $width = imagesx($src);
+        $height = imagesy($src);
 
-            if ($width > $maxWidth) {
-                $ratio = $height / $width;
-                $newWidth = $maxWidth;
-                $newHeight = (int)($newWidth * $ratio);
+        $maxWidth = 600;
 
-                switch ($ext) {
-                    case 'jpg':
-                    case 'jpeg':
-                        $src = imagecreatefromjpeg($file['tmp_name']);
-                        break;
-                    case 'png':
-                        $src = imagecreatefrompng($file['tmp_name']);
-                        break;
-                    case 'gif':
-                        $src = imagecreatefromgif($file['tmp_name']);
-                        break;
-                    case 'webp':
-                        $src = imagecreatefromwebp($file['tmp_name']);
-                        break;
-                    default:
-                        $src = null;
-                        break;
-                }
+        // 壓縮（旋轉後再壓縮)
+        if ($width > $maxWidth) {
+            $ratio = $height / $width;
+            $newWidth = $maxWidth;
+            $newHeight = (int)($newWidth * $ratio);
 
-                if ($src) {
-                    $dst = imagecreatetruecolor($newWidth, $newHeight);
-                    imagecopyresampled($dst, $src, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+            $dst = imagecreatetruecolor($newWidth, $newHeight);
+            imagecopyresampled($dst, $src, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
 
-                    switch ($ext) {
-                        case 'jpg':
-                        case 'jpeg':
-                            imagejpeg($dst, $targetPath, 85);
-                            break;
-                        case 'png':
-                            imagepng($dst, $targetPath);
-                            break;
-                        case 'gif':
-                            imagegif($dst, $targetPath);
-                            break;
-                        case 'webp':
-                            imagewebp($dst, $targetPath, 85);
-                            break;
-                    }
-
-                    imagedestroy($src);
-                    imagedestroy($dst);
-                    $resized = true;
-                }
-            }
+            imagedestroy($src);
+            $src = $dst;
         }
 
-        // 若沒壓縮過，才用一般搬移
-        if (empty($resized)) {
-            $moved = move_uploaded_file($file['tmp_name'], $targetPath);
-        }else {
-            $moved = true;
+        // --- 最終輸出檔案 ---
+        switch ($ext) {
+            case 'jpg':
+            case 'jpeg':
+                imagejpeg($src, $targetPath, 90);
+                break;
+            case 'png':
+                imagepng($src, $targetPath);
+                break;
+            case 'gif':
+                imagegif($src, $targetPath);
+                break;
+            case 'webp':
+                imagewebp($src, $targetPath, 90);
+                break;
         }
-        // 新增圖片壓縮(最大寬度600px) end
+        imagedestroy($src);
 
-        if($moved) {
-            $fileUrl = ($articleId !== 'temp') 
-                ? UPLOAD_URL . "/articles/content/{$articleId}/" . $fileName
-                : UPLOAD_URL . "/temp/" . $fileName;
+        $fileUrl = ($articleId !== 'temp') 
+            ? UPLOAD_URL . "/articles/content/{$articleId}/" . $fileName
+            : UPLOAD_URL . "/temp/" . $fileName;
 
-            // 若有 CKEditorFuncNum，回傳舊協定（對話框上傳）
-            if (isset($_GET['CKEditorFuncNum'])) {
-                $funcNum = (int)$_GET['CKEditorFuncNum'];
-                header('Content-Type: text/html; charset=utf-8');
-                echo "<script>window.parent.CKEDITOR.tools.callFunction($funcNum, '" . addslashes($fileUrl) . "', '');</script>";
-            } 
-        } else {
-            // error_log("move_uploaded_file FAILED");
-            // error_log("tmp_name: " . $file['tmp_name']);
-            // error_log("targetPath: " . $targetPath);
-            // error_log("is_writable(uploadDir)? " . (is_writable($uploadDir) ? "YES" : "NO"));
-            // error_log("is_writable(targetPath dir)? " . (is_writable(dirname($targetPath)) ? "YES" : "NO"));
-            
-            $msg = '圖片上傳失敗，請確認權限或路徑設定';
-            if (isset($_GET['CKEditorFuncNum'])) {
-                $funcNum = (int)$_GET['CKEditorFuncNum'];
-                header('Content-Type: text/html; charset=utf-8');
-                echo "<script>alert('{$msg}');</script>";
-                echo "<script>window.parent.CKEDITOR.tools.callFunction($funcNum, '', '');</script>";
-            }
-        }
+        // 若有 CKEditorFuncNum，回傳舊協定（對話框上傳）
+        if (isset($_GET['CKEditorFuncNum'])) {
+            $funcNum = (int)$_GET['CKEditorFuncNum'];
+            header('Content-Type: text/html; charset=utf-8');
+            echo "<script>window.parent.CKEDITOR.tools.callFunction($funcNum, '" . addslashes($fileUrl) . "', '');</script>";
+        } 
     }
 
     /**
@@ -577,6 +563,7 @@ class ArticleController {
 
             $targetPath = $uploadDir . $fileName;
 
+            // fixImageOrientation($_FILES['cover_image']['tmp_name']); // 修正方向
             if(move_uploaded_file($_FILES['cover_image']['tmp_name'], $targetPath)) {
                 $cover_image = "/uploads/articles/cover/" . $fileName;
             }

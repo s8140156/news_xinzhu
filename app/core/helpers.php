@@ -97,9 +97,38 @@ function getArticlesByCategory($categoryId) {
         [$categoryId]
     );
     return $rows ?: [];
-
-    
 }
+
+/**
+ * 修正上傳圖片的 EXIF 方向
+ * 僅 JPEG 有 Orientation 標籤
+ */
+function fixImageOrientation($img, $tmpPath) {
+    if (!function_exists('exif_read_data')) {
+        return $img; // 若 PHP 未啟用 exif 擴展，直接返回原圖
+    }
+    $exif = @exif_read_data($tmpPath);
+    if (!$exif || !isset($exif['Orientation'])) {
+        return $img; // 無 EXIF 資料或無 Orientation 標籤，直接返回原圖
+    }
+    $orientation = $exif['Orientation'];
+
+    switch ($orientation) {
+        case 3: // 180°
+            $img = imagerotate($img, 180, 0);
+            break;
+        case 6: // 右轉 → -90
+            $img = imagerotate($img, -90, 0);
+            break;
+        case 8: // 左轉 → +90
+            $img = imagerotate($img, 90, 0);
+            break;
+    }
+
+    return $img;
+}
+
+
 
 
 
