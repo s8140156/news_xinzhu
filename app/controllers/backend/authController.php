@@ -42,10 +42,18 @@ class AuthController {
             exit;
         }
 
-        // 登入成功 設定session
+        // 如果要先強制更改密碼 開放部分權限 只存基本身份資料
         $_SESSION['user_id'] = $user['id'];
-        $_SESSION['user_name'] =$user['name'];
         $_SESSION['user_email'] =$user['email'];
+
+        if ($user['must_change_password'] == 1) {
+            $_SESSION['force_change_password'] = true;
+            header("Location: ?page=change_password");
+            exit;
+        }
+
+        // 如果不需強制更改密碼 則存完整身份資料
+        $_SESSION['user_name'] =$user['name'];
         $_SESSION['is_super_admin'] =$user['is_super_admin'];
 
         header("Location: ?page=article_index");
@@ -58,5 +66,54 @@ class AuthController {
         header("Location: ?page=login");
         exit;
     }
+
+    public function changePassword() {
+        if(empty($_SESSION['user_id'] || empty($_SESSION['force_change_password']))) {
+            header("Location: ?page=login");
+            exit;
+        }
+        $error_message = $_SESSION['change_password_error'] ?? '';
+        unset($_SESSION['change_password_error']);
+
+        include APP_PATH . '/views/auth/change_password.php';
+    }
+
+    public function doChangePassword() {
+        if(empty($_SESSION['user_id'] || empty($_SESSION['force_change_password']))) {
+            header("Location: ?page=login");
+            exit;
+        }
+        $password = trim($_POST['password'] ?? '');
+        $password2 = trim($_POST['password2'] ?? '');
+        if($password === '' || $password2 === '') {
+            $_SESSION['change_password_error'] = '請輸入新密碼';
+            header("Location: ?page=change_password");
+            exit;
+        }
+        if($password !== $password2) {
+            $_SESSION['change_password_error'] = '兩次密碼輸入不一致，請重新輸入';
+            header("Location: ?page=change_password");
+            exit;
+        }
+        $hashed = password_hash($password, PASSWORD_DEFAULT);
+
+        $db = new DB('sysusers');
+        $db->update($_SESSION['user_id'], [
+            'password' => $hashed,
+            'must_change_password' => 0,
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
+        
+        unset($_SESSION['force_change_password']);
+
+        $user = $db->find($_SESSION['user_id']);
+        $_SESSION['user_name'] =$user['name'];
+        $_SESSION['user_email'] =$user['email'];
+        $_SESSION['is_super_admin'] =$user['is_super_admin'];   
+        
+        header("Location: ?page=article_index");
+        exit;
+    }
+
 
 }

@@ -115,6 +115,15 @@ switch($page) {
         $controller = new AuthController();
         $controller->doLogin();
         break;
+    // 修改密碼
+    case 'change_password':
+        $controller = new AuthController();
+        $controller->changePassword();
+        break;
+    case 'doChangePassword':
+    $controller = new AuthController();
+    $controller->doChangePassword();
+    break;
     // 登出logout
     case 'logout':
         $controller = new AuthController();
