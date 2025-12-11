@@ -1,4 +1,10 @@
 <!-- 🧭 Sidebar -->
+ <?php
+ $isSuperAdmin = $_SESSION['is_super_admin'] ?? 0;
+
+ $moduleDB = new DB('modules');
+ $modules = $moduleDB->all("1 ORDER BY sort_order ASC");
+ ?>
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- 🌐 Sidebar - Brand -->
@@ -11,8 +17,25 @@
 
     <hr class="sidebar-divider">
 
+    <?php foreach ($modules as $m): ?>
+
+    <?php
+    // 不顯示permission模組
+    if($m['module_key'] === 'permission') continue;
+
+    // sysuser只能由SA存取
+    if($m['module_key'] === 'sysuser' && !$isSuperAdmin) continue;
+    ?>
 
     <!-- 一、文章管理 -->
+
+    <li class="nav-item">
+        <a class="nav-link" href="?page=<?= $m['module_key'] ?>_list">
+            <span><?= htmlspecialchars($m['module_name']) ?></span>
+        </a>
+    </li>
+    <?php endforeach; ?>
+
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#menuArticles">
             <i class="fas fa-fw fa-newspaper"></i>

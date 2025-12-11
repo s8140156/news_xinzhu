@@ -3,6 +3,8 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
+session_start();
+
 define('ROOT_PATH', realpath(__DIR__ . '/..')); //定義專案根目錄
 define('APP_PATH', ROOT_PATH . '/app'); // 定義應用程式目錄
 require_once APP_PATH . '/config.php'; // 載入config,自動判斷環境(local/production)
@@ -12,9 +14,10 @@ require_once APP_PATH . '/config.php'; // 載入config,自動判斷環境(local/
 require_once APP_PATH . '/controllers/frontend/newsController.php';
 
 // 後台
-// require_once APP_PATH . '/controllers/backend/dashboardController.php';
 require_once APP_PATH . '/controllers/backend/newsCategoryController.php';
 require_once APP_PATH . '/controllers/backend/articleController.php';
+require_once APP_PATH . '/controllers/backend/authController.php';
+require_once APP_PATH . '/controllers/backend/sysuserController.php';
 
 // 讀取頁面參數
 $page = $_GET['page'] ?? 'frontend_news';
@@ -101,6 +104,56 @@ switch($page) {
         }
         break;
 
+    // 後台：登入認證/登出
+    // 登入login
+    case 'login':
+        $controller = new AuthController();
+        $controller->login();
+        break;
+    // 登入驗證
+    case 'doLogin':
+        $controller = new AuthController();
+        $controller->doLogin();
+        break;
+    // 登出logout
+    case 'logout':
+        $controller = new AuthController();
+        $controller->logout();
+        break;
+
+    // 管理者帳號管理
+    case 'sysuser_list':
+        $controller = new SysuserController();
+        $controller->index();
+        break;
+    case 'sysuser_create':
+        $controller = new SysuserController();
+        $controller->create();
+        break;
+    case 'sysuser_store':
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+        $controller = new SysuserController();
+        $controller->store();
+        }
+        break;
+    case 'sysuser_edit':
+        $controller = new SysuserController();
+        $controller->edit($_GET['id'] ?? null);
+        break;
+    case 'sysuser_update':
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+        $controller = new SysuserController();
+        $controller->update($_POST);
+        }
+        break;
+    case 'sysuser_toggle_status':
+        $controller = new SysuserController();
+        $controller->toggle($_GET['id'] ?? null);
+        break;
+    case 'sysuser_delete':
+        $controller = new SysuserController();
+        $controller->delete($_GET['id'] ?? null);
+        break;
 
     // 預設或錯誤頁
     default:
