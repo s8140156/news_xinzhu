@@ -51,6 +51,19 @@ class AuthController {
             header("Location: ?page=change_password");
             exit;
         }
+        // 載入使用者權限
+        $permitDB = new DB('user_permissions');
+        $rows = $permitDB->query("SELECT * FROM user_permissions WHERE user_id = ?", [$user['id']]);
+        $_SESSION['permissions'] = [];
+        foreach($rows as $row) {
+            $_SESSION['permissions'][$row['module_id']] = [
+                'can_view' => $row['can_view'],
+                'can_create' => $row['can_create'],
+                'can_edit' => $row['can_edit'],
+                'can_delete' => $row['can_delete'],
+            ];
+        }  
+
 
         // 如果不需強制更改密碼 則存完整身份資料
         $_SESSION['user_name'] =$user['name'];
@@ -68,7 +81,7 @@ class AuthController {
     }
 
     public function changePassword() {
-        if(empty($_SESSION['user_id'] || empty($_SESSION['force_change_password']))) {
+        if(empty($_SESSION['user_id']) || empty($_SESSION['force_change_password'])) {
             header("Location: ?page=login");
             exit;
         }
@@ -79,7 +92,7 @@ class AuthController {
     }
 
     public function doChangePassword() {
-        if(empty($_SESSION['user_id'] || empty($_SESSION['force_change_password']))) {
+        if(empty($_SESSION['user_id']) || empty($_SESSION['force_change_password'])) {
             header("Location: ?page=login");
             exit;
         }
@@ -109,7 +122,19 @@ class AuthController {
         $user = $db->find($_SESSION['user_id']);
         $_SESSION['user_name'] =$user['name'];
         $_SESSION['user_email'] =$user['email'];
-        $_SESSION['is_super_admin'] =$user['is_super_admin'];   
+        $_SESSION['is_super_admin'] =$user['is_super_admin'];
+        // 載入使用者權限
+        $permitDB = new DB('user_permissions');
+        $rows = $permitDB->query("SELECT * FROM user_permissions WHERE user_id = ?", [$_SESSION['user_id']]);
+        $_SESSION['permissions'] = [];
+        foreach($rows as $row) {
+            $_SESSION['permissions'][$row['module_id']] = [
+                'can_view' => $row['can_view'],
+                'can_create' => $row['can_create'],
+                'can_edit' => $row['can_edit'],
+                'can_delete' => $row['can_delete'],
+            ];
+        }
         
         header("Location: ?page=article_index");
         exit;

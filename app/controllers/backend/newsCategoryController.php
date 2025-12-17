@@ -7,6 +7,10 @@ require_once APP_PATH . '/core/helpers.php';
 class NewsCategoryController {
 
     public function index() {
+        if(!canView(MODULE_CATEGORY)) {
+            forbidden();
+            return;
+        }
         //建立DB連線
         $db =new DB('news_categories');
         $categories = $db->all("1 ORDER BY `is_focus` DESC, `sort` ASC");
@@ -20,10 +24,12 @@ class NewsCategoryController {
 
     // 處理新增/更新/刪除
     public function store() {
-            // echo "<pre>";
-            // print_r($_POST);
-            // echo "</pre>";
-            // exit;
+        
+        if(!canCreate(MODULE_CATEGORY)) {
+            forbidden();
+            return;
+        }
+
         if($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['act'] === 'addCategory') {
             $ids = $_POST['id'] ?? [];
             $names = $_POST['name'] ?? [];

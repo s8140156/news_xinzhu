@@ -9,6 +9,15 @@
 // require_once APP_PATH . '/config.php'; // 已在 index.php 載入，不需重複載入(先註記)
 require_once __DIR__ . '/db.php';
 
+// ===== Module constants =====
+define('MODULE_ARTICLE', 1);
+define('MODULE_CATEGORY', 2);
+define('MODULE_SPONSORED', 3);
+define('MODULE_PARTNER', 4);
+define('MODULE_FOOTER', 5);
+define('MODULE_SYSUSER', 6);
+
+
 // 取得新聞分類對照表 id=>name
 function getNewsCategoryMap($orderBy = 'id ASC') {
     $catDb = new DB('news_categories');
@@ -126,6 +135,41 @@ function fixImageOrientation($img, $tmpPath) {
     }
 
     return $img;
+}
+
+//定義唯一權限判斷入口
+function canView($moduleId) {
+    if (!empty($_SESSION['is_super_admin'])) {
+        return true;
+    }
+    return !empty($_SESSION['permissions'][$moduleId]['can_view']);
+}
+
+function canCreate($moduleId) {
+    if (!empty($_SESSION['is_super_admin'])) {
+        return true;
+    }
+    return !empty($_SESSION['permissions'][$moduleId]['can_create']);
+}
+
+function canEdit($moduleId) {
+    if (!empty($_SESSION['is_super_admin'])) {
+        return true;
+    }
+    return !empty($_SESSION['permissions'][$moduleId]['can_edit']);
+}
+
+function canDelete($moduleId) {
+    if (!empty($_SESSION['is_super_admin'])) {
+        return true;
+    }
+    return !empty($_SESSION['permissions'][$moduleId]['can_delete']);
+}
+
+function forbidden() {
+    http_response_code(403);
+    echo "403 Forbidden";
+    exit;
 }
 
 

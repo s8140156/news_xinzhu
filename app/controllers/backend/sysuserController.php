@@ -6,8 +6,12 @@ require_once APP_PATH . '/core/helpers.php';
 class SysuserController {
 
     public function index() {
-
+        
         $page_title = '管理者帳號列表';
+
+        if (empty($_SESSION['is_super_admin'])) {
+            forbidden();
+        }
 
         $db = new DB('sysusers');
         // $sysusers = $db->query("SELECT * FROM sysusers WHERE is_super_admin = ? ORDER BY id ASC", [0]);
@@ -20,6 +24,10 @@ class SysuserController {
     public function create() {
 
         $page_title = '新增管理者';
+
+        if (empty($_SESSION['is_super_admin'])) {
+            forbidden();
+        }
         
         // 判斷新增/編輯
         $is_edit = false;
@@ -35,6 +43,7 @@ class SysuserController {
         $status = 1;
         // 產生一組預設密碼給SA紀錄
         $default_password = bin2hex(random_bytes(4)); // 產生8位
+        $_SESSION['default_password'] = $default_password; // 暫存於session帶給store
 
         $moduleDB = new DB('modules');
         $modules = $moduleDB->all();
@@ -48,19 +57,23 @@ class SysuserController {
                 'can_delete' => 0,
             ];
         }
-
         $content = APP_PATH . '/views/backend/sysuser/form.php';
         include APP_PATH . '/views/backend/layouts/main.php';
     }
 
     public function store() {
 
+        if (empty($_SESSION['is_super_admin'])) {
+            forbidden();
+        }
+
         $name = trim($_POST['name'] ?? ''); // 帳號
         $email = trim($_POST['email'] ?? '');
         $phone = trim($_POST['phone'] ?? '');
         $status = trim($_POST['status'] ?? '');
-        $password = trim($_POST['password'] ?? '');
         $permissions = $_POST['permissions'] ?? [];
+        $plainPassword = $_SESSION['default_password'] ?? null;
+        unset($_SESSION['default_password']);
 
         if(!$name || !$email) {
             $_SESSION['error_message'] = '請填寫完整資料';
@@ -75,7 +88,8 @@ class SysuserController {
             header("Location: ?page=sysuser_create");
             exit;
         }
-        $hashed = password_hash($password, PASSWORD_DEFAULT);
+        $hashed = password_hash($plainPassword, PASSWORD_DEFAULT);
+
         $userId = $db->insert([
             'name' => $name,
             'email' => $email,
@@ -89,25 +103,22 @@ class SysuserController {
         ]);
 
         // 處理權限資料
-        $moduleDB = new DB('modules');
-        $modules = $moduleDB->all();
-        $moduleMap = [];
-        foreach($modules as $module) {
-            $moduleMap[$module['module_key']] = $module['id'];
-        }
+        // $moduleDB = new DB('modules');
+        // $modules = $moduleDB->all();
+        // $moduleMap = [];
+        // foreach($modules as $module) {
+        //     $moduleMap[$module['module_key']] = $module['id'];
+        // }
 
         $permitDB = new DB('user_permissions');
-        foreach($permissions as $moduleKey => $perm) {
-            if(!isset($moduleMap[$moduleKey])) {
-                continue;
-            }
+        foreach($permissions as $moduleId => $perm) {
             $permitDB->insert([
                 'user_id' => $userId,
-                'module_id' => $moduleMap[$moduleKey],
+                'module_id' => $moduleId,
                 'can_view' => isset($perm['can_view']) ? 1 : 0,
-                'can_create' => isset($perm['create']) ? 1 : 0,
-                'can_edit' => isset($perm['edit']) ? 1 : 0,
-                'can_delete' => isset($perm['delete']) ? 1 : 0,
+                'can_create' => isset($perm['can_create']) ? 1 : 0,
+                'can_edit' => isset($perm['can_edit']) ? 1 : 0,
+                'can_delete' => isset($perm['can_delete']) ? 1 : 0,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);
@@ -117,7 +128,12 @@ class SysuserController {
     }
 
     public function edit($id) {
+
         $page_title = '編輯管理者';
+
+        if (empty($_SESSION['is_super_admin'])) {
+            forbidden();
+        }
 
         $error_message = $_SESSION['error_message'] ?? '';
         unset($_SESSION['error_message']);
@@ -159,6 +175,10 @@ class SysuserController {
     }
 
     public function update($id) {
+        
+        if (empty($_SESSION['is_super_admin'])) {
+            forbidden();
+        }
         $id = $_POST['id'] ?? null;
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
