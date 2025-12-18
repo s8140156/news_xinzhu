@@ -158,6 +158,49 @@ class NewsController extends FrontendController {
         ]);
     }
 
+    // 廣告區(sponsorpicks) 顯示邏輯
+    public function apiSponsorPicks() {
+        header('Content-Type: application/json');
+
+        $db = new DB('sponsor_picks');
+
+        $rows = $db->query("
+            SELECT id, article_id, title, article_link_count
+            FROM sponsor_picks
+            WHERE start_at <= NOW() 
+            AND (end_at IS NULL OR end_at >= NOW())
+            ORDER BY sort ASC, start_at DESC
+            LIMIT 20 
+        ");
+
+        echo json_encode([
+            'success' => true,
+            'data' => $rows
+        ]);
+        exit;
+    }
+
+    public function sponsorClick() {
+        $sponsorId = $_GET['id'] ?? 0;
+        if(!$sponsorId) {
+            header('Location: ' . BASE_URL);
+            exit;
+        }
+        $sponsorDB = new DB('sponsor_picks');
+        $sponsor = $sponsorDB->find($sponsorId);
+        if(!$sponsor || empty($sponsor['article_id'])) {
+            header('Location: ' . BASE_URL);
+            exit;
+        }
+        // 廣告區點擊統計
+        $sponsorDB->update($sponsorId,[
+            'click_count' => $sponsor['click_count'] + 1,
+        ]);
+
+        header('Location: ' . BASE_URL . '/?page=news_show&id=' . $sponsor['article_id']);
+        exit;
+    }
+
 
 
 

@@ -49,6 +49,14 @@ switch($page) {
         $controller = new NewsController();
         $controller->search();
         break;
+    case 'api_sponsorpicks_active': // 廣告區走馬燈顯示邏輯API
+        $controller = new NewsController();
+        $controller->apiSponsorPicks();
+        break;
+    case 'api_sponsorpicks_click': // 統計廣告區點擊API
+        $controller = new NewsController();
+        $controller->sponsorClick();
+        break;
 
 
 

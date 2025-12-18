@@ -61,17 +61,14 @@
       <!-- 右側固定側欄 -->
       <aside class="col-lg-3 col-md-4 col-12">
         <!-- 廣告區 後台還未建置 預留欄位 -->
-        <!-- <div class="ad-section mb-5">
+        <div class="ad-section mb-5" id="sponsor-marquee" style="display:none">
           <h5 class="fw-bold text-secondary border-bottom pb-2">廣告區</h5>
           <div class="marquee bg-light p-3 rounded small text-muted">
-            <marquee behavior="scroll" direction="up" scrollamount="2" height="140">
-              <p>魔告標題跑馬燈 OOX</p>
-              <p>這裡是廣告標題跑馬燈</p>
-              <p>這裡是廣告標題跑馬燈</p>
-              <p>這裡是廣告標題跑馬燈</p>
-            </marquee>
+            <ul class="marquee-inner marquee-list" id="sponsor-marquee-inner">
+
+            </ul>
           </div>
-        </div> -->
+        </div>
 
         <!-- 焦點新聞 -->
         <?php if (!empty($focusArticle)): ?>
@@ -123,3 +120,108 @@
 </body>
 
 </html>
+
+<script>
+  fetch('<?= BASE_URL ?>/?page=api_sponsorpicks_active')
+    .then(res => res.json())
+    .then(res => {
+      if (!res.success || !res.data.length) return;
+
+      const wrap = document.getElementById('sponsor-marquee');
+      const inner = document.getElementById('sponsor-marquee-inner');
+
+      // 清空
+      inner.innerHTML = '';
+
+      // 第一份清單render
+      res.data.forEach((item, idx) => {
+        const li = document.createElement('li');
+        li.className = idx === 0 ? ' is-first' : '';
+        li.innerHTML = `
+        <a href="<?= BASE_URL ?>/?page=api_sponsorpicks_click&id=${item.id}">
+          ${item.title}
+        </a>
+      `;
+        inner.appendChild(li);
+      });
+
+      // 第二份clone清單
+      res.data.forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <a href="<?= BASE_URL ?>/?page=api_sponsorpicks_click&id=${item.id}">
+            ${item.title}
+          </a>
+        `;
+        inner.appendChild(li);
+      });
+
+      wrap.style.display = 'block';
+
+      // 無縫滾動
+      let y = 0;
+      const speed = 0.3; // 👉 調整速度（數字越大越快）
+      const singleHeight = inner.scrollHeight / 2;
+      let paused = false; //控制暫停
+
+      // hover 控制
+      const marquee = document.querySelector('.marquee');
+      marquee.addEventListener('mouseenter', () => {
+        paused = true;
+      });
+      marquee.addEventListener('mouseleave', () => {
+        paused = false;
+      });
+
+      function tick() {
+        if (!paused) {
+          y -= speed;
+          if (Math.abs(y) >= singleHeight) {
+            y = 0; // 無縫 reset
+          }
+          inner.style.transform = `translateY(${y}px)`;
+        }
+        requestAnimationFrame(tick);
+      }
+
+      tick();
+    });
+</script>
+<style>
+  .marquee {
+    height: 140px;
+    overflow: hidden;
+    position: relative;
+    background: #f8f9fa;
+    border-radius: 8px;
+  }
+
+  .marquee-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+
+
+  .marquee-inner li {
+    list-style: none;
+    padding: 6px 0;
+    border-bottom: 1px solid #e5e5e5;
+    line-height: 1.4;
+  }
+
+  .marquee-inner li a {
+    display: block;
+    color: #333;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .marquee-inner li.is-first a {
+    color: #d93025;
+    font-weight: bold;
+  }
+</style>
