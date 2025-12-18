@@ -18,6 +18,7 @@ require_once APP_PATH . '/controllers/backend/newsCategoryController.php';
 require_once APP_PATH . '/controllers/backend/articleController.php';
 require_once APP_PATH . '/controllers/backend/authController.php';
 require_once APP_PATH . '/controllers/backend/sysuserController.php';
+require_once APP_PATH . '/controllers/backend/sponsorPickController.php';
 
 // 讀取頁面參數
 $page = $_GET['page'] ?? 'frontend_news';
@@ -102,6 +103,23 @@ switch($page) {
         } else {
             echo "請使用表單送出資料";
         }
+        break;
+    // 後台：廣告管理
+    case 'sponsorpicks_index':
+        $controller = new SponsorPickController();
+        $controller->index();
+        break;
+    case 'sponsorpicks_store':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $controller = new SponsorPickController();
+            $controller->store();
+        } else {
+            echo "請使用表單送出資料";
+        }
+        break;
+    case 'api_sponsorpicks_article_by_category':
+        $controller = new SponsorPickController();
+        $controller->articleByCategory();
         break;
 
     // 後台：登入認證/登出
