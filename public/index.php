@@ -222,7 +222,7 @@ switch($page) {
             abort403('非法請求方式');
         }
         $controller = new SysuserController();
-        $controller->delete($_GET['id'] ?? null);
+        $controller->delete($_POST['id'] ?? null);
         break;
 
     // 預設或錯誤頁

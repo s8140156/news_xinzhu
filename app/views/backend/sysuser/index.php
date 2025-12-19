@@ -44,13 +44,31 @@
 
                             <!-- 操作 -->
                             <td class="text-center">
+                                <!-- 編輯 -->
                                 <a href="?page=sysuser_edit&id=<?= $u['id'] ?>"
-                                    class="text-primary me-2"
-                                    title="編輯">
+                                class="text-primary me-2"
+                                title="編輯">
                                     <i class="fa fa-pen"></i>
                                 </a>
-                                <!-- 刪除之後再做 -->
+
+                                <?php if (!empty($_SESSION['is_super_admin'])): ?>
+                                    <!-- 刪除 -->
+                                    <form method="POST"
+                                        action="?page=sysuser_delete"
+                                        style="display:inline"
+                                        onsubmit="return confirm('確定要刪除此管理者帳號嗎？此動作無法復原');">
+
+                                        <input type="hidden" name="id" value="<?= $u['id'] ?>">
+
+                                        <button type="submit"
+                                                class="btn btn-link p-0 text-danger"
+                                                title="刪除">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </form>
+                                <?php endif; ?>
                             </td>
+
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>

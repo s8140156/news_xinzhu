@@ -20,7 +20,7 @@ class SysuserController {
     public function create() {
 
         $page_title = '新增管理者';
-
+        
         // 判斷新增/編輯
         $is_edit = false;
         
@@ -159,7 +159,7 @@ class SysuserController {
     }
 
     public function update($id) {
-        
+
         $id = $_POST['id'] ?? null;
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
@@ -223,6 +223,24 @@ class SysuserController {
         }   
         echo "<script>alert('管理員帳號更新成功！');window.location = '?page=sysuser_list';</script>";
         exit;   
+    }
+
+    public function delete($id) {
+        if(!$id) {
+            abort403('缺少管理者ID');
+        }
+        if((int)$id === (int)$_SESSION['user_id']) {
+            abort403('不能刪除自己的帳號');
+        }
+        $db = new DB('sysusers');
+        $user = $db->find($id);
+        if(!$user) {
+            abort403('管理者不存在');
+        }
+        $db->delete($id);
+
+        echo "<script>alert('帳號已刪除！');window.location = '?page=sysuser_list';</script>";
+        exit;
     }
 
 
