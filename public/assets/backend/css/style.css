@@ -3,3 +3,75 @@
     background-image: linear-gradient(180deg, #D97E35 10%, #DA8C36 100%);
     background-size: cover;
 }
+
+/* ========== Backend Error Pages ========== */
+.error-page{
+  min-height: calc(100vh - 120px); /* 視你後台 header/footer 高度可調 */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 24px;
+}
+
+.error-card{
+  width: min(720px, 100%);
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.08);
+  padding: 28px 28px 24px;
+  text-align: center;
+}
+
+.error-icon{
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin: 0 auto 10px;
+  background: rgba(220,53,69,.08); /* bootstrap danger 淡底 */
+  color: #dc3545;
+  font-size: 28px;
+}
+
+.error-code{
+  font-size: 56px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.error-title{
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.error-desc{
+  margin: 0 auto 16px;
+  max-width: 540px;
+  color: rgba(0,0,0,.65);
+}
+
+.error-actions{
+  display:flex;
+  gap: 10px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-bottom: 14px;
+}
+
+.error-hint{
+  font-size: 13px;
+  color: rgba(0,0,0,.55);
+}
+
+/* Mobile spacing */
+@media (max-width: 480px){
+  .error-card{ padding: 22px 18px 18px; }
+  .error-code{ font-size: 48px; }
+}
+

@@ -166,11 +166,57 @@ function canDelete($moduleId) {
     return !empty($_SESSION['permissions'][$moduleId]['can_delete']);
 }
 
-function forbidden() {
+// 改成403共用function
+// function forbidden() {
+//     http_response_code(403);
+//     echo "403 Forbidden";
+//     exit;
+// }
+
+function abort403($message = '你沒有權限存取此功能。') {
     http_response_code(403);
-    echo "403 Forbidden";
+
+    $title = '403 權限不足';
+    $message = $message;
+
+    $content = APP_PATH . '/views/backend/errors/403.php';
+    include APP_PATH . '/views/backend/layouts/main.php';
     exit;
 }
+
+function requirePermission($action, $moduleId) {
+
+    switch ($action) {
+        case 'view':
+            if (!canView($moduleId)) {
+                abort403('你沒有查看此功能的權限。');
+            }
+            break;
+
+        case 'create':
+            if (!canCreate($moduleId)) {
+                abort403('你沒有新增此功能的權限。');
+            }
+            break;
+
+        case 'edit':
+            if (!canEdit($moduleId)) {
+                abort403('你沒有編輯此功能的權限。');
+            }
+            break;
+
+        case 'delete':
+            if (!canDelete($moduleId)) {
+                abort403('你沒有刪除此功能的權限。');
+            }
+            break;
+
+        default:
+            abort403();
+    }
+}
+
+
 
 
 

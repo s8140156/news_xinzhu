@@ -62,14 +62,20 @@ switch($page) {
 
     // 後台：文章管理
     case 'article_index':
+        requirePermission('view', MODULE_ARTICLE);
+
         $controller = new ArticleController();
         $controller->index();
         break;
     case 'article_create':
+        requirePermission('create', MODULE_ARTICLE);
+
         $controller = new ArticleController();
         $controller->create();
         break;
     case 'article_store':
+        requirePermission('create', MODULE_ARTICLE);
+
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
             $controller = new ArticleController();
             $controller->store();
@@ -78,16 +84,22 @@ switch($page) {
         }
         break;
     case 'article_edit':
+        requirePermission('edit', MODULE_ARTICLE);
+
         $controller = new ArticleController();
         $controller->edit($_GET['id'] ?? null);
         break;
     case 'article_update':
+        requirePermission('edit', MODULE_ARTICLE);
+
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $controller = new ArticleController();
         $controller->update($_POST);
         }
         break;
     case 'article_delete':
+        requirePermission('delete', MODULE_ARTICLE);
+
         $controller = new ArticleController();
         $controller->delete($_GET['id'] ?? null);
         break;
@@ -101,10 +113,14 @@ switch($page) {
     
     // 後台：新聞分類管理
     case 'category_index':
+        requirePermission('view', MODULE_CATEGORY);
+
         $controller = new NewsCategoryController();
         $controller->index();
         break;
     case 'category_store':
+        requirePermission('create', MODULE_CATEGORY);
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $controller = new NewsCategoryController();
             $controller->store();
@@ -114,10 +130,14 @@ switch($page) {
         break;
     // 後台：廣告管理
     case 'sponsorpicks_index':
+        requirePermission('view', MODULE_SPONSORED);
+
         $controller = new SponsorPickController();
         $controller->index();
         break;
     case 'sponsorpicks_store':
+        requirePermission('create', MODULE_SPONSORED);
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $controller = new SponsorPickController();
             $controller->store();
@@ -158,24 +178,34 @@ switch($page) {
 
     // 管理者帳號管理
     case 'sysuser_list':
+        requirePermission('view', MODULE_SYSUSER);
+
         $controller = new SysuserController();
         $controller->index();
         break;
     case 'sysuser_create':
+        requirePermission('create', MODULE_SYSUSER);
+
         $controller = new SysuserController();
         $controller->create();
         break;
     case 'sysuser_store':
+        requirePermission('create', MODULE_SYSUSER);
+
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $controller = new SysuserController();
         $controller->store();
         }
         break;
     case 'sysuser_edit':
+        requirePermission('edit', MODULE_SYSUSER);
+
         $controller = new SysuserController();
         $controller->edit($_GET['id'] ?? null);
         break;
     case 'sysuser_update':
+        requirePermission('edit', MODULE_SYSUSER);
+
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $controller = new SysuserController();
         $controller->update($_POST);
@@ -186,6 +216,11 @@ switch($page) {
         $controller->toggle($_GET['id'] ?? null);
         break;
     case 'sysuser_delete':
+        requirePermission('delete', MODULE_SYSUSER);
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            abort403('非法請求方式');
+        }
         $controller = new SysuserController();
         $controller->delete($_GET['id'] ?? null);
         break;

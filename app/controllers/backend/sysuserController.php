@@ -9,10 +9,6 @@ class SysuserController {
         
         $page_title = '管理者帳號列表';
 
-        if (empty($_SESSION['is_super_admin'])) {
-            forbidden();
-        }
-
         $db = new DB('sysusers');
         // $sysusers = $db->query("SELECT * FROM sysusers WHERE is_super_admin = ? ORDER BY id ASC", [0]);
         $users = $db->query("SELECT id, name, email, phone, status, created_at, updated_at FROM sysusers ORDER BY created_at DESC");
@@ -25,10 +21,6 @@ class SysuserController {
 
         $page_title = '新增管理者';
 
-        if (empty($_SESSION['is_super_admin'])) {
-            forbidden();
-        }
-        
         // 判斷新增/編輯
         $is_edit = false;
         
@@ -62,10 +54,6 @@ class SysuserController {
     }
 
     public function store() {
-
-        if (empty($_SESSION['is_super_admin'])) {
-            forbidden();
-        }
 
         $name = trim($_POST['name'] ?? ''); // 帳號
         $email = trim($_POST['email'] ?? '');
@@ -131,10 +119,6 @@ class SysuserController {
 
         $page_title = '編輯管理者';
 
-        if (empty($_SESSION['is_super_admin'])) {
-            forbidden();
-        }
-
         $error_message = $_SESSION['error_message'] ?? '';
         unset($_SESSION['error_message']);
 
@@ -176,9 +160,6 @@ class SysuserController {
 
     public function update($id) {
         
-        if (empty($_SESSION['is_super_admin'])) {
-            forbidden();
-        }
         $id = $_POST['id'] ?? null;
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');

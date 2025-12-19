@@ -7,9 +7,6 @@ require_once APP_PATH . '/core/helpers.php';
 class ArticleController {
 
     public function index() {
-        if(!canView(MODULE_ARTICLE)) {
-            forbidden();
-        }
         //建立DB連線及檢查排程發佈及更新
         $db =new DB('articles');
 
@@ -109,10 +106,6 @@ class ArticleController {
     public function create() {
         $mode = 'create';
 
-        if(!canCreate(MODULE_ARTICLE)) {
-            forbidden();
-        }
-
         //建立DB連線
         $categories = $this->getCategoryMap('sort ASC');
 
@@ -137,11 +130,6 @@ class ArticleController {
     }
 
     public function store() {
-
-        if(!canCreate(MODULE_ARTICLE)) {
-            forbidden();
-        }
-
         // 欄位接收
         $title = $_POST['title'] ?? '';
         $author = $_POST['author'] ?? '';
@@ -491,10 +479,6 @@ class ArticleController {
     public function edit($id) {
         $mode = 'edit';
 
-        if(!canEdit(MODULE_ARTICLE)) {
-            forbidden();
-        }
-
         $db = new DB('articles');
         $id = $_GET['id'] ?? null;
         $article = $db->find($id);
@@ -521,10 +505,6 @@ class ArticleController {
                     echo "缺少文章ID，無法更新";
                     return;
                 }
-        }
-
-        if(!canEdit(MODULE_ARTICLE)) {
-            forbidden();
         }
 
         // 取資料庫資料
@@ -671,9 +651,6 @@ class ArticleController {
         if(!$id || !is_numeric($id)) {
             echo "<script>alert('缺少文章ID 或 ID格式錯誤');history.back();</script>";
             return;
-        }
-        if(!canDelete(MODULE_ARTICLE)) {
-            forbidden();
         }
 
         $db = new DB('articles');
