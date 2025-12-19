@@ -14,12 +14,16 @@
     <!-- SB Admin 2 -->
     <link rel="stylesheet" href="<?= STATIC_URL ?>/assets/backend/css/sb-admin-2.min.css">
 
-    <!-- 自訂 CSS -->
-    <link rel="stylesheet" href="<?= STATIC_URL ?>/assets/backend/css/style.css">
-
     <!-- jQuery(從script拉上來先引入 不然拖曳功能會吃不到) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+     <!-- Popper（Bootstrap 4 Tooltip / Dropdown 需要） -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+
+
+    <!-- 自訂 CSS -->
+    <link rel="stylesheet" href="<?= STATIC_URL ?>/assets/backend/css/style.css">
 
     <style>
     /* 強制隱藏 CKEditor 不安全提示 — 保證即使在 iframe 外層也生效 */
@@ -68,3 +72,12 @@
 </body>
 
 </html>
+<script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip({
+    html: true,
+    placement: 'right',
+    container: 'body'
+  });
+});
+</script>
