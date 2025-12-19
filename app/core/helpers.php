@@ -216,6 +216,47 @@ function requirePermission($action, $moduleId) {
     }
 }
 
+// 初始密碼信
+function sendInitPasswordMail($email, $name, $plainPassword) {
+
+    $subject = '馨築生活後台管理者帳號啟用通知';
+    $loginUrl = BASE_URL . '?page=login';
+
+    $body = "
+        {$name} 您好：<br><br>
+
+        您已被建立為後台管理者帳號，請使用以下資訊登入系統：<br><br>
+        <b>登入帳號：</b>{$email}<br>
+        <b>初始密碼：</b>{$plainPassword}<br><br>
+        請於首次登入後立即修改密碼，以確保帳號安全。<br><br>
+        👉 <a href='{$loginUrl}'>請前往後台登入</a><br><br>
+        若您未預期收到此信件，請忽略。
+    ";
+
+    $ch = curl_init('http://localhost/anti_basic/api/_sendmail.php');
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, [
+        'member_email' => $email,
+        'member_name'  => $name,
+        'subject'      => $subject,
+        'body'         => $body,
+    ]);
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $logPath = ROOT_PATH . '/storage/mail.log';
+    // 測試期間可以先 log
+    file_put_contents(
+        $logPath,
+        date('Y-m-d H:i:s') . PHP_EOL .
+        $response . PHP_EOL .
+        str_repeat('-', 40) . PHP_EOL,
+        FILE_APPEND
+    );
+}
+
 
 
 

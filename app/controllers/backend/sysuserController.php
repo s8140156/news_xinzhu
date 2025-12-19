@@ -111,6 +111,12 @@ class SysuserController {
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);
         }
+
+        // 寄送初始密碼信（DB 成功後）
+        if($plainPassword) {
+            sendInitPasswordMail($email, $name, $plainPassword);
+        }
+        
         echo "<script>alert('帳號新增成功！');window.location = '?page=sysuser_list';</script>";
         exit;
     }
