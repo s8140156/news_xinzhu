@@ -217,30 +217,49 @@ function requirePermission($action, $moduleId) {
 }
 
 // 初始密碼信
-function sendInitPasswordMail($email, $name, $plainPassword) {
-
-    $subject = '馨築生活後台管理者帳號啟用通知';
+function sendInitPasswordMail($email, $name, $password, $type='init') {
     $loginUrl = BASE_URL . '?page=login';
 
-    $body = "
-        {$name} 您好：<br><br>
+    if($type === 'forget_password') {
+        $subject  = '【馨築生活後台】忘記密碼通知';
 
-        您已被建立為後台管理者帳號，請使用以下資訊登入系統：<br><br>
-        <b>登入帳號：</b>{$email}<br>
-        <b>初始密碼：</b>{$plainPassword}<br><br>
-        請於首次登入後立即修改密碼，以確保帳號安全。<br><br>
-        👉 <a href='{$loginUrl}'>請前往後台登入</a><br><br>
-        若您未預期收到此信件，請忽略。
-    ";
+        $message = "
+            親愛的 {$name} 您好：<br><br>
 
-    $ch = curl_init('http://localhost/anti_basic/api/_sendmail.php');
+            您於系統中申請「忘記密碼」，系統已為您重新產生一組臨時密碼：<br><br>
+
+            <b>{$password}</b><br><br>
+
+            請使用此密碼登入後台，並依指示立即變更您的密碼。<br><br>
+            👉 <a href='{$loginUrl}'>請前往後台登入</a><br><br>
+
+            若您未曾申請忘記密碼，請儘速聯繫系統管理員。
+        ";
+    } else {
+        $subject = '【馨築生活後台】管理者帳號啟用通知';
+    
+        $message = "
+            {$name} 您好：<br><br>
+    
+            您已被建立為後台管理者帳號，請使用以下資訊登入系統：<br><br>
+            <b>登入帳號：</b>{$email}<br>
+            <b>初始密碼：</b>{$password}<br><br>
+            請於首次登入後立即修改密碼，以確保帳號安全。<br><br>
+            👉 <a href='{$loginUrl}'>請前往後台登入</a><br><br>
+            若您未預期收到此信件，請忽略。
+        ";
+
+    }
+
+
+    $ch = curl_init('http://localhost/news_xinzhu/public/api/sendmail.php');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, [
         'member_email' => $email,
         'member_name'  => $name,
         'subject'      => $subject,
-        'body'         => $body,
+        'body'         => $message,
     ]);
 
     $response = curl_exec($ch);

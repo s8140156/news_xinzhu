@@ -8,7 +8,7 @@ class AuthController {
     public function login() {
         // 顯示登入畫面
         $error_message = $_SESSION['login_error'] ?? '';
-        unset($_SESSION['login_error']);
+        unset($_SESSION['login_error']); 
         include APP_PATH . '/views/auth/login.php';
     }
 
@@ -137,6 +137,47 @@ class AuthController {
         }
         
         header("Location: ?page=article_index");
+        exit;
+    }
+    public function forgetPassword() {
+        header('Content-Type: application/json');
+
+        $email = trim($_POST['email'] ?? '');
+
+        if(!$email) {
+            echo json_encode([
+                'status' => false,
+                'message' => '請輸入Email'
+            ]);
+            exit;
+        }
+        $db = new DB('sysusers');
+        $userRow = $db->query("SELECT * FROM sysusers WHERE email = ? LIMIT 1", [$email]);
+
+        $user = $userRow[0] ?? null;
+
+        if(!$user) {
+            echo json_encode([
+                'status' => false,
+                'message' => '查無此帳號'
+            ]);
+            exit;
+        }
+        // 產生臨時密碼
+        $newPassword = substr(bin2hex(random_bytes(4)), 0, 8);
+
+        $db->update($user['id'], [
+            'password' => password_hash($newPassword, PASSWORD_DEFAULT),
+            'must_change_password' => 1,
+            'updated_at' => date('Y-m-d H:i:s')
+        ]);
+
+        sendInitPasswordMail($email, $user['name'], $newPassword, 'forget_password');
+
+        echo json_encode([
+            'status' => true,
+            'message' => '新密碼已寄至您的信箱'
+        ]);
         exit;
     }
 

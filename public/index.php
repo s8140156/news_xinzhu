@@ -167,10 +167,17 @@ switch($page) {
         $controller = new AuthController();
         $controller->changePassword();
         break;
+    // 忘記密碼
+    case 'forget_password':
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $controller = new AuthController();
+        $controller->forgetPassword();
+        }
+        break;
     case 'doChangePassword':
-    $controller = new AuthController();
-    $controller->doChangePassword();
-    break;
+        $controller = new AuthController();
+        $controller->doChangePassword();
+        break;
     // 登出logout
     case 'logout':
         $controller = new AuthController();
