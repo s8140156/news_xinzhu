@@ -13,9 +13,9 @@
 
             <form id="sponsorPickForm" method="post" action="?page=sponsorpicks_store">
                 <label class="form-label mb-3">（可使用拖曳icon變更順序）</label>
-                <button type="button" id="addRowBtn" class="btn btn-primary btn-sm">
-                    ＋ 新增一筆
-                </button>
+                <?php if (canCreate(MODULE_SPONSORED)): ?>
+                <button type="button" id="addRowBtn" class="btn btn-primary btn-sm">＋ 新增一筆</button>
+                <?php endif; ?>
 
                 <!-- sortable container -->
                 <div id="sponsorPickList">
@@ -111,11 +111,12 @@
                                             class="btn btn-outline-secondary btn-sm">
                                             <i class="fas fa-eye"></i>
                                         </a>
-
+                                        <?php if (canCreate(MODULE_SPONSORED)): ?>
                                         <button type="button"
                                             class="btn btn-outline-danger btn-sm deleteRowBtn">
                                             <i class="fas fa-trash"></i>
                                         </button>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
 
@@ -136,9 +137,11 @@
                 </div>
                 <!-- 儲存 -->
                 <div class="mt-4">
+                    <?php if (canCreate(MODULE_SPONSORED)): ?>
                     <button type="submit" class="btn btn-success">
                         儲存
                     </button>
+                    <?php endif; ?>
                 </div>
 
             </form>

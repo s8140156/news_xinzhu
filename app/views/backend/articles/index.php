@@ -200,15 +200,19 @@
                             class="btn btn-light btn-sm me-2" title="預覽" target="_blank">
                             <i class="fas fa-eye"></i>
                         </a>
+                        <?php if (canEdit(MODULE_ARTICLE)): ?>
                         <a href="index.php?page=article_edit&id=<?= $article['id'] ?>" class="btn btn-light btn-sm me-2"
                             title="編輯">
                             <i class="fas fa-edit"></i>
                         </a>
+                        <?php endif; ?>
+                        <?php if (canDelete(MODULE_ARTICLE)): ?>
                         <a href="index.php?page=article_delete&id=<?= $article['id'] ?>"
                             class="btn btn-light btn-sm text-danger" title="刪除"
                             onclick="return confirm('確定要刪除此文章嗎？此動作無法復原！')">
                             <i class="fas fa-trash-alt"></i>
                         </a>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

@@ -9,7 +9,9 @@
 
                     <div class="card-body">
                         <label class="form-label mb-3">（可使用拖曳icon變更順序）</label>
+                        <?php if (canCreate(MODULE_CATEGORY)): ?>
                         <button type="button" class="btn btn-primary" id="addRowBtn">+ 新增一筆</button>
+                        <?php endif; ?>
                         <input type="hidden" name="act" value="addCategory">
                         <input type="hidden" name="delete_ids[]" value="">
                         <table class="table table-bordered" id="categoryTable">
@@ -36,7 +38,9 @@
                                             <?php if ($row['is_focus'] == 1): ?>
                                                 <button type="button" class="btn btn-secondary" disabled>固定</button>
                                             <?php else: ?>
+                                                <?php if (canCreate(MODULE_CATEGORY)): ?>
                                                 <button type="button" class="btn btn-danger deleteRowBtn">刪除</button>
+                                                <?php endif; ?>
                                             <?php endif; ?>
                                         </td>
                                     </tr>
@@ -44,7 +48,10 @@
                             </tbody>
                         </table>
 
+                        <?php if (canCreate(MODULE_CATEGORY)): ?>
                         <button type="submit" class="btn btn-info">儲存</button>
+                        <?php endif; ?>
+
                     </div>
                 </div>
             </form>

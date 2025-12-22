@@ -4,8 +4,8 @@ $sidebarConfig = [
     'article' => [
         'icon' => 'fa-newspaper',
         'children' => [
-            ['label' => '新增文章', 'page' => 'article_create'],
-            ['label' => '文章列表', 'page' => 'article_index'],
+            ['label' => '新增文章', 'page' => 'article_create', 'perm' => 'create'],
+            ['label' => '文章列表', 'page' => 'article_index', 'perm' => 'view'],
         ],
     ],
     'category' => [
@@ -58,6 +58,7 @@ $modules = $moduleDB->all("1 ORDER BY sort_order ASC");
 
     <?php foreach ($modules as $m): ?>
         <?php
+        $moduleId = (int)$m['id'];
         // === 權限判斷（只看 can_view）===
         if (!$_SESSION['is_super_admin']) {
             $perm = $_SESSION['permissions'][$m['id']] ?? null;
@@ -77,14 +78,29 @@ $modules = $moduleDB->all("1 ORDER BY sort_order ASC");
                 <i class="fas fa-fw <?= $config['icon'] ?>"></i>
                 <span><?= htmlspecialchars($m['module_name']) ?></span>
             </a>
-
+        
             <div id="<?= $collapseId ?>" class="collapse">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <?php foreach ($config['children'] as $child): ?>
+                        <?php 
+                        $allowed = true;
+                        $permType = $child['perm'] ?? 'view'; // 預設是view
+                        if (!$_SESSION['is_super_admin']) {
+                            if ($permType === 'view' && !canView($moduleId)) {
+                                $allowed = false;
+                            }
+                            if ($permType === 'create' && !canCreate($moduleId)) {
+                                $allowed = false;
+                            }
+                        }
+                        ?>
+                        <?php if ($allowed && !empty($child['page'])): ?>
                         <a class="collapse-item"
                            href="<?= BASE_URL ?>/?page=<?= $child['page'] ?>">
                             <?= htmlspecialchars($child['label']) ?>
                         </a>
+                        <?php endif; ?>
+
                     <?php endforeach; ?>
                 </div>
             </div>
