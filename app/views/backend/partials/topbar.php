@@ -41,11 +41,11 @@
                 <i class="fa fa-user"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="?page=profile&tab=info">
                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                     個人資料
                 </a>
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="?page=profile&tab=password">
                     <i class="fas fa-key fa-sm fa-fw mr-2 text-gray-400"></i>
                     修改密碼
                 </a>

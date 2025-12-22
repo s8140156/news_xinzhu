@@ -19,6 +19,7 @@ require_once APP_PATH . '/controllers/backend/articleController.php';
 require_once APP_PATH . '/controllers/backend/authController.php';
 require_once APP_PATH . '/controllers/backend/sysuserController.php';
 require_once APP_PATH . '/controllers/backend/sponsorPickController.php';
+require_once APP_PATH . '/controllers/backend/profileController.php';
 
 // 讀取頁面參數
 $page = $_GET['page'] ?? 'frontend_news';
@@ -176,7 +177,7 @@ switch($page) {
         $controller->logout();
         break;
 
-    // 管理者帳號管理
+    // 最高管理者帳號管理(SA)
     case 'sysuser_list':
         requirePermission('view', MODULE_SYSUSER);
 
@@ -223,6 +224,23 @@ switch($page) {
         }
         $controller = new SysuserController();
         $controller->delete($_POST['id'] ?? null);
+        break;
+    // 一般管理者profile
+    case 'profile':
+        $controller = new ProfileController();
+        $controller->index();
+        break;
+    case 'profile_update_info':
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $controller = new ProfileController();
+        $controller->updateInfo();
+        }
+        break;
+    case 'profile_update_password':
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $controller = new ProfileController();
+        $controller->updatePassword();
+        }
         break;
 
     // 預設或錯誤頁
