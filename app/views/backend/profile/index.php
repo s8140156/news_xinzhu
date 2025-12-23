@@ -37,7 +37,7 @@
 
     <div class="mb-3">
         <label>電話</label>
-        <input type="text" name="phone" class="form-control" value="<?= htmlspecialchars($user['phone']) ?>">
+        <input type="text" name="phone" class="form-control" value="<?= htmlspecialchars($user['phone'] ?? '') ?>">
     </div>
 
     <button class="btn btn-primary">儲存</button>
