@@ -252,7 +252,8 @@ function sendInitPasswordMail($email, $name, $password, $type='init') {
     }
 
 
-    $ch = curl_init('http://localhost/news_xinzhu/public/api/sendmail.php');
+    // $ch = curl_init('http://localhost/news_xinzhu/public/api/sendmail.php');
+    $ch = curl_init(BASE_URL . '/api/sendmail.php');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, [
