@@ -51,7 +51,8 @@
                                     <i class="fa fa-pen"></i>
                                 </a>
 
-                                <?php if (!empty($_SESSION['is_super_admin'])): ?>
+                                <?php if (!empty($_SESSION['is_super_admin'])
+                                        && empty($u['is_super_admin'])): ?>
                                     <!-- 刪除 -->
                                     <form method="POST"
                                         action="?page=sysuser_delete"

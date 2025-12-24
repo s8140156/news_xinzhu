@@ -11,7 +11,7 @@ class SysuserController {
 
         $db = new DB('sysusers');
         // $sysusers = $db->query("SELECT * FROM sysusers WHERE is_super_admin = ? ORDER BY id ASC", [0]);
-        $users = $db->query("SELECT id, name, email, phone, status, created_at, updated_at FROM sysusers ORDER BY created_at DESC");
+        $users = $db->query("SELECT id, name, email, phone, is_super_admin, status, created_at, updated_at FROM sysusers ORDER BY created_at DESC");
 
         $content = APP_PATH . '/views/backend/sysuser/index.php';
         include APP_PATH . '/views/backend/layouts/main.php';
@@ -239,6 +239,13 @@ class SysuserController {
             abort403('不能刪除自己的帳號');
         }
         $db = new DB('sysusers');
+
+        $targetId = (int)($_POST['id'] ?? 0); // 確認傳進來的id
+        $targetUser = $db->find($targetId);
+
+        if(!empty($targetUser['is_super_admin'])) {
+            abort403('不能刪除SA帳號');
+        }
         $user = $db->find($id);
         if(!$user) {
             abort403('管理者不存在');
