@@ -20,6 +20,7 @@ require_once APP_PATH . '/controllers/backend/authController.php';
 require_once APP_PATH . '/controllers/backend/sysuserController.php';
 require_once APP_PATH . '/controllers/backend/sponsorPickController.php';
 require_once APP_PATH . '/controllers/backend/profileController.php';
+require_once APP_PATH . '/controllers/backend/partnerController.php';
 
 // 讀取頁面參數
 $page = $_GET['page'] ?? 'frontend_news';
@@ -149,6 +150,20 @@ switch($page) {
     case 'api_sponsorpicks_article_by_category':
         $controller = new SponsorPickController();
         $controller->articleByCategory();
+        break;
+
+    // 後台：合作媒體管理
+    case 'partner_index':
+        requirePermission('view', MODULE_PARTNER);
+        $controller = new PartnerController();
+        $controller->index();
+        break;
+    case 'partner_store':
+        requirePermission('create', MODULE_PARTNER);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $controller = new PartnerController();
+        $controller->store();
+        }
         break;
 
     // 後台：登入認證/登出

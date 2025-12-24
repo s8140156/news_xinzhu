@@ -23,7 +23,7 @@ $sidebarConfig = [
     'partner' => [
         'icon' => 'fa-handshake',
         'children' => [
-            ['label' => '媒體列表', 'page' => ''],
+            ['label' => '媒體列表', 'page' => 'partner_index'],
         ],
     ],
     'footer' => [
