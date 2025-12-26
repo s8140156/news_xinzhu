@@ -21,6 +21,8 @@ require_once APP_PATH . '/controllers/backend/sysuserController.php';
 require_once APP_PATH . '/controllers/backend/sponsorPickController.php';
 require_once APP_PATH . '/controllers/backend/profileController.php';
 require_once APP_PATH . '/controllers/backend/partnerController.php';
+require_once APP_PATH . '/controllers/backend/footerArticleController.php';
+
 
 // 讀取頁面參數
 $page = $_GET['page'] ?? 'frontend_news';
@@ -168,6 +170,37 @@ switch($page) {
         $controller = new PartnerController();
         $controller->store();
         }
+        break;
+
+    // 後台：頁尾標籤管理
+    case 'footer_create':
+        // requirePermission('create', MODULE_FOOTER);
+        $controller = new footerArticleController();
+        $controller->create();
+        break;
+    case 'footer_store':
+        // requirePermission('create', MODULE_FOOTER);
+        $controller = new footerArticleController();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $controller->store();
+        }
+        break;
+    case 'footer_edit':
+        // requirePermission('edit', MODULE_FOOTER);
+        $controller = new footerArticleController();
+        $controller->edit($_GET['id'] ?? null);
+        break;
+    case 'footer_update':
+        // requirePermission('create', MODULE_FOOTER);
+        $controller = new footerArticleController();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $controller->update($_POST);
+        }
+        break;
+    // 處理CKEditor圖片上傳
+    case 'footer_image_upload':
+        $controller = new footerArticleController();
+        $controller->footerImageUpload();
         break;
 
     // 後台：登入認證/登出
