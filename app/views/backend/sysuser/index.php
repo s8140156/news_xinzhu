@@ -44,15 +44,14 @@
 
                             <!-- 操作 -->
                             <td class="text-center">
+                            <?php if (!empty($_SESSION['is_super_admin'])
+                                && empty($u['is_super_admin'])): ?>
                                 <!-- 編輯 -->
                                 <a href="?page=sysuser_edit&id=<?= $u['id'] ?>"
                                 class="text-primary me-2"
                                 title="編輯">
                                     <i class="fa fa-pen"></i>
                                 </a>
-
-                                <?php if (!empty($_SESSION['is_super_admin'])
-                                        && empty($u['is_super_admin'])): ?>
                                     <!-- 刪除 -->
                                     <form method="POST"
                                         action="?page=sysuser_delete"

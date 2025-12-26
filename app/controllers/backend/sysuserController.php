@@ -11,7 +11,7 @@ class SysuserController {
 
         $db = new DB('sysusers');
         // $sysusers = $db->query("SELECT * FROM sysusers WHERE is_super_admin = ? ORDER BY id ASC", [0]);
-        $users = $db->query("SELECT id, name, email, phone, is_super_admin, status, created_at, updated_at FROM sysusers ORDER BY created_at DESC");
+        $users = $db->query("SELECT id, name, email, phone, is_super_admin, status, created_at, updated_at FROM sysusers ORDER BY is_super_admin ASC, created_at DESC");
 
         $content = APP_PATH . '/views/backend/sysuser/index.php';
         include APP_PATH . '/views/backend/layouts/main.php';
