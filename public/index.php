@@ -59,6 +59,10 @@ switch($page) {
         $controller = new NewsController();
         $controller->sponsorClick();
         break;
+    case 'api_partner_click': // 統計合作媒體點擊API
+        $controller = new NewsController();
+        $controller->partnerClick();
+        break;
 
 
 

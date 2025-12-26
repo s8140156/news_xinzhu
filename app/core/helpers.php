@@ -277,6 +277,19 @@ function sendInitPasswordMail($email, $name, $password, $type='init') {
     );
 }
 
+function getActivePartners($limit = 5) {
+    $db = new DB('partners');
+    $now = date('Y-m-d H:i:s');
+    $partners = $db->query("
+            SELECT *
+            FROM partners
+            WHERE start_at <= ?
+            AND (end_at IS NULL OR end_at > ?)
+            ORDER BY sort ASC LIMIT {$limit} ", [$now, $now]);
+    
+    return $partners;
+}
+
 
 
 

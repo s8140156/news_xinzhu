@@ -7,6 +7,7 @@ Class FrontendController {
     protected $categories; // 導覽列分類
     protected $focusArticle; // 右側焦點新聞
     protected $footerTags; // 頁尾標籤(現為測試資料)
+    protected $partners; // 合作媒體
 
     public function __construct() {
         // 導爛列-所有前台頁面可以自動取得
@@ -21,6 +22,7 @@ Class FrontendController {
             ['title' => '自定義 4我是從frontcontroller來的', 'url' => '#'],
             ['title' => '自定義 789', 'url' => '#'],
         ];
+        $this->partners = getActivePartners();
     }
 
     /**
@@ -36,6 +38,7 @@ Class FrontendController {
         $categories = $this->categories;
         $focusArticle = $this->focusArticle;
         $footerTags = $this->footerTags;
+        $partners = $this->partners;
 
         // 主內容(view路徑)
         $content = APP_PATH . '/views/' . $viewPath;

@@ -201,6 +201,27 @@ class NewsController extends FrontendController {
         exit;
     }
 
+    public function partnerClick() {
+        $partnerId = $_GET['id'] ?? 0;
+        if(!$partnerId) {
+            header('Location: ' . BASE_URL);
+            exit;
+        }
+        $db = new DB('partners');
+        $partner = $db->find($partnerId);
+        if(!$partner || empty($partner['link_url'])) {
+            header('Location: ' . BASE_URL);
+            exit;
+        }
+        // 廣告區點擊統計
+        $db->update($partnerId,[
+            'click_count' => $partner['click_count'] + 1,
+        ]);
+
+        header('Location: ' . $partner['link_url']);
+        exit;
+    }
+
 
 
 

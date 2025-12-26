@@ -60,7 +60,7 @@
 
       <!-- 右側固定側欄 -->
       <aside class="col-lg-3 col-md-4 col-12">
-        <!-- 廣告區 後台還未建置 預留欄位 -->
+        <!-- 廣告區 -->
         <div class="ad-section mb-5" id="sponsor-marquee" style="display:none">
           <h5 class="fw-bold text-secondary border-bottom pb-2">廣告區</h5>
           <div class="marquee bg-light p-3 rounded small text-muted">
@@ -85,14 +85,24 @@
           </div>
         <?php endif; ?>
 
-        <!-- 合作媒體 後台還未建置 預留欄位 -->
-        <!-- <div class="partner-section">
-          <h5 class="fw-bold text-secondary border-bottom pb-2">合作媒體</h5>
-          <div class="bg-light text-center p-3 rounded">
-            <p class="text-muted small mb-2">此區預留合作媒體 LOGO 展示</p>
-            <div class="placeholder bg-secondary rounded mx-auto" style="width:80%;height:60px;opacity:0.1;"></div>
+        <!-- 合作媒體 -->
+        <?php if (!empty($partners)): ?>
+          <div class="partner-section">
+            <h5 class="fw-bold text-secondary border-bottom pb-2">合作媒體</h5>
+
+            <div class="bg-light p-3 rounded d-flex flex-wrap gap-3 justify-content-center">
+              <?php foreach ($partners as $p): ?>
+                <a href="<?= BASE_URL ?>/?page=api_partner_click&id=<?= $p['id'] ?>"
+                  target="_blank"
+                  class="partner-logo d-block">
+                  <img src="<?= STATIC_URL . '/' . $p['image'] ?>"
+                    alt="合作媒體"
+                    style="max-width:120px; height:auto;">
+                </a>
+              <?php endforeach; ?>
+            </div>
           </div>
-        </div> -->
+        <?php endif; ?>
       </aside>
     </div>
   </main>
