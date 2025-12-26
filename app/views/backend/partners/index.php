@@ -55,7 +55,7 @@
 
                                     <!-- 圖片 -->
                                     <div class="form-group partner-image">
-                                        <input type="file" class="form-control mb-2" id="image" name="image[]" value="" accept="image/*">
+                                        <input type="file" class="form-control mb-1" id="image" name="image[]" value="" accept="image/*">
                                         <?php if (!empty($p['image'])): ?>
                                             <div class="partner-image-preview partner-thumb">
                                                 <img src="<?= STATIC_URL . '/' . $p['image'] ?>" alt="目前封面圖片" style="width:150px; height:auto; border:1px solid #ddd; padding:4px;">
@@ -95,13 +95,13 @@
 
                                             </div>
                                         </div>
-                                        <div class="partner-link-row">
-                                        <div class="col-link">連結路徑</div>
+                                        <div class="partner-link-row partner-field-group">
+                                        <div class="field-label">連結路徑</div>
 
                                             <!-- 連結 -->
                                             <input type="url"
                                                 name="link_url[]"
-                                                class="form-control col-link"
+                                                class="form-control field-input"
                                                 value="<?= htmlspecialchars($p['link_url']) ?>">
                                         </div>
 
@@ -301,16 +301,6 @@
         color: #333;
     }
 
-    /* 拖曳icon亮起來 */
-    tr:hover .handle {
-        color: #007bff;
-    }
-
-    /* 點選該列時 整列顏色變化*/
-    #sponsorPickTableBody tr:hover {
-        background-color: #f8f9fa;
-    }
-
     .pick-item {
         border: 1px solid #e5e7eb;
         border-radius: 8px;
@@ -323,7 +313,7 @@
     .pick-header,
     .pick-row {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 12px;
     }
 
@@ -357,18 +347,6 @@
         width: 65px;
     }
 
-    .col-category {
-        width: 160px;
-    }
-
-    .col-article {
-        flex: 1;
-        /* ⭐ 唯一吃剩餘空間 */
-        min-width: 200px;
-        /* 不會被擠爆 */
-        max-width: 420px;
-        /* 不會無限長 */
-    }
 
     .col-action {
         width: 70px;
@@ -392,132 +370,112 @@
         }
     }
     .partner-image-preview {
-    display: flex;
-    flex-direction: column;   /* ← 關鍵 */
-    align-items: center;      /* 水平置中 */
-    gap: 4px;
-    margin-top: 6px;
-}
+        display: flex;
+        flex-direction: column;   /* ← 關鍵 */
+        align-items: center;      /* 水平置中 */
+        gap: 4px;
+        margin-top: 6px;
+    }
 
-.partner-image-preview img {
-    width: 120px;             /* 可依你版面調 */
-    height: auto;
-    border: 1px solid #ddd;
-    padding: 4px;
-    background: #fff;
-}
+    .partner-image-preview img {
+        width: 120px;             /* 可依你版面調 */
+        height: auto;
+        border: 1px solid #ddd;
+        padding: 4px;
+        background: #fff;
+    }
 
-.image-filename {
-    font-size: 12px;
-    color: #6c757d;
-    text-align: center;
-    word-break: break-all;    /* 避免檔名太長爆版 */
-}
+    .image-filename {
+        font-size: 12px;
+        color: #6c757d;
+        text-align: center;
+        word-break: break-all;    /* 避免檔名太長爆版 */
+    }
 
-/* 右側整包 */
-.partner-info {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    flex: 1;              /* 吃掉中間空間 */
-    min-width: 360px;
-}
+    /* 右側整包 */
+    .partner-info {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex: 1;              /* 吃掉中間空間 */
+        min-width: 360px;
+    }
 
-/* 時間那一排：左右 */
-.partner-time-row {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-/* 上方標題 */
-.partner-label {
-    font-size: 12px;
-    color: #6b7280;
-}
+    /* 時間那一排：左右 */
+    .partner-time-row {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+    /* 上方標題 */
+    .partner-label {
+        font-size: 12px;
+        color: #6b7280;
+    }
 
-/* inputs 本身 */
-.partner-time-inputs {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
+    /* inputs 本身 */
+    .partner-time-inputs {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
 
-/* 網址列 */
-.partner-link-row input {
-    width: 100%;
-}
+    /* 網址列 */
+    .partner-link-row input {
+        width: 100%;
+    }
 
-/* 點擊次數 */
-.partner-click {
-    font-size: 12px;
-    color: #6c757d;
-    padding-left: 4px;
-}
+    /* 圖片整個區塊：自己直排 */
+    .partner-image {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; /* ⭐ 向左對齊 */
+        gap: 6px;
+    }
 
-/* 圖片整個區塊：自己直排 */
-.partner-image {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* ⭐ 向左對齊 */
-    gap: 6px;
-}
+    /* 縮圖區 */
+    .partner-thumb {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; /* ⭐ */
+        gap: 4px;
+    }
 
-/* 縮圖區 */
-.partner-thumb {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* ⭐ */
-    gap: 4px;
-}
+    /* 縮圖本身 */
+    .partner-thumb img {
+        width: 120px;
+        height: auto;
+        border: 1px solid #ddd;
+        padding: 4px;
+        background: #fff;
+    }
 
-/* 縮圖本身 */
-.partner-thumb img {
-    width: 120px;
-    height: auto;
-    border: 1px solid #ddd;
-    padding: 4px;
-    background: #fff;
-}
+    /* 檔名文字 */
+    .partner-filename {
+        font-size: 12px;
+        color: #6c757d;
+        word-break: break-all;
+    }
 
-/* 檔名文字 */
-.partner-filename {
-    font-size: 12px;
-    color: #6c757d;
-    word-break: break-all;
-}
+    /* 左邊：跟 handle / sort / image 對齊 */
+    .header-left {
+        display: flex;
+        gap: 12px;
+    }
 
-.pick-header {
-    display: flex;
-    gap: 12px;
-    font-size: 12px;
-    color: #6b7280;
-    margin-bottom: 6px;
-}
+    .partner-field-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 10px;
+    }
 
-/* 左邊：跟 handle / sort / image 對齊 */
-.header-left {
-    display: flex;
-    gap: 12px;
-}
+    .partner-field-group .field-label {
+        font-size: 12px;
+        color: #6b7280; /* 跟你現在 header 灰字一致 */
+    }
 
-/* 中間：跟 partner-info 對齊 */
-.header-middle {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-/* 右邊：操作 */
-.header-action {
-    width: 70px;
-}
-
-
-
-
-
-
-
-
+    .partner-field-group .field-input {
+        width: 100%;
+    }
 </style>
