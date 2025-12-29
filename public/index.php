@@ -173,6 +173,11 @@ switch($page) {
         break;
 
     // 後台：頁尾標籤管理
+    case 'footer_index':
+        // requirePermission('create', MODULE_FOOTER);
+        $controller = new footerArticleController();
+        $controller->index();
+        break;
     case 'footer_create':
         // requirePermission('create', MODULE_FOOTER);
         $controller = new footerArticleController();
@@ -197,10 +202,20 @@ switch($page) {
         $controller->update($_POST);
         }
         break;
+    case 'footer_delete':
+        // requirePermission('create', MODULE_FOOTER);
+        $controller = new footerArticleController();
+        $controller->delete($_GET['id'] ?? null);
+        break;
     // 處理CKEditor圖片上傳
     case 'footer_image_upload':
         $controller = new footerArticleController();
         $controller->footerImageUpload();
+        break;
+    // 處理footer排序
+    case 'api_footer_sort':
+        $controller = new footerArticleController();
+        $controller->updateSort();
         break;
 
     // 後台：登入認證/登出

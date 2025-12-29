@@ -29,7 +29,7 @@ $sidebarConfig = [
     'footer' => [
         'icon' => 'fa-pen',
         'children' => [
-            ['label' => '管理列表', 'page' => ''],
+            ['label' => '管理列表', 'page' => 'footer_index'],
         ],
     ],
     'sysuser' => [

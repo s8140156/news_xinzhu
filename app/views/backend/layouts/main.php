@@ -17,6 +17,8 @@
     <!-- jQuery(從script拉上來先引入 不然拖曳功能會吃不到) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
 
      <!-- Popper（Bootstrap 4 Tooltip / Dropdown 需要） -->
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>

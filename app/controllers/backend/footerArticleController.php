@@ -4,6 +4,13 @@ require_once APP_PATH . '/core/db.php';
 require_once APP_PATH . '/core/helpers.php';
 
 class footerArticleController {
+    public function index() {
+        $db = new DB('footer_articles');
+        $footers = $db->all('1 ORDER BY sort ASC');
+
+        $content = APP_PATH . '/views/backend/footer_articles/index.php';
+        include APP_PATH . '/views/backend/layouts/main.php';
+    }
 
     public function create() {
         $mode = 'create';
@@ -35,12 +42,22 @@ class footerArticleController {
         $status = ($_POST['action'] ?? 'draft') === 'publish' ? 'published' : 'draft';
 
         $db = new DB('footer_articles');
+        $sql = "SELECT COUNT(*) AS total FROM footer_articles";
+        $count =$db->query($sql)[0]['total'] ?? 0;
+        if($count >= 5) {
+            echo "<script>alert('頁尾標籤最多只能新增5篇文章');history.back();</script>";
+            exit;
+        }
+        $row = $db->query("SELECT MAX(sort) AS max_sort FROM footer_articles");
+        $nextSort = ($row[0]['max_sort'] ?? 0) + 1;
+
         $db->insert([
             'title' => $title,
             'author' => $author,
             'content' => $content,
             'status' => $status,
             'views' => 0,
+            'sort' => $nextSort,
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s')
         ]);
@@ -85,8 +102,7 @@ class footerArticleController {
             'link_clicks' => json_encode(array_fill(0, count($linksArr), 0))
         ]);
 
-        // echo "<script>alert('頁尾標籤新增成功');window.location='?page=footer_index';</script>";
-        echo "<script>alert('頁尾標籤新增成功');</script>";
+        echo "<script>alert('頁尾標籤新增成功');window.location='?page=footer_index';</script>";
         exit;
     }
 
@@ -313,26 +329,76 @@ class footerArticleController {
             'updated_at'  => date('Y-m-d H:i:s')
         ]);
 
-        // echo "<script>alert('頁尾標籤更新成功！');window.location='?page=footer_index';</script>";
-        echo "<script>alert('頁尾標籤更新成功！');</script>";
+        echo "<script>alert('頁尾標籤更新成功！');window.location='?page=footer_index';</script>";
         exit;
     }
 
+    public function delete() {
+        $id = $_GET['id'] ?? null;
+        if(!$id || !is_numeric($id)) {
+            echo "<script>alert('缺少頁尾標籤文章ID 或 ID格式錯誤');history.back();</script>";
+            return;
+        }
 
+        $db = new DB('footer_articles');
+        $article = $db->find($id);
 
+        if(!$article) {
+            echo "<script>alert('找不到指定頁尾標籤文章，無法刪除');history.back();</script>";
+            return;
+        }
 
+        // 同步清理 CKEditor 上傳圖片
+        $contentDir = UPLOAD_PATH . "/footer_articles/content/{$id}/";
+        if (is_dir($contentDir)) {
+            // 刪除所有內文圖片檔案
+            $files = glob($contentDir . "/*");
+            foreach($files as $file) {
+                if(is_file($file)) unlink($file); 
+            }
+            // 刪除資料夾
+            rmdir($contentDir);
+        }
 
+        // 刪除資料庫記錄
+        $deleted = $db->delete($id);
 
+        $rows = $db->query(
+            "SELECT id FROM footer_articles ORDER BY sort ASC, id ASC"
+        );
 
+        foreach ($rows as $index => $row) {
+            $db->update($row['id'],[
+                'sort' => $index + 1
+            ]);
+        }
 
+        if ($deleted) {
+            echo "<script>alert('文章已刪除成功！');window.location = '?page=footer_index';</script>";
+        } else {
+            echo "<script>alert('刪除失敗，請稍後再試');history.back();</script>";
+        }
 
+    }
 
+    public function updateSort() {
 
+        $data = json_decode(file_get_contents('php://input'), true);
 
+        if (!is_array($data)) {
+            echo json_encode(['success' => false]);
+            return;
+        }
 
+        $db = new DB('footer_articles');
 
+        foreach ($data as $item) {
+            $db->update($item['id'], [
+                'sort' => (int)$item['sort'],
+                'updated_at' => date('Y-m-d H:i:s')
+            ]);
+        }
 
-
-
-    
+        echo json_encode(['success' => true]);
+    }
 }
