@@ -31,8 +31,9 @@
                                         </td>
                                         <td><input type="text" class="form-control bg-light sortable-row" data-id="<?= $row['id'] ?>" name="sort[]"
                                                 value="<?= htmlspecialchars($row['sort']) ?>" readonly></td>
+                                        
                                         <td><input type="text" class="form-control" name="name[]"
-                                                value="<?= htmlspecialchars($row['name']) ?>"></td>
+                                                value="<?= htmlspecialchars($row['name']) ?>" <?= $row['is_focus'] === 1 ? 'readonly' : '' ?>></td>
                                         <td>
                                             <input type="hidden" name="id[]" value="<?= htmlspecialchars($row['id']) ?>">
                                             <?php if ($row['is_focus'] == 1): ?>
