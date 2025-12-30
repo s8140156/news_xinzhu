@@ -110,11 +110,11 @@
   <div class="container py-3">
     <div class="text-center small">
       <?php foreach ($footerTags as $i => $tag): ?>
-        <a href="<?= $tag['url'] ?>" class="text-secondary text-decoration-none me-2">
+        <a href="?page=footer_show&id=<?= $tag['id'] ?>" class="text-secondary text-decoration-none me-2">
           <?= $tag['title'] ?>
         </a>
         <?php if ($i < count($footerTags) - 1): ?>
-          |
+        |&nbsp;&nbsp;
         <?php endif; ?>
       <?php endforeach; ?>
     </div>

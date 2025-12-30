@@ -290,6 +290,18 @@ function getActivePartners($limit = 5) {
     return $partners;
 }
 
+// 取得footer資訊
+function getActiveFooterArticles() {
+    $db = new DB('footer_articles');
+    return $db->query("
+        SELECT id, title
+        FROM footer_articles
+        WHERE status = 'published'
+        ORDER BY sort ASC
+        LIMIT 5
+    ");
+}
+
 
 
 

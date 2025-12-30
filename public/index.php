@@ -12,6 +12,7 @@ require_once APP_PATH . '/config.php'; // 載入config,自動判斷環境(local/
 // 載入controller
 // 前台
 require_once APP_PATH . '/controllers/frontend/newsController.php';
+require_once APP_PATH . '/controllers/frontend/footerController.php';
 
 // 後台
 require_once APP_PATH . '/controllers/backend/newsCategoryController.php';
@@ -64,6 +65,14 @@ switch($page) {
     case 'api_partner_click': // 統計合作媒體點擊API
         $controller = new NewsController();
         $controller->partnerClick();
+        break;
+    case 'footer_show': // 顯示頁尾標籤單篇文章
+        $controller = new FooterController();
+        $controller->show($_GET['id'] ?? null);
+        break;
+    case 'api_footer_link_click': // 統計頁尾標籤連結點擊API
+        $controller = new FooterController();
+        $controller->recordLinkClick();
         break;
 
 
