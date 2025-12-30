@@ -482,6 +482,10 @@ class ArticleController {
         $db = new DB('articles');
         $id = $_GET['id'] ?? null;
         $article = $db->find($id);
+        $isFocus = ($article['category_id'] == FOCUS_CATEGORY_ID);
+        if($isFocus && !canFocus()) {
+            abort403();
+        }
 
         // 拆分排程時間
         $publishDate = '';
@@ -510,6 +514,10 @@ class ArticleController {
         // 取資料庫資料
         $db = new DB('articles');
         $oldArticle = $db->find($id);
+        $isFocus = ($oldArticle['category_id'] == FOCUS_CATEGORY_ID);
+        if($isFocus && !canFocus()) {
+            abort403();
+        }
 
         // 接收新資料
         $title = $_POST['title'] ?? '';
@@ -655,7 +663,11 @@ class ArticleController {
 
         $db = new DB('articles');
         $article = $db->find($id);
-
+        $isFocus = ($article['category_id'] == FOCUS_CATEGORY_ID);
+        if($isFocus && !canFocus()) {
+            abort403();
+        }
+        
         if(!$article) {
             echo "<script>alert('找不到指定文章，無法刪除');history.back();</script>";
             return;

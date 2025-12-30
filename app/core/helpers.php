@@ -17,6 +17,10 @@ define('MODULE_PARTNER', 4);
 define('MODULE_FOOTER', 5);
 define('MODULE_SYSUSER', 6);
 
+// 定義焦點分類常數
+define('FOCUS_CATEGORY_ID', 1);
+
+
 
 // 取得新聞分類對照表 id=>name
 function getNewsCategoryMap($orderBy = 'id ASC') {
@@ -165,6 +169,15 @@ function canDelete($moduleId) {
     }
     return !empty($_SESSION['permissions'][$moduleId]['can_delete']);
 }
+
+function canFocus() {
+    // SA 永遠可以操作焦點
+    if (!empty($_SESSION['is_super_admin'])) {
+        return true;
+    }
+    return !empty($_SESSION['permissions']['article']['can_focus']);
+}
+
 
 // 改成403共用function
 // function forbidden() {

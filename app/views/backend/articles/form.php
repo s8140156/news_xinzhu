@@ -22,6 +22,11 @@
                                 <select class="form-control" id="category" name="category_id" required>
                                     <option value="">請選擇分類</option>
                                     <?php foreach ($categories as $id=>$name): ?>
+                                    <?php
+                                        $isFocus = ($id === FOCUS_CATEGORY_ID);
+                                        if($isFocus && !canFocus()) {
+                                            continue;
+                                        } ?>
                                     <option value="<?= $id ?>" <?= isset($article['category_id']) && $article['category_id'] == $id ? 'selected' : '' ?>><?= htmlspecialchars($name) ?></option>
                                     <?php endforeach; ?>
                                 </select>
