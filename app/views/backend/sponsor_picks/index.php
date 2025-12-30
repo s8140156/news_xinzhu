@@ -138,9 +138,10 @@
                 <!-- 儲存 -->
                 <div class="mt-4">
                     <?php if (canCreate(MODULE_SPONSORED)): ?>
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" class="btn btn-success" id="btnSave">
                         儲存
                     </button>
+                    <input type="hidden" name="action" value="update">
                     <?php endif; ?>
                 </div>
 
@@ -237,6 +238,8 @@
         renderCategoryOptions(item.querySelector('.category-select'));
 
         updateSortNumbers();
+        isDataChanged = true;
+
     });
 
     // 刪除
@@ -257,6 +260,8 @@
 
         item.remove();
         updateSortNumbers();
+        isDataChanged = true;
+
     });
 
     // 當分類改變時，載入對應文章
@@ -298,6 +303,8 @@
 
 
     let isDirty = false;
+    let isSorting = false;
+    let isDataChanged = false;
 
     // 當輸入框有改變
     $(document).on('input', 'input[name="name[]"], input[name="sort[]"]', function() {
@@ -319,6 +326,12 @@
 
     // 當送出表單（儲存）時，重置旗標
     document.getElementById('sponsorPickForm').addEventListener('submit', function() {
+        const actionInput = document.querySelector('input[name="action"]');
+        if (isSorting && !isDataChanged) {
+            actionInput.value = 'sort';
+        } else {
+            actionInput.value = 'update';
+        }
         isDirty = false;
     });
 
@@ -326,6 +339,7 @@
         document.querySelectorAll('#sponsorPickList .pick-item')
             .forEach((item, index) => {
                 item.querySelector('input[name="sort[]"]').value = index + 1;
+
             });
     }
 
@@ -340,9 +354,19 @@
             update: function(event, ui) {
                 updateSortNumbers();
                 isDirty = true;
+                isSorting = true;
+
             }
         });
     });
+
+    $(document).on('change input', 
+        'input[name="start_at[]"], input[name="end_at[]"], select[name="article_category_id[]"], select[name="article_id[]"]',
+        function () {
+            isDataChanged = true;
+        }
+    );
+
 
 
     document.getElementById('sponsorPickForm').addEventListener('submit', function() {
@@ -380,6 +404,7 @@
         wrapper.replaceWith(input);
         hiddenInput.remove();
     });
+
 
 </script>
 

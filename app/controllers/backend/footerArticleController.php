@@ -4,6 +4,7 @@ require_once APP_PATH . '/core/db.php';
 require_once APP_PATH . '/core/helpers.php';
 
 class footerArticleController {
+
     public function index() {
         $db = new DB('footer_articles');
         $footers = $db->all('1 ORDER BY sort ASC');
@@ -395,7 +396,6 @@ class footerArticleController {
         foreach ($data as $item) {
             $db->update($item['id'], [
                 'sort' => (int)$item['sort'],
-                'updated_at' => date('Y-m-d H:i:s')
             ]);
         }
 

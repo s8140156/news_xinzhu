@@ -31,6 +31,8 @@ class SponsorPickController {
     public function store() {
 
         $db = new DB('sponsor_picks');
+        $action = $_POST['action'] ?? 'update';
+        $isSort = ($action === 'sort');
 
         // 先處理刪除
         if(!empty($_POST['delete_ids'])) {
@@ -68,23 +70,31 @@ class SponsorPickController {
                     }
                 }
             }
-            
             $data = [
-                'sort' => $_POST['sort'][$i] ?? ($i+1),
-                'start_at' => $startAt,
-                'end_at' => $endAt,
-                'article_category_id' => $_POST['article_category_id'][$i] ?: null,
-                'article_id' => $articleId,
-                'title' => $articleTitle,
-                'article_link_count' => $linkCount,
-                'updated_at' => date('Y-m-d H:i:s'),
+                'sort' => (int)($_POST['sort'][$i] ?? ($i+1)),
             ];
+            if(!$isSort) {
+                $data += [
+                    'start_at' => $startAt,
+                    'end_at' => $endAt,
+                    'article_category_id' => $_POST['article_category_id'][$i] ?: null,
+                    'article_id' => $articleId,
+                    'title' => $articleTitle,
+                    'article_link_count' => $linkCount,
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ];
+            }
+
             if($id === '(新)' || empty($id)) {
                 $data['created_at'] = date('Y-m-d H:i:s');
                 $db->insert($data);
             } else{
                 $db->update($id, $data);
             }
+        }
+        if($isSort) {
+            echo "<script>alert('排序成功！');window.location = '?page=sponsorpicks_index';</script>";
+            return;
         }
         echo "<script>alert('更新成功！');window.location = '?page=sponsorpicks_index';</script>";
     }
