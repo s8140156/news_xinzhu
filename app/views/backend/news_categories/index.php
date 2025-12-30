@@ -8,9 +8,9 @@
                     </div>
 
                     <div class="card-body">
-                        <label class="form-label mb-3">（可使用拖曳icon變更順序）</label>
                         <?php if (canCreate(MODULE_CATEGORY)): ?>
-                        <button type="button" class="btn btn-primary" id="addRowBtn">+ 新增一筆</button>
+                        <label class="form-label mb-3 text-muted"> <small>（可使用拖曳 icon 變更順序）</small> </label>
+                        <button type="button" class="btn btn-primary btn-sm" id="addRowBtn">+ 新增一筆</button>
                         <?php endif; ?>
                         <input type="hidden" name="act" value="addCategory">
                         <input type="hidden" name="delete_ids[]" value="">

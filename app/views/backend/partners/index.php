@@ -11,8 +11,10 @@
         <div class="card-body">
 
             <form id="partnerForm" method="post" action="?page=partner_store" enctype="multipart/form-data">
-                <label class="form-label mb-3">（可使用拖曳 icon 變更順序）</label>
-                <button type="button" id="addRowBtn" class="btn btn-primary btn-sm mb-3">＋ 新增一筆</button>
+                <?php if (canCreate(MODULE_PARTNER)): ?>
+                <label class="form-label mb-3 text-muted"> <small>（可使用拖曳 icon 變更順序）</small> </label>
+                <button type="button" id="addRowBtn" class="btn btn-primary btn-sm">＋ 新增一筆</button>
+                <?php endif; ?>
 
                 <!-- 拖曳區塊id="partnerList" -->
                 <div class="" id="partnerList">
@@ -120,10 +122,12 @@
                                             class="btn btn-outline-secondary btn-sm">
                                             <i class="fas fa-external-link-alt"></i>
                                         </a>
+                                        <?php if (canCreate(MODULE_PARTNER)): ?>
                                         <button type="button"
                                             class="btn btn-outline-danger btn-sm deleteRowBtn">
                                             <i class="fas fa-trash"></i>
                                         </button>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
 
@@ -136,9 +140,11 @@
                 </div>
                 <!-- 儲存 -->
                 <div class="mt-4">
+                    <?php if (canCreate(MODULE_PARTNER)): ?>
                     <button type="submit" class="btn btn-success">
                         儲存
                     </button>
+                    <?php endif; ?>
                 </div>
             </form>
         </div>

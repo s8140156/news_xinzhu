@@ -12,8 +12,8 @@
         <div class="card-body">
 
             <form id="sponsorPickForm" method="post" action="?page=sponsorpicks_store">
-                <label class="form-label mb-3">（可使用拖曳icon變更順序）</label>
                 <?php if (canCreate(MODULE_SPONSORED)): ?>
+                <label class="form-label mb-3 text-muted"> <small>（可使用拖曳 icon 變更順序）</small> </label>
                 <button type="button" id="addRowBtn" class="btn btn-primary btn-sm">＋ 新增一筆</button>
                 <?php endif; ?>
 

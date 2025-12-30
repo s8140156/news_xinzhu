@@ -5,13 +5,16 @@
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">頁尾標籤管理</h6>
 
-            <!-- 新增按鈕 -->
-            <a href="?page=footer_create" class="btn btn-primary btn-sm">
-                <i class="fas fa-plus"></i> 新增頁尾標籤
-            </a>
         </div>
-
+        
         <div class="card-body">
+            <!-- 新增按鈕 -->
+            <?php if (canCreate(MODULE_FOOTER)): ?>
+            <label class="form-label mb-3 text-muted"><small>（可使用拖曳 icon 變更順序）</small></label>
+            <a href="?page=footer_create" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> 新增一筆
+            </a>
+            <?php endif; ?>
 
             <?php if (empty($footers)): ?>
                 <p class="text-muted">目前尚未設定頁尾標籤文章</p>
@@ -21,9 +24,11 @@
             <?php foreach ($footers as $footer): ?>
                 <div class="footer-card border rounded mb-3 d-flex align-items-stretch" data-id="<?= $footer['id'] ?>">
                     <!-- 拖曳 icon -->
+                    <?php if (canEdit(MODULE_FOOTER)): ?>
                     <div class="drag-handle" title="拖曳調整順序">
                         <i class="fas fa-grip-vertical"></i>
                     </div>
+                    <?php endif; ?>
 
                     <div class="flex-grow-1 p-3">
 
@@ -96,18 +101,21 @@
                             <i class="fas fa-eye"></i>
                         </a>
 
+                        <?php if (canEdit(MODULE_FOOTER)): ?>
                         <a href="?page=footer_edit&id=<?= $footer['id'] ?>"
                             class="btn btn-light btn-sm me-2"
                             title="編輯">
                             <i class="fas fa-edit"></i>
                         </a>
-
+                        <?php endif; ?>
+                        <?php if (canDelete(MODULE_FOOTER)): ?>
                         <a href="?page=footer_delete&id=<?= $footer['id'] ?>"
                             class="btn btn-light btn-sm text-danger"
                             title="刪除"
                             onclick="return confirm('確定要刪除此頁尾標籤文章嗎？');">
                             <i class="fas fa-trash-alt"></i>
                         </a>
+                        <?php endif; ?>
                     </div>
 
 

@@ -17,18 +17,18 @@
 
         <!-- 📢 通知區塊 (目前靜態展示) -->
         <li class="nav-item dropdown no-arrow mx-1">
-            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown"
+            <!-- <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-bell fa-fw"></i>
+                <i class="fas fa-bell fa-fw"></i> -->
                 <!-- Counter -->
-                <span class="badge badge-danger badge-counter">3+</span>
-            </a>
+                <!-- <span class="badge badge-danger badge-counter">3+</span> -->
+            <!-- </a> -->
             <!-- Dropdown -->
-            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
+            <!-- <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
                 <h6 class="dropdown-header">通知中心</h6>
                 <a class="dropdown-item" href="#">這是通知範例 1</a>
                 <a class="dropdown-item" href="#">這是通知範例 2</a>
-            </div>
+            </div> -->
         </li>
 
         <div class="topbar-divider d-none d-sm-block"></div>
