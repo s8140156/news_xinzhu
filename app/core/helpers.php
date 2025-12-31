@@ -339,6 +339,22 @@ function canDeleteArticle(array $article): bool {
     return canFocus();
 }
 
+// 頁碼
+function paginate(int $page, int $perPage, int $total): array {
+    $page = max(1, $page); // page最小值防呆
+    $totalPages = ceil($total / $perPage);
+    $page = min($page, max($totalPages, 1)); // page最大值防呆(不超過totalPage)
+
+    return [
+        'page' => $page,
+        'perPage' => $perPage,
+        'total' => $total,
+        'totalPages' => $totalPages,
+        'offset' => ($page - 1) * $perPage,
+        'limit' => $perPage
+    ];
+}
+
 
 
 

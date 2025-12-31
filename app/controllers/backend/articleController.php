@@ -93,11 +93,25 @@ class ArticleController {
         }
         // echo "<pre>目前排序條件：$order</pre>";
 
-        $articles = $db->all("$where ORDER BY $order", $params);
+        // $articles = $db->all("$where ORDER BY $order", $params);
         // print_r($articles);
 
         // 撈新聞分類對照
         $categories = $this->getCategoryMap('sort ASC');
+
+        // 頁碼
+        $page = (int)($_GET['p'] ?? 1);
+        $perPage = 10;
+        // 先拿總筆數
+        $total = $db->query("SELECT COUNT(*) AS cnt FROM articles")[0]['cnt'];
+        $pager = paginate($page, $perPage, $total);
+        $articles = $db->query(
+            "SELECT * FROM articles
+            ORDER BY $order
+            LIMIT {$pager['limit']} OFFSET {$pager['offset']}",
+            $params
+        );
+
 
         $content = APP_PATH . '/views/backend/articles/index.php';
         include APP_PATH . '/views/backend/layouts/main.php';
