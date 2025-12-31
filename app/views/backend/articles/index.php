@@ -200,19 +200,13 @@
                             class="btn btn-light btn-sm me-2" title="預覽" target="_blank">
                             <i class="fas fa-eye"></i>
                         </a>
-                        <?php
-                            $isFocus = ($article['category_id'] === FOCUS_CATEGORY_ID);
-                            if(canEdit(MODULE_ARTICLE)
-                            && (!$isFocus || canFocus())): ?>
+                        <?php if(canEditArticle($article)): ?>
                         <a href="index.php?page=article_edit&id=<?= $article['id'] ?>" class="btn btn-light btn-sm me-2"
                             title="編輯">
                             <i class="fas fa-edit"></i>
                         </a>
                         <?php endif; ?>
-                        <?php
-                            $isFocus = ($article['category_id'] === FOCUS_CATEGORY_ID);
-                            if(canDelete(MODULE_ARTICLE)
-                            && (!$isFocus || canFocus())): ?>
+                        <?php if(canDeleteArticle($article)): ?>
                         <a href="index.php?page=article_delete&id=<?= $article['id'] ?>"
                             class="btn btn-light btn-sm text-danger" title="刪除"
                             onclick="return confirm('確定要刪除此文章嗎？此動作無法復原！')">

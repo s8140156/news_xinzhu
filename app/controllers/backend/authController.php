@@ -61,6 +61,7 @@ class AuthController {
                 'can_create' => $row['can_create'],
                 'can_edit' => $row['can_edit'],
                 'can_delete' => $row['can_delete'],
+                'can_focus' => $row['can_focus'],
             ];
         }  
 
@@ -133,6 +134,7 @@ class AuthController {
                 'can_create' => $row['can_create'],
                 'can_edit' => $row['can_edit'],
                 'can_delete' => $row['can_delete'],
+                'can_focus' => $row['can_focus'],
             ];
         }
         

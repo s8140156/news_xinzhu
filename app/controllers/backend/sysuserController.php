@@ -10,7 +10,6 @@ class SysuserController {
         $page_title = '管理者帳號列表';
 
         $db = new DB('sysusers');
-        // $sysusers = $db->query("SELECT * FROM sysusers WHERE is_super_admin = ? ORDER BY id ASC", [0]);
         $users = $db->query("SELECT id, name, email, phone, is_super_admin, status, created_at, updated_at FROM sysusers ORDER BY is_super_admin ASC, created_at DESC");
 
         $content = APP_PATH . '/views/backend/sysuser/index.php';
@@ -90,23 +89,23 @@ class SysuserController {
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
 
-        // 處理權限資料
-        // $moduleDB = new DB('modules');
-        // $modules = $moduleDB->all();
-        // $moduleMap = [];
-        // foreach($modules as $module) {
-        //     $moduleMap[$module['module_key']] = $module['id'];
-        // }
-
+        // 處理權限
         $permitDB = new DB('user_permissions');
         foreach($permissions as $moduleId => $perm) {
+            $canView = !empty($perm['can_view']) ? 1 :0;
+            $canCreate = !empty($perm['can_create']) ? 1 :0;
+            $canEdit = !empty($perm['can_edit']) ? 1 :0;
+            $canDelete = !empty($perm['can_delete']) ? 1 :0;
+            $canFocus = ($moduleId == MODULE_ARTICLE && $canView && !empty($perm['can_focus'])) ? 1 : 0;
+
             $permitDB->insert([
                 'user_id' => $userId,
                 'module_id' => $moduleId,
-                'can_view' => isset($perm['can_view']) ? 1 : 0,
-                'can_create' => isset($perm['can_create']) ? 1 : 0,
-                'can_edit' => isset($perm['can_edit']) ? 1 : 0,
-                'can_delete' => isset($perm['can_delete']) ? 1 : 0,
+                'can_view' => $canView,
+                'can_create' => $canCreate,
+                'can_edit' => $canEdit,
+                'can_delete' => $canDelete,
+                'can_focus' => $canFocus,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);
@@ -154,6 +153,7 @@ class SysuserController {
         foreach($rows as $row) {
             $permissions[$row['module_id']] = [
                 'can_view' => $row['can_view'],
+                'can_focus' => $row['can_focus'],
                 'can_create' => $row['can_create'],
                 'can_edit' => $row['can_edit'],
                 'can_delete' => $row['can_delete'],
@@ -198,12 +198,6 @@ class SysuserController {
             $update['password'] = $hashed;
         }
         $db->update($id, $update);
-        // $moduleDB = new DB('modules');
-        // $modules = $moduleDB->all();
-        // $moduleMap = [];
-        // foreach($modules as $module) {
-        //     $moduleMap[$module['module_key']] = $module['id'];
-        // }
         $permitDB = new DB('user_permissions');
         // 刪除舊權限
         $permitDB->query("DELETE FROM user_permissions WHERE user_id = ?", [$id]);
@@ -213,16 +207,20 @@ class SysuserController {
         // exit;
 
         foreach($permissions as $moduleId => $perm) {
-            // if(!isset($moduleMap[$moduleKey])) {
-            //     continue;
-            // }
+            $canView = !empty($perm['can_view']) ? 1 :0;
+            $canCreate = !empty($perm['can_create']) ? 1 :0;
+            $canEdit = !empty($perm['can_edit']) ? 1 :0;
+            $canDelete = !empty($perm['can_delete']) ? 1 :0;
+            $canFocus = ($moduleId == MODULE_ARTICLE && $canView && !empty($perm['can_focus'])) ? 1 : 0;
+
             $permitDB->insert([
                 'user_id' => $id,
                 'module_id' => $moduleId,
-                'can_view' => isset($perm['can_view']) ? 1 : 0,
-                'can_create' => isset($perm['can_create']) ? 1 : 0,
-                'can_edit' => isset($perm['can_edit']) ? 1 : 0,
-                'can_delete' => isset($perm['can_delete']) ? 1 : 0,
+                'can_view' => $canView,
+                'can_create' => $canCreate,
+                'can_edit' => $canEdit,
+                'can_delete' => $canDelete,
+                'can_focus' => $canFocus,
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);

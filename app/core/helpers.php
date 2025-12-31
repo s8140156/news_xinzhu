@@ -170,21 +170,6 @@ function canDelete($moduleId) {
     return !empty($_SESSION['permissions'][$moduleId]['can_delete']);
 }
 
-function canFocus() {
-    // SA 永遠可以操作焦點
-    if (!empty($_SESSION['is_super_admin'])) {
-        return true;
-    }
-    return !empty($_SESSION['permissions']['article']['can_focus']);
-}
-
-
-// 改成403共用function
-// function forbidden() {
-//     http_response_code(403);
-//     echo "403 Forbidden";
-//     exit;
-// }
 
 function abort403($message = '你沒有權限存取此功能。') {
     http_response_code(403);
@@ -314,6 +299,46 @@ function getActiveFooterArticles() {
         LIMIT 5
     ");
 }
+
+// 是否可操作焦點(唯一入口)
+function canFocus($moduleId = MODULE_ARTICLE): bool {
+    // SA 永遠可以操作焦點
+    if (!empty($_SESSION['is_super_admin'])) {
+        return true;
+    }
+    return !empty($_SESSION['permissions'][$moduleId]['can_focus']);
+}
+
+// 確認是否是焦點文章
+function isFocusArticle(array $article): bool {
+    return !empty($article['category_id']) && $article['category_id'] == FOCUS_CATEGORY_ID;
+}
+
+// 是否可編輯文章
+function canEditArticle(array $article): bool {
+    if(!canEdit(MODULE_ARTICLE)) {
+        return false;
+    }
+    // 不是焦點文章 → 只要有 can_edit
+    if (!isFocusArticle($article)) {
+        return true;
+    }
+    // 是焦點文章 → 必須同時有 can_edit + can_focus
+    return canFocus();
+}
+
+function canDeleteArticle(array $article): bool {
+    if(!canDelete(MODULE_ARTICLE)) {
+        return false;
+    }
+    // 不是焦點文章 → 只要有 can_delete
+    if (!isFocusArticle($article)) {
+        return true;
+    }
+    // 是焦點文章 → 必須同時有 can_delete + can_focus
+    return canFocus();
+}
+
 
 
 
