@@ -59,6 +59,20 @@
                         全選
                     </label>
                 </div>
+                <?php if($moduleId == MODULE_ARTICLE): ?>
+                <div class="ms-4">
+                    <label class="me-3">
+                        <input type="checkbox"
+                            name="permissions[<?= $moduleId ?>][can_focus]"
+                            <?= ($permissions[$moduleId]['can_focus'] ?? 0) ? 'checked' : '' ?>>
+                            可操作焦點文章
+                            <i class="fas fa-info-circle"
+                                data-toggle="tooltip"
+                                title="僅影響「焦點」分類的文章操作權限；未勾選時，仍可瀏覽焦點文章，但不可新增、編輯或刪除。">
+                            </i>
+                    </label>
+                </div>
+                <?php endif ?>
 
             </div>
         <?php endforeach; ?>
