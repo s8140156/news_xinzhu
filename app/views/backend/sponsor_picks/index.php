@@ -86,7 +86,7 @@
                                     <!-- 分類 -->
                                     <select name="article_category_id[]"
                                         class="form-control col-category category-select"
-                                        data-selected="<?= $sp['article_category_id'] ?>">
+                                        data-selected="<?= $sp['article_category_id'] ?>" required>
                                         <option value="">請選擇新聞分類</option>
                                         <?php foreach ($categories as $cat): ?>
                                             <option value="<?= $cat['id'] ?>"
@@ -98,7 +98,7 @@
 
                                     <!-- 文章 -->
                                     <select name="article_id[]"
-                                        class="form-control col-article article-select" style="width:220px;margin:8px">
+                                        class="form-control col-article article-select" style="width:220px;margin:8px" required>
                                         <option value="<?= $sp['article_id'] ?>">
                                             <?= htmlspecialchars($sp['article_title'] ?? '請重新選擇文章') ?>
                                         </option>
@@ -209,12 +209,12 @@
 
                 <!-- 分類 -->
                 <select name="article_category_id[]"
-                    class="form-control col-category category-select">
+                    class="form-control col-category category-select" required>
                 </select>
 
                 <!-- 文章 -->
                 <select name="article_id[]"
-                    class="form-control col-article article-select">
+                    class="form-control col-article article-select" required>
                     <option value="">請先選擇文章</option>
                 </select>
 

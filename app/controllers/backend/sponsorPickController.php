@@ -55,7 +55,14 @@ class SponsorPickController {
                 ? $_POST['end_at'][$i]
                 : null;
 
+            $articleCategoryId = $_POST['article_category_id'][$i] ?? null;
             $articleId = $_POST['article_id'][$i] ?: null;
+            if(empty($articleCategoryId) || empty($articleId)) {
+                echo "<script>
+                    alert('請選擇「文章分類」與「連結文章」後再儲存');
+                    history.back();</script>";
+                exit;
+            }
             $article = null;
             $linkCount = 0;
             $articleTitle = '';
