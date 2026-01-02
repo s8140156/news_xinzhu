@@ -24,9 +24,34 @@ require_once APP_PATH . '/controllers/backend/profileController.php';
 require_once APP_PATH . '/controllers/backend/partnerController.php';
 require_once APP_PATH . '/controllers/backend/footerArticleController.php';
 
+// 處理後台未登入導向登入頁
+$backendPages = [
+    'article',
+    'category',
+    'sponsorpicks',
+    'partner',
+    'footer',
+    'sysuser',
+    'profile',
+];
 
 // 讀取頁面參數
 $page = $_GET['page'] ?? 'frontend_news';
+
+$isBackend = in_array($page, $backendPages);
+// // 判斷是否為後台page
+$isBackend = false;
+foreach($backendPages as $prefix) {
+    if(str_starts_with($page, $prefix)) {
+        $isBackend = true;
+        break;
+    }
+}
+// // 未登入進後台=>導向login
+if($isBackend && empty($_SESSION['user_id'])) {
+    header("Location: ?page=login");
+    exit;
+}
 
 
 // 路由控制區
