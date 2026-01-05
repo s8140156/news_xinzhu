@@ -91,7 +91,7 @@ switch($page) {
         $controller = new NewsController();
         $controller->partnerClick();
         break;
-    case 'footer_show': // 顯示頁尾標籤單篇文章
+    case 'news_footer_show': // 顯示頁尾標籤單篇文章
         $controller = new FooterController();
         $controller->show($_GET['id'] ?? null);
         break;

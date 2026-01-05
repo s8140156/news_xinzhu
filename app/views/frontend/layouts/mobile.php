@@ -84,7 +84,7 @@
                 <div class="card border-0 shadow-sm">
                     <img src="<?= getCoverImage($focusArticle) ?>" class="card-img-top">
                     <div class="card-body">
-                        <a href="<?= BASE_URL ?>/?page=news_show&id=<?= $focusArticle['id'] ?>"
+                        <a href="<?= BASE_URL ?>/?page=news_list&category=<?= $focusArticle['category_id'] ?>"
                             class="btn btn-primary btn-sm">
                             閱讀更多
                         </a>
@@ -115,7 +115,7 @@
     <!-- Footer -->
     <div class="container text-center small text-secondary py-3">
         <?php foreach ($footerTags as $i => $tag): ?>
-            <a href="?page=footer_show&id=<?= $tag['id'] ?>" class="text-decoration-none text-secondary">
+            <a href="?page=news_footer_show&id=<?= $tag['id'] ?>" class="text-decoration-none text-secondary">
                 <?= $tag['title'] ?>
             </a>
             <?= $i < count($footerTags) - 1 ? ' | ' : '' ?>

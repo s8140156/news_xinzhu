@@ -45,6 +45,15 @@ class FooterController extends FrontendController {
 
         $body = $dom->getElementsByTagName('body')->item(0);
         $footer['content_html'] = $dom->saveHTML($body);
+
+        if($this->isMobile) {
+            // 渲染手機版首頁
+            $this->renderMobile('frontend/mobile/footer.php', [
+                'footer' => $footer,
+                'links' => $links
+            ]);
+            return;
+        }
         
         $this->render('frontend/footer/show.php', [
             'footer' => $footer,

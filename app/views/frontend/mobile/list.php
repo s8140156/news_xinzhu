@@ -45,7 +45,7 @@ $count = 0;
             <span class="text-muted small d-flex align-items-center"
               style="min-width: 110px; text-align: right;">
               <i class="far fa-clock me-1"></i>
-              <?= date('Y/m/d H:i', strtotime($article['publish_time'])) ?>
+              <?= date('Y/m/d', strtotime($article['publish_time'])) ?>
             </span>
 
           </a>
