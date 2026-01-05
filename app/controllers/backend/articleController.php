@@ -103,10 +103,15 @@ class ArticleController {
         $page = (int)($_GET['p'] ?? 1);
         $perPage = 10;
         // 先拿總筆數
-        $total = $db->query("SELECT COUNT(*) AS cnt FROM articles")[0]['cnt'];
+        $total = $db->query("SELECT COUNT(*) AS cnt FROM articles WHERE $where", $params)[0]['cnt'];
         $pager = paginate($page, $perPage, $total);
+        // var_dump($sql);
+        // var_dump($params);
+        // exit;
+
         $articles = $db->query(
             "SELECT * FROM articles
+            WHERE $where
             ORDER BY $order
             LIMIT {$pager['limit']} OFFSET {$pager['offset']}",
             $params
