@@ -1,4 +1,3 @@
-<!-- <h1>我是首頁~</h1> -->
 <div class="container my-2">
 
     <!-- 首頁標題 -->
@@ -10,7 +9,7 @@
     <div class="row g-4">
 
         <?php foreach ($categoryList as $cat): ?>
-            <?php if ($cat['id'] == 1) continue; ?> 
+            <?php if ($cat['id'] == 1) continue; ?>
             <div class="col-12 col-sm-6 col-lg-4">
 
                 <a href="?page=news_list&category=<?= $cat['id'] ?>" class="text-decoration-none text-dark">
@@ -36,11 +35,11 @@
 
                             <?php if ($cat['latest_article']): ?>
                                 <!-- <p class="card-text text-muted small mb-1">
-                                    <?= mb_substr(strip_tags($cat['latest_article']['title']), 0, 30) ?>
-                                </p>
-                                <p class="text-muted small">
-                                    <?= date('Y-m-d', strtotime($cat['latest_article']['publish_time'])) ?>
-                                </p> -->
+                                         <?= mb_substr(strip_tags($cat['latest_article']['title']), 0, 30) ?>
+                                     </p>
+                                     <p class="text-muted small">
+                                         <?= date('Y-m-d', strtotime($cat['latest_article']['publish_time'])) ?>
+                                     </p> -->
                                 <a href="?page=news_list&category=<?= $cat['id'] ?>"
                                     class="btn btn-outline-primary btn-sm">
                                     更多新聞
@@ -59,35 +58,3 @@
     </div>
 
 </div>
-
-<!-- hover 樣式 -->
-<style>
-    .category-card {
-        overflow: hidden;
-        border-radius: 8px;
-        transition: transform .2s;
-    }
-
-    .category-card:hover {
-        transform: translateY(-3px);
-    }
-
-    .category-hover {
-        position: absolute;
-        inset: 0;
-        background: rgba(0, 0, 0, .45);
-        color: #fff;
-        opacity: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-        font-weight: bold;
-        transition: .25s;
-        border-radius: 6px;
-    }
-
-    .category-card:hover .category-hover {
-        opacity: 1;
-    }
-</style>

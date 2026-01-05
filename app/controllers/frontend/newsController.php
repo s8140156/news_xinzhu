@@ -22,7 +22,16 @@ class NewsController extends FrontendController {
         }
         unset($cat);
 
-        // 渲染首頁
+        if($this->isMobile) {
+            // 渲染手機版首頁
+            $this->renderMobile('frontend/mobile/home.php', [
+                'categoryList' => $categoryList
+            ]);
+            return;
+
+        }
+
+        // 渲染桌機首頁
         $this->render('frontend/news/index.php', [
             'categoryList' => $categoryList
         ]);
@@ -36,6 +45,15 @@ class NewsController extends FrontendController {
         $articles = getArticlesByCategory($categoryId);
         // var_dump($articles);
         // exit;
+
+        if($this->isMobile) {
+            // 渲染手機版首頁
+            $this->renderMobile('frontend/mobile/list.php', [
+                'articles' => $articles,
+                'currentCategory' => $currentCategory
+            ]);
+            return;
+        }
 
         $this->render('frontend/news/list.php', [
             'articles' => $articles,
@@ -94,6 +112,16 @@ class NewsController extends FrontendController {
         $categoryMap = getNewsCategoryMap();
         $categoryName = $categoryMap[$article['category_id']] ?? '未分類';
 
+        if($this->isMobile) {
+            // 渲染手機版首頁
+            $this->renderMobile('frontend/mobile/show.php', [
+                'article' => $article,
+                'categoryName' => $categoryName,
+                'statusLabel' => $statusLabel
+            ]);
+            return;
+        }
+
         $this->render('frontend/news/show.php', [
             'article' => $article,
             'categoryName' => $categoryName,
@@ -150,6 +178,15 @@ class NewsController extends FrontendController {
             AND (title LIKE ? OR content LIKE ? OR author LIKE ?)
             ORDER BY publish_time DESC
         ", ["%$keyword%", "%$keyword%", "%$keyword%"]);
+
+        if($this->isMobile) {
+            // 渲染手機版首頁
+            $this->renderMobile('frontend/mobile/search.php', [
+                'results' => $results,
+                'keyword' => $keyword
+            ]);
+            return;
+        }
 
         // 渲染search
         $this->render('frontend/news/search.php', [

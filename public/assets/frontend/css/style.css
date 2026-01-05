@@ -1,61 +1,39 @@
-/* views>frontend>news>index 卡片效果  */
-.news-card {
-    position: relative;
-    overflow: hidden;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: transform 0.3s;
-}
+/* =========================
+   基本變數 / 共用色系
+========================= */
 
-.news-card:hover {
-    transform: scale(1.05);
-}
-
-.news-card .img-wrap img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-}
-
-.news-card .overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.4);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s;
-    font-size: 1.2rem;
-}
-
-.news-card:hover .overlay {
-    opacity: 1;
-}
-/* views>frontend>news>index 卡片效果end  */
-
-/* 🔸 基本色系 */
 :root {
   --primary-color: #2b6ef2;
   --text-dark: #212529;
 }
 
-/* 🔸 Navbar */
+/* =========================
+   Layout / 共用區塊
+========================= */
+
 .navbar-brand {
   font-size: 1.25rem;
   letter-spacing: 1px;
 }
+
 .nav-link {
   color: var(--text-dark);
   transition: color 0.3s;
 }
+
 .nav-link:hover {
   color: var(--primary-color);
 }
 
+/* 🔸 Footer */
+footer {
+  font-size: 0.85rem;
+}
+
 /* 🔸 廣告區與焦點區 */
-.ad-section, .focus-section, .partner-section {
+.ad-section,
+.focus-section,
+.partner-section {
   background: #fff;
   border-radius: 10px;
   padding: 15px;
@@ -69,22 +47,110 @@
   border-radius: 8px 8px 0 0;
 }
 
-/* 🔸 Footer */
-footer {
-  font-size: 0.85rem;
+/* =========================
+   首頁 / 列表：新聞卡片 (news)
+========================= */
+
+/* 新聞卡片本體 */
+.news-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.3s;
 }
 
-/* 🔸 RWD 微調 */
-@media (max-width: 991px) {
-  main .row {
-    flex-direction: column-reverse;
-  }
-  aside {
-    margin-top: 2rem;
+/* 桌機 hover */
+@media (hover: hover) and (pointer: fine) {
+  .news-card:hover {
+    transform: scale(1.05);
   }
 }
 
-/* 頁尾標籤區 */
+.news-card .img-wrap img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+/* hover overlay（基礎樣式，所有裝置都要吃） */
+.news-card .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 1.2rem;
+  pointer-events: none;
+}
+
+/* 只有真的有 hover 的裝置才顯示 */
+@media (hover: hover) and (pointer: fine) {
+  .news-card:hover .overlay {
+    opacity: 1;
+  }
+}
+
+/* =========================
+   首頁：分類卡片 (category)
+========================= */
+
+/* 卡片本體（所有裝置） */
+.category-card {
+  overflow: hidden;
+  border-radius: 8px;
+  transition: transform .2s;
+}
+
+/* hover 遮罩（基礎樣式，⚠️一定要在外面） */
+.category-card .category-hover {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, .45);
+  color: #fff;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  transition: opacity .25s ease;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+/* category 卡片內圖片容器一定要是定位參考 */
+.category-card .position-relative {
+  position: relative;
+}
+
+
+/* 桌機 hover 行為 */
+@media (hover: hover) and (pointer: fine) {
+  .category-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .category-card:hover .category-hover {
+    opacity: 1;
+  }
+}
+
+/* 觸控裝置：直接隱藏 hover 遮罩（避免 Safari 問題） */
+@media (hover: none) {
+  .category-card .category-hover {
+    display: none;
+  }
+}
+
+/* =========================
+   Footer links
+========================= */
+
 .footer-links-area {
   background: #fff;
 }
@@ -97,6 +163,162 @@ footer {
 }
 
 .footer-links-area ul li a:hover {
-  background: #2b6ef2;
+  background: var(--primary-color);
   color: #fff;
 }
+
+/* =========================
+   RWD
+========================= */
+
+/* 🔸 平板以下 */
+@media (max-width: 991px) {
+  main .row {
+    flex-direction: column-reverse;
+  }
+
+  aside {
+    margin-top: 2rem;
+  }
+}
+
+/* =========================
+   手機版：分類卡片微調
+========================= */
+
+@media (max-width: 768px) {
+
+  .category-card {
+    margin-bottom: 16px;
+    transform: none !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,.08);
+  }
+
+  .category-card:active {
+    box-shadow: 0 4px 12px rgba(0,0,0,.12);
+  }
+
+  .category-card img {
+    height: 160px;
+    object-fit: cover;
+  }
+
+  .category-card .card-body {
+    padding: 12px 14px;
+  }
+
+  .category-card .card-title {
+    font-size: 20px; /* 新聞標題 */
+    margin-bottom: 6px;
+  }
+
+  .category-card .btn,
+  .category-card .card-text {
+    margin-top: 6px;
+  }
+}
+
+/* =========================
+   手機版：分類新聞只顯示前三筆
+   （依實際 Bootstrap 欄位結構）
+========================= */
+@media (max-width: 768px) {
+
+  /* 每一組分類新聞的 row */
+  .row.g-4 > .col-12.col-sm-6.col-lg-4 {
+    display: none;
+  }
+
+  /* 只顯示前 3 筆 */
+  .row.g-4 > .col-12.col-sm-6.col-lg-4:nth-child(-n+3) {
+    display: block;
+  }
+}
+
+
+/*  */
+@media (max-width: 768px) {
+
+  .mobile-home section {
+    margin-bottom: 24px;
+  }
+
+  /* 合作媒體一行一個 */
+  .partner-list a {
+    display: block;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .partner-list img {
+    max-width: 140px;
+    height: auto;
+  }
+}
+
+/* mobile navbar 小修飾 */
+@media (max-width: 768px) {
+  .navbar .navbar-collapse {
+    padding-top: 8px;
+  }
+  .navbar .nav-link {
+    border-radius: 6px;
+  }
+  .navbar .nav-link:active {
+    background: rgba(0,0,0,0.04);
+  }
+}
+
+/* 手機 navbar 搜尋欄 */
+.mobile-nav-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+.mobile-search {
+  display: flex;
+  align-items: center;
+  flex: 1;              /* 🔴 關鍵：佔剩餘空間 */
+  min-width: 0;         /* 🔴 防止 input 撐爆 */
+}
+
+
+.mobile-search input {
+  width: 100%;
+  max-width: 100%;
+  font-size: 14px;
+  padding: 6px 8px;
+}
+
+/* 漢堡縮小一點 */
+.navbar-toggler-sm {
+  flex-shrink: 0;     /* 不被擠壓 */
+  padding: 6px 8px;
+  font-size: 16px;
+}
+
+/* 避免 logo 撐太大 */
+.navbar-brand {
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
