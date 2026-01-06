@@ -19,8 +19,7 @@
                         <div class="position-relative">
                             <img src="<?= getCoverImage($cat['latest_article']) ?>"
                                 class="card-img-top"
-                                alt="<?= htmlspecialchars($cat['name']) ?>"
-                                style="height: 180px; object-fit: cover; border-radius: 6px;">
+                                alt="<?= htmlspecialchars($cat['name']) ?>">
 
                             <!-- hover 遮罩 -->
                             <div class="category-hover">
@@ -51,7 +50,6 @@
                         </div>
                     </div>
                 </a>
-
             </div>
         <?php endforeach; ?>
 

@@ -142,7 +142,7 @@ footer {
 
 /* 🔸 焦點新聞圖片 */
 .focus-section img {
-  height: 160px;
+  height: 180px;
   object-fit: cover;
   border-radius: 8px 8px 0 0;
 }
@@ -246,6 +246,24 @@ footer {
     display: none;
   }
 }
+
+/* =========================
+   共用卡片圖片樣式（新聞 / 分類 / 廣告）
+========================= */
+.card-img-top {
+  width: 100%;
+  height: 180px;        /* ⭐ 統一高度 */
+  object-fit: cover;   /* ⭐ 裁切不變形 */
+  border-radius: 8px 8px 0 0;
+}
+
+/* 手機可以微調高度（可選） */
+@media (max-width: 576px) {
+  .card-img-top {
+    height: 180px;
+  }
+}
+
 
 /* =========================
    Footer links
