@@ -123,21 +123,13 @@
     const articleId = <?= (int)$article['id'] ?>;
 
     function recordLinkClick(articleId, linkIndex) {
-        console.log("articleId:", articleId);
-        console.log("index = ", linkIndex);
-        fetch("<?= BASE_URL ?>/?page=api_link_click", {
-                method: "POST",
-                headers: {
-                    "Content-type": "application/x-www-form-urlencoded"
-                },
-                body: `id=${articleId}&index=${linkIndex}`
-            })
-            .then(res => res.text())
-            .then(console.log)
-            .catch(console.error);
+        const data = new URLSearchParams();
+        data.append('id', articleId);
+        data.append('index', linkIndex);
+        navigator.sendBeacon(
+            '<?= BASE_URL ?>/?page=api_link_click',
+            data
+        );
     }
+    
 </script>
-
-<style>
-
-</style>

@@ -26,17 +26,14 @@
     const footerId = <?= (int)$footer['id'] ?>;
 
     function recordLinkClick(footerId, linkIndex) {
-        console.log("footerId:", footerId);
-        console.log("index = ", linkIndex);
-        fetch("<?= BASE_URL ?>/?page=api_footer_link_click", {
-                method: "POST",
-                headers: {
-                    "Content-type": "application/x-www-form-urlencoded"
-                },
-                body: `id=${footerId}&index=${linkIndex}`
-            })
-            .then(res => res.text())
-            .then(console.log)
-            .catch(console.error);
+        const data = new URLSearchParams();
+        data.append('id', footerId);
+        data.append('index', linkIndex);
+
+        navigator.sendBeacon(
+            '<?= BASE_URL ?>/?page=api_footer_link_click',
+            data
+        );
     }
+
 </script>

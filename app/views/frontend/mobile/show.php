@@ -75,3 +75,18 @@ $ogTags = "
   </div>
 
 </section>
+
+<script>
+    const articleId = <?= (int)$article['id'] ?>;
+
+    function recordLinkClick(articleId, linkIndex) {
+        const data = new URLSearchParams();
+        data.append('id', articleId);
+        data.append('index', linkIndex);
+        navigator.sendBeacon(
+            '<?= BASE_URL ?>/?page=api_link_click',
+            data
+        );
+    }
+    
+</script>
