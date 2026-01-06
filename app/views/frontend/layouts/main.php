@@ -23,15 +23,18 @@
 <body class="bg-light">
 
   <!-- 🔹 導覽列 -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
-    <div class="container">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top main-navbar">
+    <!-- <div class="container"> -->
+    <div class="container d-flex align-items-center">
       <a class="navbar-brand fw-bold text-primary" href="<?= BASE_URL ?>/index.php">馨築新聞網</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="navMenu">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <!-- <div class="collapse navbar-collapse" id="navMenu"> -->
+      <div class="nav-categories-wrapper flex-grow-1 mx-3">
+        <!-- <ul class="navbar-nav me-auto mb-2 mb-lg-0"> -->
+        <ul class="nav nav-pills flex-nowrap">
           <?php foreach ($categories as $id => $name): ?>
             <li class="nav-item">
               <a class="nav-link" href="<?= BASE_URL ?>/?page=news_list&category=<?= $id ?>">
@@ -40,13 +43,13 @@
             </li>
           <?php endforeach; ?>
         </ul>
-
-        <form class="d-flex" role="search" action="" method="get">
-          <input type="hidden" name="page" value="search">
-          <input class="form-control form-control-sm me-2" name="keyword" type="search" placeholder="搜尋新聞..." required>
-          <button class="btn btn-outline-primary btn-sm" type="submit">搜尋</button>
-        </form>
       </div>
+
+      <form class="d-flex nav-search" role="search" action="" method="get">
+        <input type="hidden" name="page" value="search">
+        <input class="form-control form-control-sm me-2" name="keyword" type="search" placeholder="搜尋新聞..." required>
+        <button class="btn btn-outline-primary btn-sm" type="submit">搜尋</button>
+      </form>
     </div>
   </nav>
 
@@ -114,7 +117,7 @@
           <?= $tag['title'] ?>
         </a>
         <?php if ($i < count($footerTags) - 1): ?>
-        |&nbsp;&nbsp;
+          |&nbsp;&nbsp;
         <?php endif; ?>
       <?php endforeach; ?>
     </div>

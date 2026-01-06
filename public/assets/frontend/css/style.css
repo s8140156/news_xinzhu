@@ -25,6 +25,47 @@
   color: var(--primary-color);
 }
 
+/* ---------------- */
+
+/* 桌機 navbar 分類列壓縮 */
+.main-navbar .nav {
+  gap: 0.15rem;
+}
+
+.main-navbar .nav-item {
+  margin: 0;
+}
+
+.main-navbar .nav-pills .nav-link {
+  padding: 0.3rem 0.3rem;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+
+
+
+/* ------- */
+.nav-categories-wrapper {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.nav-categories-wrapper::-webkit-scrollbar {
+  display: none; /* 可選，讓它乾淨一點 */
+}
+
+.nav-search {
+  flex-shrink: 0;        /* 🔥 搜尋永遠不被壓 */
+}
+
+.nav-search .form-control {
+  width: 180px;          /* 桌機固定寬度 */
+}
+
+
+
+
 /* 🔸 Footer */
 footer {
   font-size: 0.85rem;
