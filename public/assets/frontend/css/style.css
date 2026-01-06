@@ -116,9 +116,6 @@
   }
 }
 
-
-
-
 /* 🔸 Footer */
 footer {
   font-size: 0.85rem;
@@ -269,6 +266,139 @@ footer {
   background: var(--primary-color);
   color: #fff;
 }
+
+/* =========================
+   前台文章列表/搜尋頁：文章連結樣式
+========================= */
+.article-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+.article-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0; /* ⭐ 讓 ellipsis / line-clamp 生效 */
+}
+.article-title {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.article-date {
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: 0.8rem;
+  color: #888;
+}
+.article-item {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
+}
+.article-link:hover {
+  background-color: #f8f9fa;
+}
+
+/* 桌機 hover 效果 */
+@media (min-width: 577px) {
+  .article-item:hover {
+    background-color: #f7f7f7;
+  }
+
+  .article-item:hover .article-title-icon {
+    transform: translateX(2px);
+    /* color: #0d6efd; */
+  }
+
+  .article-item:hover .article-link {
+    padding-left: 4px;
+  }
+}
+
+
+
+/* 手機兩行標題 */
+@media (max-width: 576px) {
+  .article-title {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* 去除表格感 */
+.list-group-item {
+    background-color: transparent !important;
+    border: none !important;
+}
+
+.list-group-item + .list-group-item {
+    border-top: 1px solid #ddd !important;
+}
+
+.list-group, .list-group-item {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* 列表每行 hover 動畫 */
+.news-row {
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.news-row:hover {
+    background-color: #f7f7f7;
+    transform: translateX(2px);
+}
+
+/* 連結文字 hover 顏色 */
+.news-link:hover {
+    color: #0d6efd !important;
+}
+
+/* 標題前 icon 顏色淡一點 */
+.news-title-icon {
+    color: #bbb;
+    transition: color 0.2s ease;
+}
+
+/* 滑過時 icon 也變色 */
+.news-row:hover .news-title-icon {
+    color: #0d6efd;
+}
+
+/* 日期 icon 顏色 */
+.news-row .fa-clock {
+    color: #aaa;
+}
+
+/* 保留你的下底線設定 */
+/* .list-group-item + .list-group-item {
+    border-top: 1px solid #ddd !important;
+} */
+
+.article-item a {
+    transition: background-color .2s ease, padding-left .2s ease;
+}
+
+.article-item:hover i {
+    transform: translateX(2px);
+    transition: 0.2s ease;
+}
+
+
+
+
 
 /* =========================
    RWD

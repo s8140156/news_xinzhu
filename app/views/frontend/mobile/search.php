@@ -30,22 +30,23 @@ $count = 0;
         ?>
         <li class="list-group-item py-3 px-0 article-item">
           <a href="<?= BASE_URL ?>/?page=news_show&id=<?= $article['id'] ?>"
-            class="d-flex justify-content-between align-items-center text-decoration-none text-dark">
+            class="d-flex justify-content-between align-items-center text-decoration-none text-dark article-link">
 
             <!-- 左：標題（會自動縮略成單行） -->
-            <span class="flex-grow-1 text-truncate me-3 d-flex align-items-center">
+            <span class="flex-grow-1 text-truncate me-3 d-flex align-items-center article-title-wrap">
               <!-- <i class="fas fa-caret-right me-2 text-muted"></i> -->
-              <i class="fas fa-angle-right"></i>&nbsp
-              <!-- <i class="fas fa-chevron-right"></i> -->
-              <?= htmlspecialchars($article['title']) ?>
+              <i class="fas fa-angle-right"></i>
+              <span class="article-title">
+                <?= htmlspecialchars($article['title']) ?>
+              </span>
             </span>
 
             <!-- 右：日期（固定寬度，永遠靠右） -->
-            <span class="text-muted small d-flex align-items-center" style="min-width: 110px; text-align: right;">
+            <span class="text-muted small d-flex align-items-center article-date">
               <!-- <i class="fa-solid fa-square-caret-right"></i> -->
               <i class="far fa-clock me-1"></i>
               <?php if (!empty($article['publish_time'])): ?>
-                <?= date('Y/m/d H:i', strtotime($article['publish_time'])) ?>
+                <?= date('Y/m/d', strtotime($article['publish_time'])) ?>
               <?php endif; ?>
             </span>
           </a>

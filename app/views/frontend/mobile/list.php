@@ -22,7 +22,7 @@ $count = 0;
     </div>
   <?php else: ?>
 
-    <ul class="list-group list-group-flush shadow-sm">
+    <ul class="list-group list-group-flush">
 
       <?php foreach ($articles as $article): ?>
         <?php
@@ -33,17 +33,18 @@ $count = 0;
 
         <li class="list-group-item py-3 px-0 article-item">
           <a href="<?= BASE_URL ?>/?page=news_show&id=<?= $article['id'] ?>"
-            class="d-flex justify-content-between align-items-center text-decoration-none text-dark">
+            class="d-flex justify-content-between align-items-center text-decoration-none text-dark article-link">
 
             <!-- 左：標題 -->
-            <span class="flex-grow-1 text-truncate me-3 d-flex align-items-center">
-              <i class="fas fa-angle-right me-2 text-muted"></i>
-              <?= htmlspecialchars($article['title']) ?>
+            <span class="flex-grow-1 text-truncate me-3 d-flex align-items-center article-title-wrap">
+              <i class="fas fa-angle-right me-2 article-title-icon"></i>
+              <span class="article-title">
+                <?= htmlspecialchars($article['title']) ?>
+              </span>
             </span>
 
             <!-- 右：日期 -->
-            <span class="text-muted small d-flex align-items-center"
-              style="min-width: 110px; text-align: right;">
+            <span class="text-muted small d-flex align-items-center article-date">
               <i class="far fa-clock me-1"></i>
               <?= date('Y/m/d', strtotime($article['publish_time'])) ?>
             </span>
