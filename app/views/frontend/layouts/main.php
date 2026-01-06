@@ -93,14 +93,13 @@
           <div class="partner-section">
             <h5 class="fw-bold text-secondary border-bottom pb-2">合作媒體</h5>
 
-            <div class="bg-light p-3 rounded d-flex flex-wrap gap-3 justify-content-center">
+            <div class="bg-light p-3 rounded d-flex flex-wrap gap-3 justify-content-center partner-list">
               <?php foreach ($partners as $p): ?>
                 <a href="<?= BASE_URL ?>/?page=api_partner_click&id=<?= $p['id'] ?>"
                   target="_blank"
                   class="partner-logo d-block">
                   <img src="<?= STATIC_URL . '/' . $p['image'] ?>"
-                    alt="合作媒體"
-                    style="max-width:120px; height:auto;">
+                    alt="合作媒體">
                 </a>
               <?php endforeach; ?>
             </div>

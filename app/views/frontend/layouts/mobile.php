@@ -98,13 +98,18 @@
 
         <!-- 🔸 合作媒體 -->
         <?php if (!empty($partners)): ?>
-            <section class="my-4">
+            <section class="partner-section card-style my-4">
                 <h5 class="fw-bold text-secondary border-bottom pb-2">合作媒體</h5>
-                <div class="bg-light p-3 rounded text-center">
+                <div class="bg-light p-1 rounded text-center">
                     <?php foreach ($partners as $p): ?>
-                        <div class="mb-3">
-                            <img src="<?= STATIC_URL . '/' . $p['image'] ?>" style="max-width:160px;">
-                        </div>
+                        <a
+                            href="<?= BASE_URL ?>/?page=api_partner_click&id=<?= $p['id'] ?>"
+                            target="_blank"
+                            class="partner-item">
+                            <div class="partner-logo mb-3">
+                                <img src="<?= STATIC_URL . '/' . $p['image'] ?>" alt="合作媒體">
+                            </div>
+                        </a>
                     <?php endforeach; ?>
                 </div>
             </section>
