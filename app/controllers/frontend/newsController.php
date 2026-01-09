@@ -50,7 +50,8 @@ class NewsController extends FrontendController {
             // 渲染手機版首頁
             $this->renderMobile('frontend/mobile/list.php', [
                 'articles' => $articles,
-                'currentCategory' => $currentCategory
+                'currentCategory' => $currentCategory,
+                'categoryId' => $categoryId
             ]);
             return;
         }
@@ -256,6 +257,47 @@ class NewsController extends FrontendController {
         ]);
 
         header('Location: ' . $partner['link_url']);
+        exit;
+    }
+
+    public function loadMore() {
+        header('Content-Type: application/json');
+
+        $lastId = $_GET['last_id'] ?? 0;
+        $categoryId = $_GET['category_id'] ?? 0;
+        $lastPublishTime = $_GET['last_publish_time'] ?? null;
+        $limit = 10;
+
+        if(!$categoryId || !$lastPublishTime || !$lastId) {
+            echo json_encode([
+                'success' => false,
+                'data' => []]);
+            exit;    
+        }
+
+        $db = new DB('articles');
+        $articles = $db->query(
+            "SELECT id, title, publish_time
+            FROM articles
+            WHERE status = 'published'
+            AND category_id = ?
+            AND (
+                publish_time < ?
+            OR (publish_time = ? AND id < ?)
+            )
+            ORDER BY publish_time DESC, id DESC
+            LIMIT " . ($limit + 1), [$categoryId, $lastPublishTime, $lastPublishTime, $lastId]);
+
+        $hasMore = count($articles) > $limit;
+        if ($hasMore) {
+            array_pop($articles);
+        }
+
+        echo json_encode([
+            'success' => true,
+            'data' => $articles,
+            'has_more' => $hasMore
+        ]);
         exit;
     }
 

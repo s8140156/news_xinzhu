@@ -23,43 +23,46 @@ $count = 0;
   <?php else: ?>
 
     <ul class="list-group list-group-flush">
+      <div id="articleList">
+        <?php foreach ($articles as $article): ?>
+          <?php
+          // 限制顯示筆數
+          if ($count >= $maxShow) break;
+          $count++;
+          ?>
 
-      <?php foreach ($articles as $article): ?>
-        <?php
-        // 限制顯示筆數
-        if ($count >= $maxShow) break;
-        $count++;
-        ?>
+          <li class="list-group-item py-3 px-0 article-item" data-id="<?= $article['id'] ?>" data-publish-time="<?= $article['publish_time'] ?>">
+            <a href="<?= BASE_URL ?>/?page=news_show&id=<?= $article['id'] ?>"
+              class="d-flex justify-content-between align-items-center text-decoration-none text-dark article-link">
 
-        <li class="list-group-item py-3 px-0 article-item">
-          <a href="<?= BASE_URL ?>/?page=news_show&id=<?= $article['id'] ?>"
-            class="d-flex justify-content-between align-items-center text-decoration-none text-dark article-link">
-
-            <!-- 左：標題 -->
-            <span class="flex-grow-1 text-truncate me-3 d-flex align-items-center article-title-wrap">
-              <i class="fas fa-angle-right me-2 article-title-icon"></i>
-              <span class="article-title">
-                <?= htmlspecialchars($article['title']) ?>
+              <!-- 左：標題 -->
+              <span class="flex-grow-1 text-truncate me-3 d-flex align-items-center article-title-wrap">
+                <i class="fas fa-angle-right me-2 article-title-icon"></i>
+                <span class="article-title">
+                  <?= htmlspecialchars($article['title']) ?>
+                </span>
               </span>
-            </span>
 
-            <!-- 右：日期 -->
-            <span class="text-muted small d-flex align-items-center article-date">
-              <i class="far fa-clock me-1"></i>
-              <?= date('Y/m/d', strtotime($article['publish_time'])) ?>
-            </span>
+              <!-- 右：日期 -->
+              <span class="text-muted small d-flex align-items-center article-date">
+                <i class="far fa-clock me-1"></i>
+                <?= date('Y/m/d', strtotime($article['publish_time'])) ?>
+              </span>
 
-          </a>
-        </li>
+            </a>
+          </li>
 
-      <?php endforeach; ?>
+        <?php endforeach; ?>
+
+      </div>
+
 
     </ul>
 
     <!-- 假的 Load more -->
     <?php if (count($articles) > $maxShow): ?>
       <div class="text-center my-4">
-        <button class="btn btn-outline-secondary btn-sm" disabled>
+        <button type="button" id="loadMoreBtn" class="btn btn-outline-primary btn-sm load-more-btn">
           載入更多文章
         </button>
       </div>
@@ -68,3 +71,76 @@ $count = 0;
   <?php endif; ?>
 
 </section>
+
+<script>
+  const categoryId = <?= (int)$categoryId ?>;
+  const loadMoreBtn = document.getElementById('loadMoreBtn');
+  const list = document.getElementById('articleList');
+
+  function getLastCursor() {
+    const items = document.querySelectorAll('.article-item');
+    if (!items.length) return null;
+
+    const last = items[items.length - 1];
+    return {
+      id: last.dataset.id,
+      publish_time: last.dataset.publishTime,
+    };
+  }
+
+  loadMoreBtn.addEventListener('click', () => {
+    loadMoreBtn.disabled = true;
+    const cursor = getLastCursor();
+    // console.log('cursor', cursor);
+    if (!cursor) {
+      loadMoreBtn.disabled = false;
+      return;
+    }
+    fetch(`?page=api_news_load_more&category_id=${categoryId}&last_id=${cursor.id}&last_publish_time=${encodeURIComponent(cursor.publish_time)}`)
+      .then(res => res.json())
+      .then(res => {
+        if (!res.data || !res.data.length) {
+          loadMoreBtn.style.display = 'none';
+          return;
+        }
+
+        res.data.forEach(article => {
+          const el = document.createElement('li');
+          el.className = 'list-group-item py-3 px-0 article-item';
+          el.dataset.id = article.id;
+          el.dataset.publishTime = article.publish_time;
+          el.innerHTML = `
+          <a href="<?= BASE_URL ?>/?page=news_show&id=${article.id}"
+              class="d-flex justify-content-between align-items-center text-decoration-none text-dark article-link">
+  
+              <!-- 左：標題 -->
+              <span class="flex-grow-1 text-truncate me-3 d-flex align-items-center article-title-wrap">
+                <i class="fas fa-angle-right me-2 article-title-icon"></i>
+                <span class="article-title">
+                  ${article.title}
+                </span>
+              </span>
+  
+              <!-- 右：日期 -->
+              <span class="text-muted small d-flex align-items-center article-date">
+                <i class="far fa-clock me-1"></i>
+                ${article.publish_time.split(' ')[0].replace(/-/g, '/')}
+              </span>
+  
+            </a>
+        `;
+          list.appendChild(el);
+        });
+        if (!res.has_more) {
+          loadMoreBtn.style.display = 'none';
+        }
+      })
+      .finally(() => {
+        loadMoreBtn.disabled = false;
+      });
+  });
+</script>
+
+<style>
+
+</style>

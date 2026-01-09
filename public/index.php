@@ -91,6 +91,10 @@ switch($page) {
         $controller = new NewsController();
         $controller->partnerClick();
         break;
+    case 'api_news_load_more': // 載入更多文章分類API
+        $controller = new NewsController();
+        $controller->loadMore();
+        break;
     case 'news_footer_show': // 顯示頁尾標籤單篇文章
         $controller = new FooterController();
         $controller->show($_GET['id'] ?? null);
@@ -99,6 +103,7 @@ switch($page) {
         $controller = new FooterController();
         $controller->recordLinkClick();
         break;
+
 
 
 
