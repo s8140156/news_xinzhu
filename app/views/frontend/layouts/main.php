@@ -134,68 +134,85 @@
 </html>
 
 <script>
-  fetch('<?= BASE_URL ?>/?page=api_sponsorpicks_active')
-    .then(res => res.json())
-    .then(res => {
-      if (!res.success || !res.data.length) return;
+fetch('<?= BASE_URL ?>/?page=api_sponsorpicks_active')
+  .then(res => res.json())
+  .then(res => {
+    if (!res.success || !res.data.length) return;
 
-      const wrap = document.getElementById('sponsor-marquee');
-      const inner = document.getElementById('sponsor-marquee-inner');
+    const wrap = document.getElementById('sponsor-marquee');
+    const inner = document.getElementById('sponsor-marquee-inner');
 
-      // 清空
-      inner.innerHTML = '';
+    // 清空
+    inner.innerHTML = '';
 
-      // 第一份清單render
-      res.data.forEach((item, idx) => {
-        const li = document.createElement('li');
-        li.className = idx === 0 ? ' is-first' : '';
-        li.innerHTML = `
-        <a href="<?= BASE_URL ?>/?page=api_sponsorpicks_click&id=${item.id}">
-          ${item.title}
-        </a>
-      `;
-        inner.appendChild(li);
-      });
+    // 第一份清單render
+    res.data.forEach((item, idx) => {
+      const li = document.createElement('li');
+      li.className = idx === 0 ? ' is-first' : '';
+      li.innerHTML = `
+    <a href="<?= BASE_URL ?>/?page=api_sponsorpicks_click&id=${item.id}">
+      ${item.title}
+    </a>
+  `;
+      inner.appendChild(li);
+    });
 
-      // 第二份clone清單
-      res.data.forEach(item => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <a href="<?= BASE_URL ?>/?page=api_sponsorpicks_click&id=${item.id}">
-            ${item.title}
-          </a>
-        `;
-        inner.appendChild(li);
-      });
+    // 第二份clone清單
+    res.data.forEach(item => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+      <a href="<?= BASE_URL ?>/?page=api_sponsorpicks_click&id=${item.id}">
+        ${item.title}
+      </a>
+    `;
+      inner.appendChild(li);
+    });
 
-      wrap.style.display = 'block';
+    wrap.style.display = 'block';
 
-      // 無縫滾動
-      let y = 0;
-      const speed = 0.3; // 👉 調整速度（數字越大越快）
-      const singleHeight = inner.scrollHeight / 2;
-      let paused = false; //控制暫停
+    // 無縫滾動
+    let y = 0;
+    const speed = 0.3; // 👉 調整速度（數字越大越快）
+    const singleHeight = inner.scrollHeight / 2;
+    let paused = false; //控制暫停
 
-      // hover 控制
-      const marquee = document.querySelector('.marquee');
-      marquee.addEventListener('mouseenter', () => {
-        paused = true;
-      });
-      marquee.addEventListener('mouseleave', () => {
-        paused = false;
-      });
+    // hover 控制
+    const marquee = document.querySelector('.marquee');
+    marquee.addEventListener('mouseenter', () => {
+      paused = true;
+    });
+    marquee.addEventListener('mouseleave', () => {
+      paused = false;
+    });
 
-      function tick() {
-        if (!paused) {
-          y -= speed;
-          if (Math.abs(y) >= singleHeight) {
-            y = 0; // 無縫 reset
-          }
-          inner.style.transform = `translateY(${y}px)`;
+    function tick() {
+      if (!paused) {
+        y -= speed;
+
+        if (Math.abs(y) >= singleHeight) {
+          y = 0; // 無縫 reset
         }
-        requestAnimationFrame(tick);
+
+        inner.style.transform = `translateY(${y}px)`;
+
+        // ===== 動態計算目前第一筆 =====
+        const items = inner.querySelectorAll('li');
+        const itemHeight = items[0].offsetHeight;
+
+        // 目前滾到第幾筆
+        const index = Math.floor(Math.abs(y) / itemHeight);
+
+        items.forEach(li => li.classList.remove('is-first'));
+
+        // 因為有 clone，所以用 % 保護
+        if (items[index]) {
+          items[index].classList.add('is-first');
+        }
       }
 
-      tick();
-    });
+      requestAnimationFrame(tick);
+    }
+
+    tick();
+  });
 </script>
