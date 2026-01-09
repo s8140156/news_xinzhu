@@ -17,7 +17,7 @@ class NewsController extends FrontendController {
                 $cat['cover_image'] = getCoverImage($latest);
             }else {
                 $cat['latest_article'] = null;
-                $cat['cover_image'] = BASE_URL . '/assets/frontend/images/default_cover.jpg';
+                $cat['cover_image'] = BASE_URL . '/assets/frontend/images/oops_cover.png';
             }
         }
         unset($cat);
