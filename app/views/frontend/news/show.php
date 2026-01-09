@@ -1,13 +1,16 @@
     <?php
     // 動態生成 OG meta
     $ogImage = STATIC_URL . '/' . $article['cover_image'];
+    $ogPrefix ='【馨築生活網】';
 
     $ogTags = "
-    <meta property='og:title' content=\"".htmlspecialchars($article['title'])."\">
+    <meta property='og:title' content=\"".htmlspecialchars($ogPrefix.$article['title'])."\">
     <meta property='og:description' content=\"".htmlspecialchars(mb_substr(strip_tags($article['content_html']), 0, 80))."...\">
     <meta property='og:image' content=\"{$ogImage}\">
     <meta property='og:url' content=\"".BASE_URL."/?page=news_show&id={$article['id']}\">
     <meta property='og:type' content='article'>
+    <meta property='og:image:width' content='1200'>
+    <meta property='og:image:height' content='630'>
     ";
     ?>
 <div class="container my-4 article-container">
@@ -91,7 +94,9 @@
     <!-- 分享按鈕 -->
     <div class="my-5">
         <?php $shareUrl = BASE_URL . '/?page=news_show&id=' . $article['id'];
-              $encodeUrl = rawurlencode($shareUrl); ?>
+              $encodeUrl = rawurlencode($shareUrl);
+              $shareText = '我從【馨築生活網】分享了一篇文章給你，快來看看！'; ?>
+              
         <h6 class="fw-bold">分享文章</h6>
 
         <a href="https://www.facebook.com/sharer/sharer.php?u=<?= $encodeUrl ?>"
@@ -99,22 +104,12 @@
             class="btn btn-primary btn-sm me-2">
             FB 分享
         </a>
-        <!-- <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.apple.com"
-            target="_blank"
-            class="btn btn-primary btn-sm me-2">
-            FB 分享
-        </a> -->
 
-        <a href="https://social-plugins.line.me/lineit/share?url=<?= $encodeUrl ?>"
+        <a href="https://social-plugins.line.me/lineit/share?url=<?= $encodeUrl ?>&text=<?= urlencode($shareText) ?>"
             target="_blank"
             class="btn btn-success btn-sm">
             Line 分享
         </a>
-        <!-- <a href="https://social-plugins.line.me/lineit/share?url=https://www.apple.com"
-            target="_blank"
-            class="btn btn-success btn-sm">
-            Line 分享
-        </a> -->
     </div>
 
 </div>

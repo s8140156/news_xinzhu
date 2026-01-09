@@ -7,13 +7,16 @@
 $ogImage = !empty($article['cover_image'])
   ? STATIC_URL . '/' . $article['cover_image']
   : '';
+$ogPrefix = '【馨築生活網】';
 
 $ogTags = "
-<meta property='og:title' content=\"" . htmlspecialchars($article['title']) . "\">
+<meta property='og:title' content=\"" . htmlspecialchars($ogPrefix . $article['title']) . "\">
 <meta property='og:description' content=\"" . htmlspecialchars(mb_substr(strip_tags($article['content_html']), 0, 80)) . "...\">
 <meta property='og:image' content=\"{$ogImage}\">
 <meta property='og:url' content=\"" . BASE_URL . "/?page=news_show&id={$article['id']}\">
 <meta property='og:type' content='article'>
+<meta property='og:image:width' content='1200'>
+<meta property='og:image:height' content='630'>
 ";
 ?>
 
@@ -56,6 +59,7 @@ $ogTags = "
   <!-- 分享 -->
   <div class="my-5">
     <?php
+    $shareText = '我從【馨築生活網】分享了一篇文章給你，快來看看！';
     $shareUrl  = BASE_URL . '/?page=news_show&id=' . $article['id'];
     $encodeUrl = rawurlencode($shareUrl);
     ?>
@@ -67,26 +71,41 @@ $ogTags = "
       FB 分享
     </a>
 
-    <a href="https://social-plugins.line.me/lineit/share?url=<?= $encodeUrl ?>"
+    <!-- <a href="https://social-plugins.line.me/lineit/share?url=<?= $encodeUrl ?>&text=<?= urlencode($shareText) ?>"
       target="_blank"
       class="btn btn-success btn-sm">
       LINE 分享
-    </a>
+    </a> -->
+    <button
+      type="button"
+      class="btn btn-success btn-sm"
+      onclick="shareToLine()">
+      Line 分享
+    </button>
+
   </div>
 
 </section>
 
 <script>
-    const articleId = <?= (int)$article['id'] ?>;
+  const articleId = <?= (int)$article['id'] ?>;
 
-    function recordLinkClick(articleId, linkIndex) {
-        const data = new URLSearchParams();
-        data.append('id', articleId);
-        data.append('index', linkIndex);
-        navigator.sendBeacon(
-            '<?= BASE_URL ?>/?page=api_link_click',
-            data
-        );
-    }
-    
+  function recordLinkClick(articleId, linkIndex) {
+    const data = new URLSearchParams();
+    data.append('id', articleId);
+    data.append('index', linkIndex);
+    navigator.sendBeacon(
+      '<?= BASE_URL ?>/?page=api_link_click',
+      data
+    );
+  }
+
+  function shareToLine() {
+  const text = '我從【馨築生活網】分享了一篇文章給你，快來看看！';
+  const url  = '<?= BASE_URL ?>/?page=news_show&id=<?= $article['id'] ?>';
+
+  window.location.href =
+    'line://share?text=' + encodeURIComponent(text + '\n' + url);
+}
+
 </script>
