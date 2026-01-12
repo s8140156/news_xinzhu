@@ -21,87 +21,138 @@
     <div class="card-body">
 
         <?php foreach ($modules as $module): ?>
-            <?php $moduleId = $module['id']; ?>
             <?php
             if (in_array($module['module_key'], ['sysuser', 'permission'])) {
                 continue;
             }
+            $moduleId = $module['id'];
             ?>
+
             <div class="border rounded p-3 mb-3">
 
                 <!-- 模組 -->
-                <div class="form-check mb-2">
-                    <input class="form-check-input module-toggle"
+                <div class="form-check d-flex align-items-center mb-2">
+                    <input class="form-check-input module-toggle me-2"
                         type="checkbox"
                         name="permissions[<?= $moduleId ?>][can_view]"
-                        data-module="<?= $module['id'] ?>"
+                        data-module="<?= $moduleId ?>"
                         <?= ($permissions[$moduleId]['can_view'] ?? 0) ? 'checked' : '' ?>>
-                    <label class="form-check-label fw-bold">
-                        <?= $module['module_name'] ?> (可查看)
-                    </label>
-                </div>
 
-                <!-- CRUD -->
-                <div class="ms-4">
-                    <?php foreach (['can_create' => '新增', 'can_edit' => '編輯', 'can_delete' => '刪除'] as $perm => $label): ?>
-                        <label class="me-3">
-                            <input type="checkbox"
-                                name="permissions[<?= $moduleId ?>][<?= $perm ?>]"
-                                class="crud crud-<?= $moduleId ?>"
-                                <?= ($permissions[$moduleId][$perm] ?? 0) ? 'checked' : '' ?>>
-                            <?= $label ?>
-                        </label>
-                    <?php endforeach; ?>
-                    <label class="me-3">
+                    <label class="form-check-label fw-bold me-3">
+                        <?= $module['module_name'] ?>（可查看）
+                    </label>
+
+                    <label class="mb-0">
                         <input type="checkbox"
                             class="crud-all"
                             data-module="<?= $moduleId ?>">
                         全選
                     </label>
                 </div>
-                <?php if($moduleId == MODULE_ARTICLE): ?>
-                <div class="ms-4">
-                    <label class="me-3">
-                        <input type="checkbox"
-                            name="permissions[<?= $moduleId ?>][can_focus]"
-                            <?= ($permissions[$moduleId]['can_focus'] ?? 0) ? 'checked' : '' ?>>
-                            可操作焦點文章
-                            <i class="fas fa-info-circle"
-                                data-toggle="tooltip"
-                                title="僅影響「焦點」分類的文章操作權限；未勾選時，仍可瀏覽焦點文章，但不可新增、編輯或刪除。">
-                            </i>
-                    </label>
+
+                <!-- CRUD + 子權限 -->
+                <div class="crud-group is-disabled" data-module="<?= $moduleId ?>">
+                    <div class="crud-inner pl-4">
+
+                        <?php foreach (['can_create' => '新增', 'can_edit' => '編輯', 'can_delete' => '刪除'] as $perm => $label): ?>
+                            <label class="me-3">
+                                <input type="checkbox"
+                                    name="permissions[<?= $moduleId ?>][<?= $perm ?>]"
+                                    class="crud crud-<?= $moduleId ?>"
+                                    <?= ($permissions[$moduleId][$perm] ?? 0) ? 'checked' : '' ?>>
+                                <?= $label ?>
+                            </label>
+                        <?php endforeach; ?>
+
+                        <?php if ($moduleId == MODULE_ARTICLE): ?>
+                            <div class="mt-2">
+                                <label>
+                                    <input type="checkbox"
+                                        name="permissions[<?= $moduleId ?>][can_focus]"
+                                        <?= ($permissions[$moduleId]['can_focus'] ?? 0) ? 'checked' : '' ?>>
+                                    可操作焦點文章
+                                    <i class="fas fa-info-circle"
+                                        data-toggle="tooltip"
+                                        title="僅影響焦點分類文章的操作權限">
+                                    </i>
+                                </label>
+                            </div>
+                        <?php endif; ?>
+
+                    </div>
                 </div>
-                <?php endif ?>
 
             </div>
+
         <?php endforeach; ?>
 
     </div>
 </div>
 
 <script>
-    // 模組勾選 → 控制 CRUD
-    document.querySelectorAll('.module-toggle').forEach(el => {
-        el.addEventListener('change', function() {
-            const moduleId = this.dataset.module;
-            document.querySelectorAll('.crud-' + moduleId).forEach(c => {
-                c.checked = false;
+    // 啟用 Bootstrap 工具提示
+    document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        .forEach(el => new bootstrap.Tooltip(el));
+
+    // 同步模組與 CRUD 權限狀態
+    function syncModulePermission(moduleId) {
+        const moduleToggle = document.querySelector(`.module-toggle[data-module="${moduleId}"]`);
+        const crudGroup = document.querySelector(`.crud-group[data-module="${moduleId}"]`);
+        const crudCheckboxes = crudGroup.querySelectorAll('input[type="checkbox"]');
+        const crudAll = document.querySelector(`.crud-all[data-module="${moduleId}"]`);
+
+        if (!moduleToggle.checked) {
+            crudCheckboxes.forEach(cb => {
+                cb.checked = false;
+                cb.disabled = true;
+            });
+            if (crudAll) {
+                crudAll.checked = false;
+                crudAll.disabled = true;
+            }
+        } else {
+            crudCheckboxes.forEach(cb => cb.disabled = false);
+            if (crudAll) crudAll.disabled = false;
+        }
+    }
+
+    // 初始化
+    document.querySelectorAll('.module-toggle').forEach(toggle => {
+        const moduleId = toggle.dataset.module;
+        const crudGroup = document.querySelector(`.crud-group[data-module="${moduleId}"]`);
+
+        function syncState() {
+            const enabled = toggle.checked;
+
+            // 你原本的邏輯
+            syncModulePermission(moduleId);
+
+            // UI / disabled
+            crudGroup.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.disabled = !enabled;
+            });
+            crudGroup.classList.toggle('is-disabled', !enabled);
+        }
+
+        // 初始
+        syncState();
+
+        // 切換
+        toggle.addEventListener('change', syncState);
+    });
+
+
+    // 全選
+    document.querySelectorAll('.crud-all').forEach(all => {
+        all.addEventListener('change', () => {
+            const moduleId = all.dataset.module;
+            const crudCheckboxes = document.querySelectorAll(`.crud-${moduleId}`);
+
+            crudCheckboxes.forEach(cb => {
+                cb.checked = all.checked;
             });
         });
     });
-
-    // CRUD 全選
-    document.querySelectorAll('.crud-all').forEach(el => {
-        el.addEventListener('change', function() {
-            const moduleId = this.dataset.module;
-            document.querySelectorAll('.crud-' + moduleId)
-                .forEach(cb => cb.checked = this.checked);
-        });
-    });
-
-    document.querySelectorAll('[data-bs-toggle="tooltip"]')
-        .forEach(el => new bootstrap.Tooltip(el));
 </script>
 <style>
     .tooltip-inner {
@@ -110,5 +161,22 @@
         font-size: 0.85rem;
         line-height: 1.5;
         padding: 0.6rem 0.75rem;
+    }
+
+    /* CRUD 被鎖定時的視覺狀態 */
+    .crud-group.is-disabled {
+        opacity: 0.55;
+        pointer-events: none;
+        /* 保險，避免點到 */
+    }
+
+    /* 讓 disabled checkbox 游標一致 */
+    .crud-group.is-disabled input[type="checkbox"] {
+        cursor: not-allowed;
+    }
+
+    /* 如果你想保留「可 hover 但不可點」的感覺 */
+    .crud-group.is-disabled label {
+        cursor: not-allowed;
     }
 </style>

@@ -23,7 +23,9 @@
             <div class="mb-3">
                 <label class="form-label">預設密碼（請先記下）</label>
                 <div class="input-group">
-                    <input type="text" class="form-control"
+                    <!-- <input type="text" class="form-control"
+                        value="<?= htmlspecialchars($default_password) ?>" readonly> -->
+                    <input type="password" id="defaultPassword" class="form-control"
                         value="<?= htmlspecialchars($default_password) ?>" readonly>
                     <button class="btn btn-outline-secondary" type="button"
                         onclick="togglePassword(this)">
@@ -78,9 +80,9 @@
 
 <script>
     // 切換顯示密碼
-    function togglePassword(id) {
-        const field = document.getElementById(id);
-        field.type = (field.type === "password") ? "text" : "password";
+    function togglePassword(btn) {
+        const input = btn.closest('.input-group').querySelector('input');
+        input.type = (input.type === "password") ? "text" : "password";
     }
     // 切換啟用/停用狀態
     function toggleStatus() {
