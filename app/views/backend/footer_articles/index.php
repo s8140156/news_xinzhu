@@ -95,7 +95,7 @@
 
                     <!-- 操作按鈕 -->
                     <div class="d-flex align-items-start mt-2 mt-md-0 ms-md-3">
-                        <a href="index.php?page=footer_show&id=<?= $footer['id'] ?>"
+                        <a href="index.php?page=news_footer_show&id=<?= $footer['id'] ?>"
                             class="btn btn-light btn-sm me-2"
                             title="預覽" target="_blank">
                             <i class="fas fa-eye"></i>
