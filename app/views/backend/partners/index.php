@@ -12,8 +12,8 @@
 
             <form id="partnerForm" method="post" action="?page=partner_store" enctype="multipart/form-data">
                 <?php if (canCreate(MODULE_PARTNER)): ?>
-                <label class="form-label mb-3 text-muted"> <small>（可使用拖曳 icon 變更順序）</small> </label>
-                <button type="button" id="addRowBtn" class="btn btn-primary btn-sm">＋ 新增一筆</button>
+                    <label class="form-label mb-3 text-muted"> <small>（可使用拖曳 icon 變更順序）</small> </label>
+                    <button type="button" id="addRowBtn" class="btn btn-primary btn-sm">＋ 新增一筆</button>
                 <?php endif; ?>
 
                 <!-- 拖曳區塊id="partnerList" -->
@@ -75,7 +75,7 @@
                                                     name="start_at[]"
                                                     class="form-control col-time"
                                                     value="<?= date('Y-m-d\TH:i', strtotime($p['start_at'])) ?>">
-            
+
                                                 <!-- 停用時間 -->
                                                 <?php if (!empty($p['end_at'])): ?>
                                                     <input type="datetime-local"
@@ -98,7 +98,7 @@
                                             </div>
                                         </div>
                                         <div class="partner-link-row partner-field-group">
-                                        <div class="field-label">連結路徑</div>
+                                            <div class="field-label">連結路徑</div>
 
                                             <!-- 連結 -->
                                             <input type="url"
@@ -123,10 +123,10 @@
                                             <i class="fas fa-external-link-alt"></i>
                                         </a>
                                         <?php if (canCreate(MODULE_PARTNER)): ?>
-                                        <button type="button"
-                                            class="btn btn-outline-danger btn-sm deleteRowBtn">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                            <button type="button"
+                                                class="btn btn-outline-danger btn-sm deleteRowBtn">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
                                         <?php endif; ?>
                                     </div>
                                 </div>
@@ -141,9 +141,9 @@
                 <!-- 儲存 -->
                 <div class="mt-4">
                     <?php if (canCreate(MODULE_PARTNER)): ?>
-                    <button type="submit" class="btn btn-success">
-                        儲存
-                    </button>
+                        <button type="submit" class="btn btn-success">
+                            儲存
+                        </button>
                     <?php endif; ?>
                 </div>
             </form>
@@ -362,11 +362,21 @@
 
     @media (max-width: 1200px) {
         .pick-header {
-            display: none;
+            display: none !important;
         }
 
         .pick-row {
             flex-wrap: wrap;
+        }
+
+        .pick-row>* {
+            min-width: 0;
+        }
+
+        .pick-row .col-action {
+            width: 100%;
+            justify-content: flex-end;
+            margin-top: 8px;
         }
 
         .col-time,
@@ -374,17 +384,36 @@
         .col-article {
             width: 100%;
         }
+
+        .partner-info {
+            min-width: 0 !important;
+            width: 100%;
+        }
+
+        .partner-time-inputs {
+            flex-wrap: wrap;
+            /* ⭐ 關鍵 */
+        }
+
+        .partner-time-inputs>* {
+            width: 100%;
+            /* ⭐ 每一個獨佔一行 */
+        }
     }
+
     .partner-image-preview {
         display: flex;
-        flex-direction: column;   /* ← 關鍵 */
-        align-items: center;      /* 水平置中 */
+        flex-direction: column;
+        /* ← 關鍵 */
+        align-items: center;
+        /* 水平置中 */
         gap: 4px;
         margin-top: 6px;
     }
 
     .partner-image-preview img {
-        width: 120px;             /* 可依你版面調 */
+        width: 120px;
+        /* 可依你版面調 */
         height: auto;
         border: 1px solid #ddd;
         padding: 4px;
@@ -395,7 +424,8 @@
         font-size: 12px;
         color: #6c757d;
         text-align: center;
-        word-break: break-all;    /* 避免檔名太長爆版 */
+        word-break: break-all;
+        /* 避免檔名太長爆版 */
     }
 
     /* 右側整包 */
@@ -403,7 +433,8 @@
         display: flex;
         flex-direction: column;
         gap: 8px;
-        flex: 1;              /* 吃掉中間空間 */
+        flex: 1;
+        /* 吃掉中間空間 */
         min-width: 360px;
     }
 
@@ -413,6 +444,7 @@
         flex-direction: column;
         gap: 6px;
     }
+
     /* 上方標題 */
     .partner-label {
         font-size: 12px;
@@ -435,7 +467,8 @@
     .partner-image {
         display: flex;
         flex-direction: column;
-        align-items: flex-start; /* ⭐ 向左對齊 */
+        align-items: flex-start;
+        /* ⭐ 向左對齊 */
         gap: 6px;
     }
 
@@ -443,7 +476,8 @@
     .partner-thumb {
         display: flex;
         flex-direction: column;
-        align-items: flex-start; /* ⭐ */
+        align-items: flex-start;
+        /* ⭐ */
         gap: 4px;
     }
 
@@ -478,7 +512,8 @@
 
     .partner-field-group .field-label {
         font-size: 12px;
-        color: #6b7280; /* 跟你現在 header 灰字一致 */
+        color: #6b7280;
+        /* 跟你現在 header 灰字一致 */
     }
 
     .partner-field-group .field-input {

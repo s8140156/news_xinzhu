@@ -1,12 +1,3 @@
-<!-- <form method="GET" action="">
-    <input type="hidden" name="page" value="article_delete">
-    <label for="id">輸入文章 ID：</label>
-    <input type="number" name="id" id="id" placeholder="例如：87" required>
-    <button type="submit" class="btn btn-danger btn-sm"
-        onclick="return confirm('確定要刪除此文章嗎？此動作無法復原！')">
-        刪除
-    </button>
-</form> -->
 <div class="container-fluid">
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -305,7 +296,8 @@
     }
 
     .search-box .btn {
-  height: 38px; /* 與 input 對齊 */
+        height: 38px;
+        /* 與 input 對齊 */
         display: flex;
         align-items: center;
     }
@@ -314,9 +306,73 @@
         gap: 1rem !important;
     }
 
-    @media (max-width: 767.98px) {
+    /* @media (max-width: 767.98px) {
   .search-box .row > [class*="col-"] {
             margin-bottom: 0.5rem;
+        }
+    } */
+    @media (max-width: 768px) {
+        .article-card h5 {
+            white-space: normal;
+            overflow: visible;
+            text-overflow: unset;
+        }
+
+        .search-box .row>[class*="col-"] {
+            margin-bottom: 0.5rem;
+        }
+
+        .search-box .d-flex.align-items-center {
+            flex-wrap: wrap;
+        }
+
+        .search-box input[type="date"] {
+            width: 100%;
+            margin-bottom: 6px;
+        }
+
+        .search-box span.text-muted {
+            display: none;
+            /* ~ 在手機其實沒意義 */
+        }
+
+        .search-box .d-flex.align-items-center.gap-3 {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .search-box .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* 排序整包 */
+        .card-body>.d-flex.justify-content-start {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 6px;
+        }
+
+        /* label + select 那一行 */
+        .card-body>.d-flex.justify-content-start form .d-flex {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        /* 排序 select */
+        #sort_by {
+            width: 100% !important;
+        }
+
+        /* 排序 label */
+        .card-body label[for="sort_by"] {
+            margin-bottom: 4px;
+        }
+
+        /* 右邊那個提示文字 */
+        #sortHint {
+            margin-left: 0 !important;
+            margin-top: 4px;
         }
     }
 </style>

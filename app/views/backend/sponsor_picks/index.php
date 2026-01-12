@@ -98,7 +98,7 @@
 
                                     <!-- 文章 -->
                                     <select name="article_id[]"
-                                        class="form-control col-article article-select" style="width:220px;margin:8px" required>
+                                        class="form-control col-article article-select" required>
                                         <option value="<?= $sp['article_id'] ?>">
                                             <?= htmlspecialchars($sp['article_title'] ?? '請重新選擇文章') ?>
                                         </option>
@@ -451,6 +451,7 @@
         display: flex;
         align-items: center;
         gap: 12px;
+        flex-wrap: wrap;
     }
 
     /* 標題列 */
@@ -498,11 +499,12 @@
         width: 70px;
         display: flex;
         gap: 4px;
+        flex-shrink: 0
     }
 
     @media (max-width: 1200px) {
         .pick-header {
-            display: none;
+            display: none !important;
         }
 
         .pick-row {
@@ -515,4 +517,11 @@
             width: 100%;
         }
     }
+
+    @media (min-width: 1400px) {
+    .pick-row {
+        flex-wrap: nowrap;
+    }
+}
+
 </style>

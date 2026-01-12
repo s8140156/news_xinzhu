@@ -6,14 +6,14 @@
             <h6 class="m-0 font-weight-bold text-primary">頁尾標籤管理</h6>
 
         </div>
-        
+
         <div class="card-body">
             <!-- 新增按鈕 -->
             <?php if (canCreate(MODULE_FOOTER)): ?>
-            <label class="form-label mb-3 text-muted"><small>（可使用拖曳 icon 變更順序）</small></label>
-            <a href="?page=footer_create" class="btn btn-primary btn-sm">
-                <i class="fas fa-plus"></i> 新增一筆
-            </a>
+                <label class="form-label mb-3 text-muted"><small>（可使用拖曳 icon 變更順序）</small></label>
+                <a href="?page=footer_create" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus"></i> 新增一筆
+                </a>
             <?php endif; ?>
 
             <?php if (empty($footers)): ?>
@@ -25,71 +25,71 @@
                 <div class="footer-card border rounded mb-3 d-flex align-items-stretch" data-id="<?= $footer['id'] ?>">
                     <!-- 拖曳 icon -->
                     <?php if (canEdit(MODULE_FOOTER)): ?>
-                    <div class="drag-handle" title="拖曳調整順序">
-                        <i class="fas fa-grip-vertical"></i>
-                    </div>
+                        <div class="drag-handle" title="拖曳調整順序">
+                            <i class="fas fa-grip-vertical"></i>
+                        </div>
                     <?php endif; ?>
 
                     <div class="flex-grow-1 p-3">
 
                         <!-- <div class="d-flex justify-content-between align-items-start flex-wrap"> -->
 
-                            <!-- 狀態 + 標題 -->
-                            <div class="d-flex align-items-center flex-wrap mb-2">
-                                <?php if ($footer['status'] === 'published'): ?>
-                                    <span class="badge bg-success text-white me-2">已發布</span>
-                                <?php else: ?>
-                                    <span class="badge bg-secondary text-white me-2">草稿</span>
-                                <?php endif; ?>
-
-                                <h5 class="fw-bold mb-0 text-truncate">
-                                    <?= htmlspecialchars($footer['title']) ?>我是id:<?= $footer['id'] ?>
-                                </h5>
-                            </div>
-
-                            <?php
-                            // 解析 links
-                            $links = [];
-                            if (!empty($footer['links']) && is_string($footer['links'])) {
-                                $decoded = json_decode($footer['links'], true);
-                                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                                    $links = $decoded;
-                                }
-                            }
-
-                            // 解析 link_clicks
-                            $linkClicks = [];
-                            if (!empty($footer['link_clicks'])) {
-                                $decoded = json_decode($footer['link_clicks'], true);
-                                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                                    $linkClicks = $decoded;
-                                }
-                            }
-                            ?>
-
-                            <!-- 統計資訊 -->
-                            <div class="text-secondary small d-flex flex-wrap mb-2">
-                                <span class="me-3">最後修改：<?= date('Y/m/d H:i', strtotime($footer['updated_at'])) ?> |&nbsp;</span>
-                                <span class="me-3">瀏覽次數：<?= $footer['views'] ?> 次 |&nbsp;</span>
-                                <span>連結數量：<?= count($links) ?></span>
-                            </div>
-
-                            <!-- 連結清單 -->
-                            <?php if (!empty($links)): ?>
-                                <div class="text-secondary small lh-sm">
-                                    <?php foreach ($links as $idx => $link): ?>
-                                        <div class="mb-1">
-                                            連結 <?= $idx + 1 ?>：
-                                            <span class="link-display">
-                                                <?= htmlspecialchars($link['text'] ?: '') ?>
-                                            </span>
-                                            點擊次數：<?= $linkClicks[$idx] ?? 0 ?>
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
+                        <!-- 狀態 + 標題 -->
+                        <div class="d-flex align-items-center flex-wrap mb-2">
+                            <?php if ($footer['status'] === 'published'): ?>
+                                <span class="badge bg-success text-white me-2">已發布</span>
                             <?php else: ?>
-                                <div class="text-secondary small lh-sm"><strong>(無附加連結)</strong></div>
+                                <span class="badge bg-secondary text-white me-2">草稿</span>
                             <?php endif; ?>
+
+                            <h5 class="fw-bold mb-0 text-truncate">
+                                <?= htmlspecialchars($footer['title']) ?>我是id:<?= $footer['id'] ?>
+                            </h5>
+                        </div>
+
+                        <?php
+                        // 解析 links
+                        $links = [];
+                        if (!empty($footer['links']) && is_string($footer['links'])) {
+                            $decoded = json_decode($footer['links'], true);
+                            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                                $links = $decoded;
+                            }
+                        }
+
+                        // 解析 link_clicks
+                        $linkClicks = [];
+                        if (!empty($footer['link_clicks'])) {
+                            $decoded = json_decode($footer['link_clicks'], true);
+                            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                                $linkClicks = $decoded;
+                            }
+                        }
+                        ?>
+
+                        <!-- 統計資訊 -->
+                        <div class="text-secondary small d-flex flex-wrap mb-2">
+                            <span class="me-3">最後修改：<?= date('Y/m/d H:i', strtotime($footer['updated_at'])) ?> |&nbsp;</span>
+                            <span class="me-3">瀏覽次數：<?= $footer['views'] ?> 次 |&nbsp;</span>
+                            <span>連結數量：<?= count($links) ?></span>
+                        </div>
+
+                        <!-- 連結清單 -->
+                        <?php if (!empty($links)): ?>
+                            <div class="text-secondary small lh-sm">
+                                <?php foreach ($links as $idx => $link): ?>
+                                    <div class="mb-1">
+                                        連結 <?= $idx + 1 ?>：
+                                        <span class="link-display">
+                                            <?= htmlspecialchars($link['text'] ?: '') ?>
+                                        </span>
+                                        點擊次數：<?= $linkClicks[$idx] ?? 0 ?>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php else: ?>
+                            <div class="text-secondary small lh-sm"><strong>(無附加連結)</strong></div>
+                        <?php endif; ?>
                         <!-- </div> -->
                     </div>
 
@@ -102,19 +102,19 @@
                         </a>
 
                         <?php if (canEdit(MODULE_FOOTER)): ?>
-                        <a href="?page=footer_edit&id=<?= $footer['id'] ?>"
-                            class="btn btn-light btn-sm me-2"
-                            title="編輯">
-                            <i class="fas fa-edit"></i>
-                        </a>
+                            <a href="?page=footer_edit&id=<?= $footer['id'] ?>"
+                                class="btn btn-light btn-sm me-2"
+                                title="編輯">
+                                <i class="fas fa-edit"></i>
+                            </a>
                         <?php endif; ?>
                         <?php if (canDelete(MODULE_FOOTER)): ?>
-                        <a href="?page=footer_delete&id=<?= $footer['id'] ?>"
-                            class="btn btn-light btn-sm text-danger"
-                            title="刪除"
-                            onclick="return confirm('確定要刪除此頁尾標籤文章嗎？');">
-                            <i class="fas fa-trash-alt"></i>
-                        </a>
+                            <a href="?page=footer_delete&id=<?= $footer['id'] ?>"
+                                class="btn btn-light btn-sm text-danger"
+                                title="刪除"
+                                onclick="return confirm('確定要刪除此頁尾標籤文章嗎？');">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
                         <?php endif; ?>
                     </div>
 
@@ -248,5 +248,29 @@
 
     .sortable-ghost {
         opacity: 0.4;
+    }
+
+    .footer-card {
+        flex-wrap: wrap;
+    }
+
+    /* 內容區 */
+    .footer-card .flex-grow-1 {
+        min-width: 0;
+        /* ⭐ 防止撐爆 */
+    }
+
+    /* 操作區 */
+    .footer-card>.d-flex.align-items-start {
+        flex-shrink: 0;
+    }
+
+    /* 小尺寸時：操作 icon 換行 */
+    @media (max-width: 1200px) {
+        .footer-card>.d-flex.align-items-start {
+            width: 100%;
+            justify-content: flex-end;
+            margin-top: 8px;
+        }
     }
 </style>
