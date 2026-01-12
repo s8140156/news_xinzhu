@@ -69,6 +69,20 @@ class PartnerController {
             ];
             // 新增/更新
             if(empty($id)) {
+                $countRow = $db->query("
+                    SELECT COUNT(*) AS total
+                    FROM partners
+                ");
+
+                $activeCount = $countRow[0]['total'] ?? 0;
+
+                if ($activeCount >= 5) {
+                    echo "<script>
+                        alert('合作媒體最多只能啟用 5 筆，請先調整時間或停用其他項目');
+                        history.back();
+                    </script>";
+                    exit;
+                }
                 $data['created_at'] = $now;
                 $newId = $db->insert($data); // 先得到新增id 要用在新增圖片資料夾by id
 
