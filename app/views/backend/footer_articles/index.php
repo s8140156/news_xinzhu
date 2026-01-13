@@ -43,7 +43,7 @@
                             <?php endif; ?>
 
                             <h5 class="fw-bold mb-0 text-truncate">
-                                <?= htmlspecialchars($footer['title']) ?>我是id:<?= $footer['id'] ?>
+                                <?= htmlspecialchars($footer['title']) ?>
                             </h5>
                         </div>
 

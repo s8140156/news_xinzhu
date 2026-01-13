@@ -8,7 +8,7 @@
     <!-- （可選）作者 / 時間 -->
     <div class="mb-3 text-muted small">
         <i class="far fa-clock me-1"></i>
-        最後更新時間：<?= date('Y/m/d H:i', strtotime($footer['created_at'])) ?>
+        最後更新時間：<?= date('Y/m/d H:i', strtotime($footer['updated_at'])) ?>
 
         <span class="ms-2">
             <i class="fas fa-solid fa-marker"></i>
