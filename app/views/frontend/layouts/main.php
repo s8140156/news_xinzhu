@@ -76,7 +76,7 @@
         <!-- 焦點新聞 -->
         <?php if (!empty($focusArticle)): ?>
           <div class="focus-section mb-5">
-            <h5 class="fw-bold text-secondary border-bottom pb-2">焦點新聞</h5>
+            <h5 class="fw-bold text-secondary border-bottom pb-2">停車場生活圈</h5>
             <div class="card border-0 shadow-sm">
               <img src="<?= getCoverImage($focusArticle) ?>" class="card-img-top" alt="<?= htmlspecialchars($focusArticle['title']) ?>">
               <div class="card-body">
