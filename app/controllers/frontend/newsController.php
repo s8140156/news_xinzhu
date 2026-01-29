@@ -301,6 +301,52 @@ class NewsController extends FrontendController {
         exit;
     }
 
+    public function loadMoreSearch() {
+        header('Content-Type: application/json');
+
+        $lastId = $_GET['last_id'] ?? 0;
+        $keyword = $_GET['keyword'] ?? '';
+        $lastPublishTime = $_GET['last_publish_time'] ?? null;
+        $limit = 10;
+
+        if(!$keyword || !$lastPublishTime || !$lastId) {
+            echo json_encode([
+                'success' => false,
+                'data' => []]);
+            exit;    
+        }
+
+        $db = new DB('articles');
+        $kw = '%' . $keyword . '%';
+        $articles = $db->query(
+            "SELECT id, title, publish_time
+            FROM articles
+            WHERE status = 'published'
+            AND ( 
+                title LIKE ?
+               OR content LIKE ?
+               OR author LIKE ?
+            )
+            AND (
+                publish_time < ?
+            OR (publish_time = ? AND id < ?)
+            )
+            ORDER BY publish_time DESC, id DESC
+            LIMIT " . ($limit + 1), [$kw, $kw, $kw, $lastPublishTime, $lastPublishTime, $lastId]);
+
+        $hasMore = count($articles) > $limit;
+        if ($hasMore) {
+            array_pop($articles);
+        }
+
+        echo json_encode([
+            'success' => true,
+            'data' => $articles,
+            'has_more' => $hasMore
+        ]);
+        exit;
+    }
+
 
 
 
