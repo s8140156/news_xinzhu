@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
     <title><?= $title ?? '後台管理系統' ?></title>
 
     <!-- Bootstrap CSS（CDN） -->
@@ -18,9 +18,11 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"></script>
 
 
-     <!-- Popper（Bootstrap 4 Tooltip / Dropdown 需要） -->
+
+    <!-- Popper（Bootstrap 4 Tooltip / Dropdown 需要） -->
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 
 
@@ -28,18 +30,18 @@
     <link rel="stylesheet" href="<?= STATIC_URL ?>/assets/backend/css/style.css">
 
     <style>
-    /* 強制隱藏 CKEditor 不安全提示 — 保證即使在 iframe 外層也生效 */
-    body .cke_notifications_area,
-    body .cke_notification,
-    body .cke_notification_message {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        height: 0 !important;
-        overflow: hidden !important;
-        pointer-events: none !important;
-        z-index: -1 !important;
-    }
+        /* 強制隱藏 CKEditor 不安全提示 — 保證即使在 iframe 外層也生效 */
+        body .cke_notifications_area,
+        body .cke_notification,
+        body .cke_notification_message {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            pointer-events: none !important;
+            z-index: -1 !important;
+        }
     </style>
 
 </head>
@@ -57,9 +59,9 @@
 
                 <!-- 主內容 -->
                 <div class="container-fluid p-4">
-                    <?php if(isset($content) && file_exists($content)) {
-                    include $content;
-                } ?>
+                    <?php if (isset($content) && file_exists($content)) {
+                        include $content;
+                    } ?>
                 </div>
             </div>
 
@@ -75,11 +77,17 @@
 
 </html>
 <script>
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip({
-    html: true,
-    placement: 'right',
-    container: 'body'
-  });
-});
+    $(function() {
+        $('[data-toggle="tooltip"]').tooltip({
+            html: true,
+            placement: 'right',
+            container: 'body'
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.innerWidth < 768) {
+            document.getElementById('wrapper').classList.add('toggled');
+        }
+    });
 </script>

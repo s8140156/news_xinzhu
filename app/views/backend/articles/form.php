@@ -246,7 +246,7 @@
                     if (currentList.length > 5) {
                         event.preventDefault(); // 阻止表單提交
                         alert('文章內容中的圖片數量不可超過 5 張，請刪減後再提交。');
-                        return false;
+                        return;
                     }
                     // 寫入刪除清單到hidden input
                     let hiddenInput = form.querySelector('input[name="deleted_images"]');
@@ -262,6 +262,46 @@
             });
         }
     });
+
+    document.querySelectorAll('button[name="action"]').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            if (this.value === 'schedule') {
+            const date = document.getElementById('schedule_date').value;
+            // const time = document.getElementById('schedule_time').value;
+                // if (!date || !time) {
+                if (!date) {
+                    e.preventDefault();
+                    alert('請設定完整排程日期');
+                    return;
+                }
+            }
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('articleForm');
+        if (!form) return;
+
+        // 當欄位驗證失敗時觸發
+        form.addEventListener('invalid', function (e) {
+        const firstInvalid = form.querySelector(':invalid');
+        if (firstInvalid) {
+            firstInvalid.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+            });
+            firstInvalid.focus({ preventScroll: true });
+        }
+        }, true);
+    });
+    
+    form.addEventListener('submit', function () {
+        const buttons = form.querySelectorAll('button[type="submit"]');
+        buttons.forEach(btn => btn.disabled = true);
+    });
+
+
+
 
 </script>
 

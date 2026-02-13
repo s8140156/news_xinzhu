@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
     <title>(登入)馨築生活管理後台</title>
 
     <!-- Bootstrap -->

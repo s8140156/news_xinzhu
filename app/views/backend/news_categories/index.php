@@ -126,7 +126,7 @@
         $("#categoryTableBody").sortable({
             axis: "y",
             cursor: "move",
-            handle: "td",
+            handle: ".handle",
             placeholder: "sortable-placeholder",
             items: "tr:not(.fixed-row)", // 固定列不可拖曳(只允許非 fixed-row 的列可拖曳)
             update: function(event, ui) {
