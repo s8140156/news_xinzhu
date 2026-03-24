@@ -23,8 +23,9 @@ require_once APP_PATH . '/controllers/backend/sponsorPickController.php';
 require_once APP_PATH . '/controllers/backend/profileController.php';
 require_once APP_PATH . '/controllers/backend/partnerController.php';
 require_once APP_PATH . '/controllers/backend/footerArticleController.php';
+require_once APP_PATH . '/controllers/backend/siteSettingsController.php';
 
-// 處理後台未登入導向登入頁
+// 處理後台未登入導向登入頁(case:prefix判斷)
 $backendPages = [
     'article',
     'category',
@@ -33,13 +34,13 @@ $backendPages = [
     'footer',
     'sysuser',
     'profile',
+    'sitesettings'
 ];
 
 // 讀取頁面參數
 $page = $_GET['page'] ?? 'frontend_news';
 
-$isBackend = in_array($page, $backendPages);
-// // 判斷是否為後台page
+// 判斷是否為後台page
 $isBackend = false;
 foreach($backendPages as $prefix) {
     if(str_starts_with($page, $prefix)) {
@@ -47,11 +48,13 @@ foreach($backendPages as $prefix) {
         break;
     }
 }
-// // 未登入進後台=>導向login
+
+// 未登入進後台=>導向login
 if($isBackend && empty($_SESSION['user_id'])) {
     header("Location: ?page=login");
     exit;
 }
+// 處理後台為登入導向登入頁end
 
 
 // 路由控制區
@@ -251,6 +254,18 @@ switch($page) {
         requirePermission('create', MODULE_FOOTER);
         $controller = new footerArticleController();
         $controller->updateSort();
+        break;
+
+    // 後台：網站標題設定
+    case 'sitesettings_index':
+        requirePermission('view', MODULE_SITESETTINGS);
+        $controller = new SiteSettingsController();
+        $controller->index();
+        break;
+    case 'sitesettings_update':
+        requirePermission('edit', MODULE_SITESETTINGS);
+        $controller = new SiteSettingsController();
+        $controller->update();
         break;
 
     // 後台：登入認證/登出

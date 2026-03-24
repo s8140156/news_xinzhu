@@ -13,9 +13,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="<?= STATIC_URL ?>/assets/backend/vendor/fontawesome-free/css/all.min.css">
-  <link href="<?= STATIC_URL ?>/assets/css/frontend.css" rel="stylesheet">
   <link rel="stylesheet" href="<?= STATIC_URL ?>/assets/frontend/css/style.css">
-  <script src="<?= STATIC_URL ?>/assets/frontend/js/main.js"></script>
 
 
 </head>
@@ -64,10 +62,11 @@
       <!-- 右側固定側欄 -->
       <aside class="col-lg-3 col-md-4 col-12">
         <!-- 廣告區 -->
-        <div class="ad-section mb-5" id="sponsor-marquee" style="display:none">
-          <h5 class="fw-bold text-secondary border-bottom pb-2">工商新聞</h5>
+        <div class="highlight-section mb-5" id="highlight-marquee" style="display:none">
+          <!-- <h5 class="fw-bold text-secondary border-bottom pb-2">焦點即時</h5> -->
+          <h5 class="fw-bold text-secondary border-bottom pb-2"><?= $siteTitles['home_right_top_title'] ?? '' ?></h5>
           <div class="marquee bg-light p-3 rounded small text-muted">
-            <ul class="marquee-inner marquee-list" id="sponsor-marquee-inner">
+            <ul class="marquee-inner marquee-list" id="highlight-marquee-inner">
 
             </ul>
           </div>
@@ -76,7 +75,8 @@
         <!-- 焦點新聞 -->
         <?php if (!empty($focusArticle)): ?>
           <div class="focus-section mb-5">
-            <h5 class="fw-bold text-secondary border-bottom pb-2">停車場生活圈</h5>
+            <h5 class="fw-bold text-secondary border-bottom pb-2"><?= $focusCategory['name'] ?? '' ?></h5>
+            <!-- <h5 class="fw-bold text-secondary border-bottom pb-2"><?= $siteTitles['home_right_middle_title'] ?? '' ?></h5> -->
             <div class="card border-0 shadow-sm">
               <img src="<?= getCoverImage($focusArticle) ?>" class="card-img-top" alt="<?= htmlspecialchars($focusArticle['title']) ?>">
               <div class="card-body">
@@ -144,8 +144,8 @@
     .then(res => {
       if (!res.success || !res.data.length) return;
 
-      const wrap = document.getElementById('sponsor-marquee');
-      const inner = document.getElementById('sponsor-marquee-inner');
+      const wrap = document.getElementById('highlight-marquee');
+      const inner = document.getElementById('highlight-marquee-inner');
 
       // 清空
       inner.innerHTML = '';

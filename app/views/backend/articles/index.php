@@ -131,7 +131,7 @@
                                         <?= htmlspecialchars($categories[$article['category_id']] ?? '未分類') ?>
                                     </span>
                                 </div>
-                                <h5 class="fw-bold mb-0 text-truncate" style="max-width: 100%;">
+                                <h5 class="fw-bold mb-0 article-titile" style="max-width: 100%;">
                                     <?= htmlspecialchars($article['title']) ?>
                                 </h5>
                             </div>
@@ -241,6 +241,13 @@
 
     .article-card:hover {
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .article-title {
+        white-space: normal;
+        word-break: break-word;
+        overflow-wrap: break-word;
+        line-height: 1.4;
     }
 
     .badge {

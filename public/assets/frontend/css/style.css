@@ -122,7 +122,7 @@ footer {
 }
 
 /* 🔸 廣告區與焦點區 桌機/手機共用 */
-.ad-section,
+.highlight-section,
 .focus-section,
 .partner-section {
   background: #fff;
@@ -665,9 +665,21 @@ footer {
     opacity: 0.6;
     cursor: not-allowed;
   }
+  
 
+/* 手機首頁區塊順序控制 */
+@media (max-width: 768px) {
+    main.container {
+        display: flex;
+        flex-direction: column;
+    }
 
-/*  */
+    .highlight-section { order: 1; }
+    .mobile-content { order: 2; } 
+    .focus-section { order: 3; }
+    .partner-section { order: 4; }
+
+}
 
 
 

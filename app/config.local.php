@@ -4,7 +4,7 @@
  */
 
 // 1. 專案 BASE_URL（你的本地網址）
-define('BASE_URL', 'http://192.168.0.136/news_xinzhu/public');
+define('BASE_URL', 'http://192.168.0.138/news_xinzhu/public');
 define('STATIC_URL', BASE_URL);
 // define('BASE_URL', 'http://192.168.0.136/news_xinzhu');
 

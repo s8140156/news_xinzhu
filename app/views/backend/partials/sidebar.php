@@ -32,6 +32,12 @@ $sidebarConfig = [
             ['label' => '管理列表', 'page' => 'footer_index'],
         ],
     ],
+    'sitesettings' => [
+        'icon' => 'fa-signature',
+        'children' => [
+            ['label' => '網站標題設定', 'page' => 'sitesettings_index'],
+        ],
+    ],
     'sysuser' => [
         'icon' => 'fa-user-lock',
         'children' => [

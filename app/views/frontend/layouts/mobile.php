@@ -6,13 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>馨築生活</title>
 
-    <link href="<?= BASE_URL ?>/assets/frontend/css/style.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="<?= STATIC_URL ?>/assets/backend/vendor/fontawesome-free/css/all.min.css">
-    <link href="<?= STATIC_URL ?>/assets/css/frontend.css" rel="stylesheet">
     <link rel="stylesheet" href="<?= STATIC_URL ?>/assets/frontend/css/style.css">
-    <script src="<?= STATIC_URL ?>/assets/frontend/js/main.js"></script>
 </head>
 
 <body class="bg-light">
@@ -74,10 +71,11 @@
 
         <!-- 🔸 廣告區 -->
         <?php if (!empty($categories)): ?>
-            <section class="ad-section mb-4" id="sponsor-marquee" style="display:none">
-                <h5 class="fw-bold text-secondary border-bottom pb-2">工商新聞</h5>
+            <section class="highlight-section mb-4" id="highlight-marquee" style="display:none">
+                <!-- <h5 class="fw-bold text-secondary border-bottom pb-2">焦點即時</h5> -->
+                <h5 class="fw-bold text-secondary border-bottom pb-2"><?= $siteTitles['home_right_top_title'] ?? '' ?></h5>
                 <div class="marquee bg-light rounded p-3 small text-muted">
-                    <ul class="marquee-inner marquee-list" id="sponsor-marquee-inner">
+                    <ul class="marquee-inner marquee-list" id="highlight-marquee-inner">
 
                     </ul>
                 </div>
@@ -87,7 +85,8 @@
         <!-- 🔸 焦點新聞 -->
         <?php if (!empty($focusArticle)): ?>
             <section class="focus-section mb-4">
-                <h5 class="fw-bold text-secondary border-bottom pb-2">停車場生活圈</h5>
+                <h5 class="fw-bold text-secondary border-bottom pb-2"><?= $focusCategory['name'] ?? '' ?></h5>
+                <!-- <h5 class="fw-bold text-secondary border-bottom pb-2"><?= $siteTitles['home_right_middle_title'] ?? '' ?></h5> -->
                 <div class="card border-0 shadow-sm">
                     <img src="<?= getCoverImage($focusArticle) ?>" class="card-img-top">
                     <div class="card-body">
@@ -101,7 +100,9 @@
         <?php endif; ?>
 
         <!-- 🔸 手機主內容 -->
-        <?php include $mobileContent; ?>
+        <div class="mobile-content">
+            <?php include $mobileContent; ?>
+        </div>
 
         <!-- 🔸 合作媒體 -->
         <?php if (!empty($partners)): ?>
@@ -154,8 +155,8 @@
         .then(res => {
             if (!res.success || !res.data.length) return;
 
-            const wrap = document.getElementById('sponsor-marquee');
-            const inner = document.getElementById('sponsor-marquee-inner');
+            const wrap = document.getElementById('highlight-marquee');
+            const inner = document.getElementById('highlight-marquee-inner');
 
             // 清空
             inner.innerHTML = '';

@@ -9,13 +9,14 @@
 // require_once APP_PATH . '/config.php'; // 已在 index.php 載入，不需重複載入(先註記)
 require_once __DIR__ . '/db.php';
 
-// ===== Module constants =====
+// ===== Module constants =====(後面數字是modules.id 權限系統會用到)
 define('MODULE_ARTICLE', 1);
 define('MODULE_CATEGORY', 2);
 define('MODULE_SPONSORED', 3);
 define('MODULE_PARTNER', 4);
 define('MODULE_FOOTER', 5);
 define('MODULE_SYSUSER', 6);
+define('MODULE_SITESETTINGS', 8);
 
 // 定義焦點分類常數
 define('FOCUS_CATEGORY_ID', 1);
@@ -36,6 +37,24 @@ function getNewsCategoryMap($orderBy = 'id ASC') {
 function getAllCategories($orderBy = 'sort ASC') {
     $catDb = new DB('news_categories');
     return $catDb->all("1 ORDER BY $orderBy");
+}
+
+// 新增：取得焦點分類(is_focus=1)的資料
+function getFocusCategory() {
+    $catDb = new DB('news_categories');
+    $row = $catDb->all("is_focus = 1 ORDER BY id ASC LIMIT 1");
+    return $row[0] ?? null;
+}
+
+// 新增：取得首頁標題設定
+function getSiteTitles() {
+    $titleDb = new DB('site_settings');
+    $rows = $titleDb->all();
+    $settings = [];
+    foreach($rows as $row) {
+        $settings[$row['setting_key']]=$row['setting_value'];
+    }
+    return $settings;
 }
 
 // 取得文章封面圖片邏輯(可前後台共用)

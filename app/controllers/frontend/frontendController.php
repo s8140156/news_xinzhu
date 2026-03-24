@@ -9,6 +9,8 @@ Class FrontendController {
     protected $footerTags; // 頁尾標籤
     protected $partners; // 合作媒體
     protected $isMobile; // 偵測是否是否手機
+    protected $focusCategory; // is_focus=1的分類資料
+    protected $siteTitles; // 首頁標題設定
 
 
     public function __construct() {
@@ -22,6 +24,8 @@ Class FrontendController {
             '/Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i',
             $_SERVER['HTTP_USER_AGENT']
         );
+        $this->focusCategory = getFocusCategory('sort ASC');
+        $this->siteTitles = getSiteTitles();
 
     }
 
@@ -39,6 +43,8 @@ Class FrontendController {
         $focusArticle = $this->focusArticle;
         $footerTags = $this->footerTags;
         $partners = $this->partners;
+        $focusCategory = $this->focusCategory;
+        $siteTitles = $this->siteTitles;
         
         // 主內容(view路徑)
         $content = APP_PATH . '/views/' . $viewPath;
@@ -55,6 +61,8 @@ Class FrontendController {
         $footerTags = $this->footerTags;
         $partners = $this->partners;
         $isMobile = $this->isMobile;
+        $focusCategory = $this->focusCategory;
+        $siteTitles = $this->siteTitles;
 
         // 主內容 (mobile view 路徑)
         $mobileContent = APP_PATH . '/views/' . $viewPath;
